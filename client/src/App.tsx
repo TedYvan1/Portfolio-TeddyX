@@ -19,6 +19,7 @@ function Router() {
     <Route path="/projects" component={Projects} />
     <Route path="/projects/:slug" component={ProjectDetail} />
     <Route path="/admin" component={Admin} />
+    <Route path="/admin/dashboard" component={Admin} />
     <Route path="/admin/login" component={Login} />
     <Route path="/404" component={NotFound} />
     <Route component={NotFound} />
