@@ -23,10 +23,10 @@ export default function Admin() {
   if (loading) return <div className="admin-loading"><div className="loader-orbit" /><p>Vérification de la session...</p></div>;
   if (!user) return <Login />;
   if (user.role !== "admin") return <div className="admin-loading"><ShieldAlert className="h-8 w-8 text-primary" /><h1 className="mt-4 font-display text-2xl font-semibold">Accès administrateur refusé</h1><p className="mt-2 text-sm text-muted-foreground">Ce compte n'est pas autorisé à gérer le contenu du site.</p><button onClick={() => logout()} className="button-primary mt-6">Se déconnecter</button></div>;
-  return <AdminShell logout={logout} />;
+  return <AdminShell logout={logout} user={user} />;
 }
 
-function AdminShell({ logout }: { logout: () => Promise<void> }) {
+function AdminShell({ logout, user }: { logout: () => Promise<void>; user: NonNullable<ReturnType<typeof useAuth>["user"]> }) {
   const [section, setSection] = useState<Section>("overview");
   const [mobileOpen, setMobileOpen] = useState(false);
   const overview = trpc.admin.overview.useQuery(undefined, { staleTime: 15_000 });
@@ -122,8 +122,8 @@ function AdminShell({ logout }: { logout: () => Promise<void> }) {
       <div className="admin-main">
         <header className="admin-topbar">
           <button className="icon-button md:hidden" onClick={() => setMobileOpen(true)}><Menu /></button>
-          <div><p className="eyebrow hidden sm:block">Content studio / 2025</p><h1 className="font-display text-xl font-semibold md:text-2xl">{nav.find(item => item.key === section)?.label}</h1></div>
-          <div className="ml-auto flex items-center gap-3"><span className="hidden text-sm text-muted-foreground sm:block">Admin</span><span className="avatar-dot">A</span></div>
+          <div><p className="eyebrow hidden sm:block">Content studio / {new Date().getFullYear()}</p><h1 className="font-display text-xl font-semibold md:text-2xl">{nav.find(item => item.key === section)?.label}</h1></div>
+          <div className="ml-auto flex items-center gap-3"><span className="admin-status hidden sm:inline-flex">Session active</span><span className="hidden text-sm text-muted-foreground sm:block">{user.name || user.email}</span><span className="avatar-dot">{(user.name || user.email || "A").charAt(0).toUpperCase()}</span></div>
         </header>
         <main className="admin-content">
           {section === "overview" && <Overview data={overview.data} onNavigate={selectSection} />}
