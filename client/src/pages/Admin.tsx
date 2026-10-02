@@ -4,7 +4,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import type { Project, Skill, Message, SiteProfile, AboutCard, Certification } from "@shared/types";
-import { useLocation } from "wouter";
+import Login from "./Login";
 
 type Section = "overview" | "projects" | "skills" | "messages" | "profile" | "about" | "certifications";
 type ProjectDraft = { title: string; slug: string; shortDescription: string; description: string; imageUrl: string; githubUrl: string; liveUrl: string; category: string; technologies: string; featured: number; published: number; };
@@ -21,73 +21,9 @@ const blankCert: CertDraft = { title: "", issuer: "", dateLabel: "", type: "Rés
 export default function Admin() {
   const { user, loading, logout } = useAuth();
   if (loading) return <div className="admin-loading"><div className="loader-orbit" /><p>Vérification de la session...</p></div>;
-  if (!user) return <AdminLogin />;
+  if (!user) return <Login />;
   if (user.role !== "admin") return <div className="admin-loading"><ShieldAlert className="h-8 w-8 text-primary" /><h1 className="mt-4 font-display text-2xl font-semibold">Accès administrateur refusé</h1><p className="mt-2 text-sm text-muted-foreground">Ce compte n'est pas autorisé à gérer le contenu du site.</p><button onClick={() => logout()} className="button-primary mt-6">Se déconnecter</button></div>;
   return <AdminShell logout={logout} />;
-}
-
-function AdminLogin() {
-  const [, setLocation] = useLocation();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const login = trpc.auth.login.useMutation({
-    onSuccess: () => {
-      toast.success("Connexion réussie");
-      setLocation("/admin");
-    },
-    onError: (error) => {
-      toast.error(error.message || "Identifiants invalides.");
-    },
-  });
-
-  const onSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    login.mutate({ email, password });
-  };
-
-  return (
-    <div className="admin-login">
-      <div className="admin-login-card">
-        <div className="brand-mark mx-auto"><ShieldAlert className="h-5 w-5" /></div>
-        <p className="eyebrow mt-7 text-center">Espace privé</p>
-        <h1 className="mt-3 text-center font-display text-3xl font-semibold">Content studio</h1>
-        <p className="mt-4 text-center text-sm leading-6 text-muted-foreground">Connectez-vous pour gérer tout le contenu du portfolio.</p>
-
-        <form onSubmit={onSubmit} className="mt-8 space-y-4">
-          <label className="admin-field">
-            <span>Email</span>
-            <input
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              placeholder="admin@exemple.com"
-              autoComplete="email"
-              required
-            />
-          </label>
-
-          <label className="admin-field">
-            <span>Mot de passe</span>
-            <input
-              type="password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              placeholder="••••••••"
-              autoComplete="current-password"
-              required
-            />
-          </label>
-
-          <button type="submit" className="button-primary mt-2 w-full justify-center" disabled={login.isPending}>
-            {login.isPending ? "Connexion..." : "Se connecter"}
-            <ChevronRight className="h-4 w-4" />
-          </button>
-        </form>
-
-        <a href="/" className="mt-5 block text-center text-sm text-muted-foreground hover:text-primary">← Retour au portfolio</a>
-      </div>
-    </div>
-  );
 }
 
 function AdminShell({ logout }: { logout: () => Promise<void> }) {
