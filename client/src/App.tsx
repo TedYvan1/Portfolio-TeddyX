@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import Projects from "./pages/Projects";
 import ProjectDetail from "./pages/ProjectDetail";
 import Admin from "./pages/Admin";
+import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import { Route, Switch, useLocation } from "wouter";
 
@@ -18,7 +19,7 @@ function Router() {
     <Route path="/projects" component={Projects} />
     <Route path="/projects/:slug" component={ProjectDetail} />
     <Route path="/admin" component={Admin} />
-    <Route path="/admin/login" component={Admin} />
+    <Route path="/admin/login" component={Login} />
     <Route path="/404" component={NotFound} />
     <Route component={NotFound} />
   </Switch></motion.div></AnimatePresence>;
