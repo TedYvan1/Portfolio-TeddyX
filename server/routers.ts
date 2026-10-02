@@ -1,4 +1,4 @@
-import { COOKIE_NAME } from "@shared/const";
+import { COOKIE_NAME, SESSION_MAX_AGE_MS } from "@shared/const";
 import { hashPassword, signSession, verifyPassword } from "./_core/auth";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
@@ -113,9 +113,10 @@ export const appRouter = router({
         if (!user || !user.passwordHash) throw new TRPCError({ code: "UNAUTHORIZED", message: "Identifiants invalides." });
         const ok = await verifyPassword(input.password, user.passwordHash);
         if (!ok) throw new TRPCError({ code: "UNAUTHORIZED", message: "Identifiants invalides." });
+        if (user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN", message: "Ce compte n'a pas accès au panneau admin." });
         const token = signSession(user);
         const cookieOptions = getSessionCookieOptions(ctx.req);
-        ctx.res.cookie(COOKIE_NAME, token, { ...cookieOptions, maxAge: 7 * 24 * 60 * 60 * 1000 });
+        ctx.res.cookie(COOKIE_NAME, token, { ...cookieOptions, maxAge: SESSION_MAX_AGE_MS });
         return { success: true as const, user: { id: user.id, email: user.email, role: user.role, name: user.name } };
       }),
     register: publicProcedure
@@ -130,7 +131,7 @@ export const appRouter = router({
       }),
     logout: publicProcedure.mutation(({ ctx }) => {
       const cookieOptions = getSessionCookieOptions(ctx.req);
-      ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
+      ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: 0 });
       return { success: true } as const;
     }),
   }),
