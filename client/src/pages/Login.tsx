@@ -15,7 +15,7 @@ export default function Login() {
   const login = trpc.auth.login.useMutation({
     onSuccess: () => {
       toast.success("Connexion réussie");
-      setLocation("/admin");
+      setLocation("/admin/dashboard");
     },
     onError: error => toast.error(error.message || "Identifiants invalides."),
   });
