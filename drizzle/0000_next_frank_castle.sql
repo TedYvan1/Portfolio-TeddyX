@@ -53,7 +53,7 @@ CREATE TABLE "projects" (
 --> statement-breakpoint
 CREATE TABLE "siteProfile" (
 	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "siteProfile_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
-	"displayName" varchar(80) DEFAULT 'yvan.dev' NOT NULL,
+	"displayName" varchar(80) DEFAULT 'TeddyX' NOT NULL,
 	"fullName" varchar(180) DEFAULT 'Konin Ted Yvan Axel Kamanan' NOT NULL,
 	"role" varchar(255) DEFAULT 'Étudiant en Réseaux & Sécurité Informatique et en Génie Logiciel' NOT NULL,
 	"heroEyebrow" varchar(180) DEFAULT 'À la recherche d''un stage' NOT NULL,

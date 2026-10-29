@@ -1,7 +1,7 @@
 import { asc, desc, eq } from "drizzle-orm";
 import postgres from "postgres";
 import { drizzle } from "drizzle-orm/postgres-js";
-import { InsertUser, User, users, projects, skills, messages, siteProfile, aboutCards, certifications } from "../drizzle/schema";
+import { InsertUser, User, users, projects, skills, messages, siteProfile, aboutCards, certifications, strengths, languages, educations } from "../drizzle/schema";
 
 let _db: ReturnType<typeof drizzle> | null = null;
 let _client: ReturnType<typeof postgres> | null = null;
@@ -102,4 +102,22 @@ export async function listCertifications() {
   const db = await getDb();
   if (!db) return [];
   return db.select().from(certifications).orderBy(asc(certifications.displayOrder), asc(certifications.id));
+}
+
+export async function listStrengths() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(strengths).orderBy(asc(strengths.displayOrder), asc(strengths.id));
+}
+
+export async function listLanguages() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(languages).orderBy(asc(languages.displayOrder), asc(languages.id));
+}
+
+export async function listEducations() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(educations).orderBy(asc(educations.displayOrder), asc(educations.id));
 }

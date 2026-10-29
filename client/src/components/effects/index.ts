@@ -5,3 +5,5 @@ export { SplitText } from "./SplitText";
 export { Magnet } from "./Magnet";
 export { SpotlightCard } from "./SpotlightCard";
 export { TiltCard } from "./TiltCard";
+export { CountUp } from "./CountUp";
+export { GradientText } from "./GradientText";

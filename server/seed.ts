@@ -1,7 +1,7 @@
 import "dotenv/config";
 import postgres from "postgres";
 import { drizzle } from "drizzle-orm/postgres-js";
-import { projects, skills, siteProfile, aboutCards, certifications, users } from "../drizzle/schema";
+import { projects, skills, siteProfile, aboutCards, certifications, strengths, languages, educations, users } from "../drizzle/schema";
 import { hashPassword } from "./_core/auth";
 
 const client = postgres(process.env.DATABASE_URL!);
@@ -9,12 +9,25 @@ const db = drizzle(client);
 
 const seedProjects = [
   {
+    title: "Portfolio & CMS",
+    slug: "portfolio-cms",
+    shortDescription: "Ce portfolio : un site full-stack avec un espace d'administration sécurisé pour gérer tout le contenu.",
+    description: "Portfolio personnel conçu et développé de bout en bout. Le front est en React 19 + TypeScript avec Vite et Tailwind CSS ; l'API utilise Express et tRPC avec validation Zod côté serveur ; les données sont stockées dans PostgreSQL (Supabase) via Drizzle ORM. Un espace d'administration protégé par JWT (cookie httpOnly, mots de passe hachés avec bcrypt, contrôle des rôles) permet de modifier le profil, les projets, les compétences, les certifications et de lire les messages du formulaire de contact.",
+    imageUrl: "",
+    githubUrl: "https://github.com/TedYvan1/Portfolio-TeddyX",
+    liveUrl: "",
+    category: "Full-Stack",
+    technologies: "React, TypeScript, tRPC, PostgreSQL, Drizzle, JWT",
+    featured: 1,
+    published: 1,
+  },
+  {
     title: "ChopTaResiCI",
     slug: "choptaresici",
     shortDescription: "Application SaaS de gestion immobilière pensée pour les résidences en Côte d'Ivoire.",
     description: "ChopTaResiCI est une plateforme SaaS complète dédiée à la gestion de résidences en Côte d'Ivoire. Le projet couvre la conception et l'architecture d'une solution web avec une interface React, une API Node.js, une persistance MySQL et une authentification JWT sécurisée. Le projet est actuellement en cours de développement.",
     imageUrl: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=85",
-    githubUrl: "https://github.com/",
+    githubUrl: "",
     liveUrl: "",
     category: "Full-Stack",
     technologies: "React, Node.js, MySQL, JWT",
@@ -27,7 +40,7 @@ const seedProjects = [
     shortDescription: "Site vitrine e-commerce pour promouvoir et commander des produits avicoles locaux.",
     description: "PouletFraisCI est une plateforme web vitrine conçue pour promouvoir les produits avicoles locaux et faciliter la commande en ligne. Le projet met en pratique les fondamentaux HTML5, CSS3 et JavaScript dans une expérience responsive, claire et orientée conversion.",
     imageUrl: "https://images.unsplash.com/photo-1604503468506-a8da13d82791?auto=format&fit=crop&w=1200&q=85",
-    githubUrl: "https://github.com/",
+    githubUrl: "",
     liveUrl: "",
     category: "Frontend",
     technologies: "HTML5, CSS3, JavaScript",
@@ -40,14 +53,16 @@ const seedSkills = [
   { name: "HTML5", category: "Frontend", level: "Intermediate" as const, icon: "Code2", description: "Structure sémantique et bases solides pour des interfaces accessibles.", displayOrder: 1 },
   { name: "CSS3", category: "Frontend", level: "Intermediate" as const, icon: "Palette", description: "Mise en page responsive, composants visuels et design cohérent.", displayOrder: 2 },
   { name: "JavaScript", category: "Frontend", level: "Intermediate" as const, icon: "Braces", description: "Interactions web, logique applicative et manipulation du DOM.", displayOrder: 3 },
-  { name: "React.js", category: "Frontend", level: "Beginner" as const, icon: "Layers3", description: "Construction d'interfaces composables et réutilisables.", displayOrder: 4 },
+  { name: "React.js", category: "Frontend", level: "Intermediate" as const, icon: "Layers3", description: "Construction d'interfaces composables et réutilisables.", displayOrder: 4 },
   { name: "Design responsive", category: "Frontend", level: "Intermediate" as const, icon: "MonitorSmartphone", description: "Expériences adaptées au mobile, à la tablette et au desktop.", displayOrder: 5 },
-  { name: "Node.js", category: "Backend", level: "Beginner" as const, icon: "Server", description: "Bases du développement serveur et des APIs web.", displayOrder: 6 },
-  { name: "Python", category: "Backend", level: "Beginner" as const, icon: "Terminal", description: "Programmation polyvalente et exploration des services backend.", displayOrder: 7 },
-  { name: "MySQL & SQL", category: "Bases de données", level: "Intermediate" as const, icon: "Database", description: "Modélisation relationnelle, requêtes et gestion des données.", displayOrder: 8 },
-  { name: "Git & GitHub", category: "Outils", level: "Intermediate" as const, icon: "GitBranch", description: "Versioning, collaboration et suivi des évolutions.", displayOrder: 9 },
-  { name: "Linux & VMware", category: "Outils", level: "Beginner" as const, icon: "MonitorCog", description: "Environnements systèmes et virtualisation pour apprendre par la pratique.", displayOrder: 10 },
-  { name: "JWT & authentification", category: "Sécurité", level: "Beginner" as const, icon: "ShieldCheck", description: "Principes d'authentification sécurisée pour les applications web.", displayOrder: 11 },
+  { name: "TypeScript", category: "Frontend", level: "Beginner" as const, icon: "Code2", description: "Typage statique pour des applications plus fiables, côté client comme côté serveur.", displayOrder: 6 },
+  { name: "Node.js", category: "Backend", level: "Beginner" as const, icon: "Server", description: "Bases du développement serveur et des APIs web.", displayOrder: 7 },
+  { name: "Python", category: "Backend", level: "Beginner" as const, icon: "Terminal", description: "Programmation polyvalente et exploration des services backend.", displayOrder: 8 },
+  { name: "SQL (MySQL & PostgreSQL)", category: "Bases de données", level: "Intermediate" as const, icon: "Database", description: "Modélisation relationnelle, requêtes et gestion des données, avec Drizzle ORM côté Node.js.", displayOrder: 9 },
+  { name: "Git & GitHub", category: "Outils", level: "Intermediate" as const, icon: "GitBranch", description: "Versioning, collaboration et suivi des évolutions.", displayOrder: 10 },
+  { name: "Linux & VMware", category: "Outils", level: "Beginner" as const, icon: "MonitorCog", description: "Environnements systèmes et virtualisation pour apprendre par la pratique.", displayOrder: 11 },
+  { name: "JWT & authentification", category: "Sécurité", level: "Beginner" as const, icon: "ShieldCheck", description: "Principes d'authentification sécurisée pour les applications web.", displayOrder: 12 },
+  { name: "Figma", category: "Outils", level: "Intermediate" as const, icon: "Palette", description: "Maquettage d'interfaces et prototypage de parcours utilisateur.", displayOrder: 13 },
 ];
 
 const seedAboutCards = [
@@ -60,8 +75,25 @@ const seedAboutCards = [
 const seedCertifications = [
   { title: "Notions de base sur les réseaux", issuer: "Cybastion IT Academy", dateLabel: "2026", type: "Réseaux", description: "Certification qui renforce les fondamentaux des réseaux et la compréhension des échanges entre systèmes.", displayOrder: 1 },
   { title: "Introduction à la cybersécurité", issuer: "Cisco Networking Academy", dateLabel: "2025", type: "Sécurité", description: "Premiers repères sur les menaces, la protection des systèmes et les bonnes pratiques de cybersécurité.", displayOrder: 2 },
-  { title: "Licence 3 — Réseaux & Sécurité Informatique", issuer: "Université Virtuelle de Côte d'Ivoire", dateLabel: "Depuis 2024", type: "Formation", description: "Formation universitaire centrée sur les réseaux, la sécurité informatique et l'analyse des infrastructures.", displayOrder: 3 },
-  { title: "Licence 2 — Génie Logiciel", issuer: "Université Nord-Sud · Bouaké", dateLabel: "Depuis 2024", type: "Formation", description: "Parcours complémentaire consacré à la conception, au développement et à la maintenance de logiciels.", displayOrder: 4 },
+];
+
+const seedStrengths = [
+  { label: "Analyse & Résolution de problèmes", displayOrder: 1 },
+  { label: "Adaptabilité", displayOrder: 2 },
+  { label: "Rigueur & Autonomie", displayOrder: 3 },
+  { label: "Curiosité intellectuelle", displayOrder: 4 },
+  { label: "Communication", displayOrder: 5 },
+];
+
+const seedLanguages = [
+  { name: "Français", level: "Langue maternelle", displayOrder: 1 },
+  { name: "Anglais", level: "Niveau intermédiaire", displayOrder: 2 },
+];
+
+const seedEducations = [
+  { title: "Licence 3 - Réseaux et Sécurité Informatique", institution: "Université Virtuelle de Côte d'Ivoire (UVCI)", location: "Abidjan", period: "Depuis 2024", description: "Formation universitaire centrée sur les réseaux, la sécurité informatique et l'analyse des infrastructures.", displayOrder: 1 },
+  { title: "Licence 2 - Génie Logiciel", institution: "Université Nord-Sud", location: "Bouaké", period: "Depuis 2024", description: "Parcours complémentaire consacré à la conception, au développement et à la maintenance de logiciels.", displayOrder: 2 },
+  { title: "Baccalauréat Série D", institution: "Lycée Municipal de Brobo", location: "Brobo, Côte d'Ivoire", period: "De sept. 2023 à juil. 2024", description: null, displayOrder: 3 },
 ];
 
 async function main() {
@@ -69,12 +101,18 @@ async function main() {
   await db.delete(skills);
   await db.delete(aboutCards);
   await db.delete(certifications);
+  await db.delete(strengths);
+  await db.delete(languages);
+  await db.delete(educations);
   await db.delete(siteProfile);
   await db.insert(siteProfile).values({});
   await db.insert(projects).values(seedProjects);
   await db.insert(skills).values(seedSkills);
   await db.insert(aboutCards).values(seedAboutCards);
   await db.insert(certifications).values(seedCertifications);
+  await db.insert(strengths).values(seedStrengths);
+  await db.insert(languages).values(seedLanguages);
+  await db.insert(educations).values(seedEducations);
 
   // Seed admin user if ADMIN_EMAIL + ADMIN_PASSWORD provided
   const adminEmail = process.env.ADMIN_EMAIL;

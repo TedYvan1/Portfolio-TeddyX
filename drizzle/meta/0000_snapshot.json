@@ -374,7 +374,7 @@
           "type": "varchar(80)",
           "primaryKey": false,
           "notNull": true,
-          "default": "'yvan.dev'"
+          "default": "'TeddyX'"
         },
         "fullName": {
           "name": "fullName",
