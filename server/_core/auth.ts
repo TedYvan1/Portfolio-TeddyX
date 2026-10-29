@@ -7,6 +7,9 @@ import { getUserByOpenId } from "../db";
 import { ENV } from "./env";
 import { COOKIE_NAME } from "@shared/const";
 
+const SESSION_ISSUER = "portfolio-admin";
+const SESSION_AUDIENCE = "portfolio-admin-dashboard";
+
 export type SupabaseAuthUser = User;
 
 function getJwtSecret(): string {
@@ -28,14 +31,23 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
 }
 
 export function signSession(user: Pick<User, "id" | "openId" | "role">): string {
-  return jwt.sign({ sub: String(user.id), openId: user.openId, role: user.role }, getJwtSecret(), { expiresIn: "7d" });
+  return jwt.sign({ sub: String(user.id), openId: user.openId, role: user.role }, getJwtSecret(), {
+    algorithm: "HS256",
+    audience: SESSION_AUDIENCE,
+    expiresIn: "7d",
+    issuer: SESSION_ISSUER,
+  });
 }
 
 export function verifySession(token: string): { sub: string; openId: string; role: string } | null {
   try {
-    const payload = jwt.verify(token, getJwtSecret()) as any;
-    if (!payload?.openId) return null;
-    return payload;
+    const payload = jwt.verify(token, getJwtSecret(), {
+      algorithms: ["HS256"],
+      audience: SESSION_AUDIENCE,
+      issuer: SESSION_ISSUER,
+    }) as jwt.JwtPayload & { openId?: unknown; role?: unknown };
+    if (typeof payload.sub !== "string" || typeof payload.openId !== "string" || typeof payload.role !== "string") return null;
+    return { sub: payload.sub, openId: payload.openId, role: payload.role };
   } catch {
     return null;
   }
@@ -43,8 +55,15 @@ export function verifySession(token: string): { sub: string; openId: string; rol
 
 export function getSessionTokenFromRequest(req: Request): string | null {
   const cookieHeader = req.headers.cookie ?? "";
-  const match = cookieHeader.split(";").find(s => s.trim().startsWith(`${COOKIE_NAME}=`));
-  if (match) return match.trim().slice(COOKIE_NAME.length + 1);
+  const match = cookieHeader.split(";").map(value => value.trim()).find(value => value.startsWith(`${COOKIE_NAME}=`));
+  if (match) {
+    const value = match.slice(COOKIE_NAME.length + 1);
+    try {
+      return decodeURIComponent(value);
+    } catch {
+      return null;
+    }
+  }
   const auth = req.headers.authorization;
   if (typeof auth === "string" && auth.startsWith("Bearer ")) return auth.slice(7);
   return null;
