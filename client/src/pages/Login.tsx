@@ -34,21 +34,21 @@ export default function Login() {
           <div className="relative z-10 flex h-full flex-col">
             <a href="/" className="flex w-fit items-center gap-3 text-white" aria-label="Retour à l’accueil">
               <span className="login-logo"><Sparkles className="h-4 w-4" /></span>
-              <span className="font-display text-lg font-semibold tracking-tight">teddy<span className="text-[#74e0c7]">.x</span></span>
+              <span className="font-display text-lg font-semibold tracking-tight">Ted Yvan <span className="text-[#ff9a5c]">KAMANAN</span></span>
             </a>
 
             <div className="my-auto max-w-md py-16">
               <p className="login-kicker"><span className="login-kicker-dot" /> Admin workspace</p>
               <h1 className="mt-6 font-display text-4xl font-semibold leading-[1.08] tracking-tight text-white md:text-5xl">
-                Pilotez votre portfolio avec <span className="text-[#74e0c7]">clarté.</span>
+                Pilotez votre portfolio avec <span className="text-[#ff9a5c]">clarté.</span>
               </h1>
-              <p className="mt-6 max-w-sm text-sm leading-7 text-[#b1c9c2]">
+              <p className="mt-6 max-w-sm text-sm leading-7 text-[#c9c1b2]">
                 Un espace simple pour publier vos projets, mettre à jour votre profil et garder vos messages au même endroit.
               </p>
 
               <div className="mt-10 space-y-4">
                 {["Contenu centralisé", "Publication en quelques clics", "Session sécurisée côté serveur"].map(item => (
-                  <div key={item} className="flex items-center gap-3 text-sm text-[#d6e8e3]">
+                  <div key={item} className="flex items-center gap-3 text-sm text-[#e8e1d4]">
                     <span className="login-check"><Check className="h-3.5 w-3.5" /></span>
                     {item}
                   </div>
@@ -56,7 +56,7 @@ export default function Login() {
               </div>
             </div>
 
-            <p className="text-xs text-[#86a69e]">© {new Date().getFullYear()} Teddy.x · Espace privé</p>
+            <p className="text-xs text-[#a39b8d]">© {new Date().getFullYear()} Ted Yvan KAMANAN · Espace privé</p>
           </div>
         </section>
 
