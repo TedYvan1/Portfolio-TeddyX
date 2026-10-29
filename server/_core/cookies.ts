@@ -42,7 +42,8 @@ export function getSessionCookieOptions(
   return {
     httpOnly: true,
     path: "/",
-    sameSite: "none",
+    // Front et API partagent la même origine : "lax" suffit et reste accepté en HTTP (dev).
+    sameSite: "lax",
     secure: isSecureRequest(req),
   };
 }

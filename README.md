@@ -1,4 +1,4 @@
-# yvan.dev — Portfolio Full-Stack & Cybersécurité
+# TeddyX — Portfolio Full-Stack & Cybersécurité
 
 Portfolio professionnel pour Konin Ted Yvan Axel Kamanan. Expérience publique, base de données Supabase (Postgres), espace d'administration protégé et CMS complet.
 
@@ -63,6 +63,6 @@ Toutes les dépendances Manus ont été retirées : `vite-plugin-manus-runtime`,
 ## Auth
 
 - `POST /api/trpc/auth.login` { email, password } -> pose cookie `app_session_id` (JWT 7j)
-- `POST /api/trpc/auth.register` -> crée un `users` (nécessite `openId`)
+- Pas d'inscription publique : le compte admin est créé par `npm run seed` (`ADMIN_EMAIL` + `ADMIN_PASSWORD`).
 - `POST /api/trpc/auth.logout` -> clear cookie
 - `useAuth()` lit `auth.me` (ctx.user via JWT).

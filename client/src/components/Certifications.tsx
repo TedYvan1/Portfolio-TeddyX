@@ -3,13 +3,10 @@ import { Award, CalendarDays, ChevronDown, ExternalLink, ShieldCheck, Sparkles }
 import { useRef, useState } from "react";
 import { ScrollReveal, SectionHeading } from "@/components/SiteLayout";
 import { trpc } from "@/lib/trpc";
-import { TiltCard } from "@/components/effects/TiltCard";
 
 const fallbackCerts = [
   { id: 1, title: "Notions de base sur les réseaux", issuer: "Cybastion IT Academy", dateLabel: "2026", type: "Réseaux", description: "Certification qui renforce les fondamentaux des réseaux et la compréhension des échanges entre systèmes.", linkUrl: null as string | null },
   { id: 2, title: "Introduction à la cybersécurité", issuer: "Cisco Networking Academy", dateLabel: "2025", type: "Sécurité", description: "Premiers repères sur les menaces, la protection des systèmes et les bonnes pratiques de cybersécurité.", linkUrl: null as string | null },
-  { id: 3, title: "Licence 3 — Réseaux & Sécurité Informatique", issuer: "Université Virtuelle de Côte d'Ivoire", dateLabel: "Depuis 2024", type: "Formation", description: "Formation universitaire centrée sur les réseaux, la sécurité informatique et l'analyse des infrastructures.", linkUrl: null as string | null },
-  { id: 4, title: "Licence 2 — Génie Logiciel", issuer: "Université Nord-Sud · Bouaké", dateLabel: "Depuis 2024", type: "Formation", description: "Parcours complémentaire consacré à la conception, au développement et à la maintenance de logiciels.", linkUrl: null as string | null },
 ];
 
 export default function Certifications() {
@@ -37,7 +34,7 @@ export default function Certifications() {
       <div className="certification-window">
         <motion.div className="certification-track" style={{ x }}>
           {certifications.map((certification, index) => (
-            <TiltCard key={certification.id ?? certification.title} maxTilt={6} className="shrink-0">
+            <div key={certification.id ?? certification.title} className="shrink-0">
               <motion.button
                 layout
                 onClick={() => setExpanded(expanded === index ? null : index)}
@@ -88,7 +85,7 @@ export default function Certifications() {
                   )}
                 </AnimatePresence>
               </motion.button>
-            </TiltCard>
+            </div>
           ))}
           <div className="certification-endnote">
             <Sparkles className="h-5 w-5 text-primary" />

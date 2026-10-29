@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowDownRight, ArrowUpRight, CheckCircle2, Code2, Database, GitBranch, Mail, MonitorCog, MonitorSmartphone, Network, Palette, Send, Server, ShieldCheck, Terminal, UserRound } from "lucide-react";
+import { ArrowUpRight, CheckCircle2, Code2, Database, GitBranch, Languages, Mail, MonitorCog, MonitorSmartphone, Network, Palette, Send, Server, ShieldCheck, Sparkles, Terminal, UserRound } from "lucide-react";
 import { Link } from "wouter";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
@@ -10,11 +10,7 @@ import { trpc } from "@/lib/trpc";
 import { SiteLayout, ScrollReveal, SectionHeading } from "@/components/SiteLayout";
 import Certifications from "@/components/Certifications";
 import { Aurora } from "@/components/effects/Aurora";
-import { BlurText } from "@/components/effects/BlurText";
-import { ShinyText } from "@/components/effects/ShinyText";
-import { Magnet } from "@/components/effects/Magnet";
 import { SpotlightCard } from "@/components/effects/SpotlightCard";
-import { TiltCard } from "@/components/effects/TiltCard";
 import { staggerContainer, staggerItem } from "@/lib/motion";
 
 const contactSchema = z.object({ name: z.string().min(2, "Votre nom est requis"), email: z.string().email("Email invalide"), subject: z.string().min(3, "Sujet trop court"), message: z.string().min(20, "Décrivez votre besoin en au moins 20 caractères"), honeypot: z.string().max(0).optional() });
@@ -26,10 +22,10 @@ const fallbackProfile = {
   heroEyebrow: "À la recherche d'un stage",
   heroLocation: "Abidjan · Bouaké",
   heroTitle: "Je développe des solutions",
-  heroTitleAccent: "clairs.",
+  heroTitleAccent: "claires.",
   heroSubtitle: "Je sécurise mes applications.",
   heroDescription: "Étudiant en Réseaux & Sécurité Informatique et en Génie Logiciel. Je conçois des applications web performantes et sécurisées, avec une forte capacité d'analyse et d'adaptation.",
-  heroTags: "HTML · CSS · JavaScript,Node · MySQL,Réseaux · JWT",
+  heroTags: "React · TypeScript · Node.js,PostgreSQL · MySQL,Réseaux · Linux · JWT",
   codeFocus: "full-stack",
   codeMindset: "secure-by-design",
   codeStack: "React,Node.js,PostgreSQL,Linux",
@@ -47,7 +43,7 @@ const fallbackProfile = {
   contactTitle: "Construisons quelque chose d'utile.",
   contactDescription: "Vous avez un projet web, une idée à prototyper ou simplement envie d'échanger ? Écrivez-moi, je réponds sous 48 heures.",
   email: "y.vannky10@gmail.com",
-  phone: "07 58 11 79 44",
+  phone: "+225 07 58 11 79 44",
   availability: "Stage recherché",
 };
 
@@ -63,6 +59,13 @@ export default function Home() {
   const skillsQuery = trpc.public.skills.useQuery(undefined, { staleTime: 60_000 });
   const profileQuery = trpc.public.siteProfile.useQuery(undefined, { staleTime: 60_000 });
   const aboutCardsQuery = trpc.public.aboutCards.useQuery(undefined, { staleTime: 60_000 });
+  const strengthsQuery = trpc.public.strengths.useQuery(undefined, { staleTime: 60_000 });
+  const languagesQuery = trpc.public.languages.useQuery(undefined, { staleTime: 60_000 });
+  const educationsQuery = trpc.public.educations.useQuery(undefined, { staleTime: 60_000 });
+  const certificationsQuery = trpc.public.certifications.useQuery(undefined, { staleTime: 60_000 });
+  const strengthItems = strengthsQuery.data ?? [];
+  const languageItems = languagesQuery.data ?? [];
+  const educationItems = educationsQuery.data ?? [];
   const profile = (profileQuery.data as typeof fallbackProfile | null) ?? fallbackProfile;
   const aboutCards = (aboutCardsQuery.data as typeof fallbackCards | undefined) ?? fallbackCards;
   const messageMutation = trpc.public.createMessage.useMutation({ onSuccess: () => { toast.success("Message envoyé. Je vous répondrai rapidement."); reset(); }, onError: error => toast.error(error.message || "Impossible d'envoyer le message") });
@@ -84,18 +87,16 @@ export default function Home() {
               <div className="available-pill">
                 <span className="pulse-dot" /> {profile.heroEyebrow} <span className="text-muted-foreground">·</span> {profile.heroLocation}
               </div>
-              <h1 className="mt-7 max-w-3xl font-display text-5xl font-semibold leading-[1.02] tracking-[-0.045em] sm:text-6xl lg:text-[5.25rem]">
-                <BlurText text={profile.heroTitle} as="span" stagger={0.025} className="inline" /> <ShinyText className="text-gradient">{profile.heroTitleAccent}</ShinyText>
+              <h1 className="mt-7 max-w-3xl font-display text-4xl font-semibold leading-[1.08] tracking-[-0.035em] sm:text-5xl lg:text-6xl">
+                {profile.heroTitle} <span className="text-gradient">{profile.heroTitleAccent}</span>
                 <br />
                 <span className="text-muted-foreground">{profile.heroSubtitle}</span>
               </h1>
               <p className="mt-7 max-w-xl text-base leading-8 text-muted-foreground md:text-lg">{profile.heroDescription}</p>
               <div className="mt-9 flex flex-wrap gap-3">
-                <Magnet strength={0.2}>
-                  <a href="#projects" className="button-primary">
-                    Voir mes projets <ArrowUpRight className="h-4 w-4" />
-                  </a>
-                </Magnet>
+                <a href={featuredProjects.length ? "#projects" : "/projects"} className="button-primary">
+                  Voir mes projets <ArrowUpRight className="h-4 w-4" />
+                </a>
                 <a href="#contact" className="button-outline">
                   Me contacter <Mail className="h-4 w-4" />
                 </a>
@@ -109,7 +110,7 @@ export default function Home() {
               </div>
             </ScrollReveal>
             <ScrollReveal className="delay-2">
-              <TiltCard maxTilt={5}>
+              <div>
                 <div className="terminal-card">
                   <div className="terminal-bar">
                     <span className="terminal-dot bg-red-400" />
@@ -166,18 +167,9 @@ export default function Home() {
                       <span className="cursor-blink">_</span>
                     </p>
                   </div>
-                  <div className="terminal-footer">
-                    <span>
-                      <span className="text-primary">●</span> system ready
-                    </span>
-                    <span>uptime 99.9%</span>
-                  </div>
                 </div>
-              </TiltCard>
+              </div>
             </ScrollReveal>
-          </div>
-          <div className="container flex items-center gap-3 pb-10 text-xs uppercase tracking-[0.22em] text-muted-foreground">
-            <ArrowDownRight className="h-4 w-4 text-primary" /> Scroll pour découvrir
           </div>
         </section>
 
@@ -188,7 +180,17 @@ export default function Home() {
               <a href="#contact" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
                 Parler d'un projet <ArrowUpRight className="h-4 w-4" />
               </a>
+              {strengthItems.length > 0 && (
+                <motion.div className="mt-10 flex flex-wrap gap-3" variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }}>
+                  {strengthItems.map(item => (
+                    <motion.span key={item.id} variants={staggerItem} className="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/5 px-4 py-2 text-sm font-medium text-primary">
+                      <Sparkles className="h-3.5 w-3.5" /> {item.label}
+                    </motion.span>
+                  ))}
+                </motion.div>
+              )}
             </ScrollReveal>
+
             <motion.div className="grid gap-4 sm:grid-cols-2" variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}>
               {aboutCards.map(card => (
                 <motion.div key={card.id} variants={staggerItem}>
@@ -205,14 +207,13 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="skills" className="section-shell section-tint">
+        {skillGroups.length > 0 && <section id="skills" className="section-shell section-tint">
           <div className="container">
             <ScrollReveal>
               <SectionHeading eyebrow={profile.skillsEyebrow} title={profile.skillsTitle} description={profile.skillsDescription} />
             </ScrollReveal>
             <motion.div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4" variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.15 }}>
-              {skillGroups.length ? (
-                skillGroups.map(([category, skills], index) => (
+              {skillGroups.map(([category, skills], index) => (
                   <motion.div key={category} variants={staggerItem}>
                     <SpotlightCard className="h-full">
                       <div className="skill-group h-full">
@@ -239,16 +240,57 @@ export default function Home() {
                       </div>
                     </SpotlightCard>
                   </motion.div>
-                ))
-              ) : (
-                <div className="col-span-full empty-state">Les compétences seront bientôt disponibles.</div>
-              )}
+                ))}
             </motion.div>
           </div>
-        </section>
+        </section>}
 
         <Certifications />
-        <section id="projects" className="section-shell">
+        {(educationItems.length > 0 || languageItems.length > 0) && <section id="parcours" className="section-shell">
+          <div className="container grid gap-14 lg:grid-cols-[1.1fr_.9fr] lg:items-start">
+            {educationItems.length > 0 && <div>
+              <ScrollReveal>
+                <p className="eyebrow">Diplômes et formations</p>
+                <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight md:text-4xl">Mon parcours académique.</h2>
+              </ScrollReveal>
+              <motion.ol className="relative mt-10 ml-2 space-y-8 border-l border-border" variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}>
+                {educationItems.map(item => (
+                  <motion.li key={item.id} variants={staggerItem} className="relative pl-8">
+                    <span className="absolute -left-[7px] top-1.5 h-3.5 w-3.5 rounded-full border-2 border-primary bg-background" />
+                    <p className="eyebrow text-[10px]">{item.period}</p>
+                    <h3 className="mt-2 font-display text-xl font-semibold">{item.title}</h3>
+                    <p className="mt-1 text-sm text-primary">
+                      {item.institution}
+                      {item.location ? ` · ${item.location}` : ""}
+                    </p>
+                    {item.description && <p className="mt-3 text-sm leading-6 text-muted-foreground">{item.description}</p>}
+                  </motion.li>
+                ))}
+              </motion.ol>
+            </div>}
+            {languageItems.length > 0 && <ScrollReveal className="delay-1">
+              <SpotlightCard className="h-full">
+                <div className="info-card h-full">
+                  <div className="flex items-center gap-3">
+                    <span className="skill-icon">
+                      <Languages className="h-4 w-4" />
+                    </span>
+                    <p className="eyebrow text-[10px]">Langues</p>
+                  </div>
+                  <motion.ul className="mt-6 space-y-5" variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }}>
+                    {languageItems.map(item => (
+                      <motion.li key={item.id} variants={staggerItem} className="flex items-center justify-between gap-4 border-b border-border/60 pb-4 last:border-0 last:pb-0">
+                        <span className="font-medium">{item.name}</span>
+                        <span className="text-sm text-muted-foreground">{item.level}</span>
+                      </motion.li>
+                    ))}
+                  </motion.ul>
+                </div>
+              </SpotlightCard>
+            </ScrollReveal>}
+          </div>
+        </section>}
+        {featuredProjects.length > 0 && <section id="projects" className="section-shell">
           <div className="container">
             <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
               <ScrollReveal>
@@ -285,10 +327,9 @@ export default function Home() {
                   </Link>
                 </motion.div>
               ))}
-              {!projectsQuery.isLoading && !featuredProjects.length && <div className="empty-state lg:col-span-3">Ajoutez un projet vedette depuis l'administration.</div>}
             </motion.div>
           </div>
-        </section>
+        </section>}
 
         <section id="contact" className="section-shell section-contact">
           <div className="container grid gap-12 lg:grid-cols-[.8fr_1.2fr] lg:items-start">
