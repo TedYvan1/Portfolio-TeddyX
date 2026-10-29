@@ -14,7 +14,8 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "seed": "tsx server/seed.ts"
+    "seed": "tsx server/seed.ts",
+    "admin:password": "tsx server/resetAdminPassword.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

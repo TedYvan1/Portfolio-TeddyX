@@ -61,7 +61,7 @@ npm run check    # vérification TypeScript
 npm test         # tests Vitest
 ```
 
-L'administration est accessible sur `http://localhost:3000/admin/login` avec les identifiants `ADMIN_EMAIL` / `ADMIN_PASSWORD` du seed.
+L'administration est accessible sur `http://localhost:3000/admin/login` avec les identifiants `ADMIN_EMAIL` / `ADMIN_PASSWORD` du seed. Le seed ne modifie jamais un compte existant : après avoir changé `ADMIN_PASSWORD` dans `.env`, lance `npm run admin:password`.
 
 ## Production
 
