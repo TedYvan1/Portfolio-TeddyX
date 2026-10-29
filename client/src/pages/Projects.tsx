@@ -1,76 +1,57 @@
 import { useMemo, useState } from "react";
-import { ArrowUpRight, Search, Terminal } from "lucide-react";
-import { Link } from "wouter";
-import { motion } from "framer-motion";
+import { Search } from "lucide-react";
 import { trpc } from "@/lib/trpc";
-import { SiteLayout, ScrollReveal, SectionHeading } from "@/components/SiteLayout";
-import { Aurora } from "@/components/effects/Aurora";
-import { SpotlightCard } from "@/components/effects/SpotlightCard";
-import { staggerContainer, staggerItem } from "@/lib/motion";
+import { Reveal, SiteLayout } from "@/components/SiteLayout";
+import { ProjectIndex } from "@/components/portfolio/ProjectIndex";
+
+const ALL = "Tous";
 
 export default function Projects() {
   const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("Tous");
-  const input = useMemo(() => ({ search: search || undefined, category: category === "Tous" ? undefined : category }), [search, category]);
+  const [category, setCategory] = useState(ALL);
+  const input = useMemo(() => ({ search: search || undefined, category: category === ALL ? undefined : category }), [search, category]);
   const { data = [], isLoading } = trpc.public.projects.useQuery(input, { staleTime: 30_000 });
-  const categories = ["Tous", ...Array.from(new Set(data.map(project => project.category)))];
+  const { data: everything = [] } = trpc.public.projects.useQuery(undefined, { staleTime: 60_000 });
+  const categories = [ALL, ...Array.from(new Set(everything.map(project => project.category)))];
+
   return (
     <SiteLayout>
-      <main className="section-shell relative overflow-hidden pt-16 md:pt-24">
-        <Aurora className="opacity-30" />
-        <div className="container relative">
-          <ScrollReveal>
-            <SectionHeading eyebrow="Projets / Index" title="Un aperçu de mon terrain de jeu." description="Explorez les projets publiés, leurs choix techniques et les problèmes auxquels ils répondent." />
-          </ScrollReveal>
-          <div className="mb-10 flex flex-col gap-4 border-y border-border/70 py-4 md:flex-row md:items-center md:justify-between">
-            <div className="flex flex-wrap gap-2">
-              {categories.map(item => (
-                <motion.button key={item} onClick={() => setCategory(item)} className={`filter-chip ${category === item ? "selected" : ""}`} whileTap={{ scale: 0.96 }} whileHover={{ y: -1 }}>
-                  {item}
-                </motion.button>
-              ))}
-            </div>
-            <label className="search-box">
-              <Search className="h-4 w-4 text-muted-foreground" />
-              <input value={search} onChange={event => setSearch(event.target.value)} placeholder="Rechercher un projet..." />
-            </label>
+      <main className="container pb-24 pt-32 md:pt-40">
+        <Reveal>
+          <p className="mono-label">
+            <span className="text-primary">Index</span> — {String(everything.length).padStart(2, "0")} projets
+          </p>
+          <h1 className="mt-6 font-serif leading-[.92] tracking-[-.01em]" style={{ fontSize: "clamp(3rem, 9vw, 8rem)" }}>
+            Tout ce que j'ai <em className="text-primary">construit</em>.
+          </h1>
+        </Reveal>
+
+        <div className="mt-14 flex flex-col gap-6 border-y border-foreground/80 py-4 md:flex-row md:items-center md:justify-between">
+          <div className="flex flex-wrap gap-x-6 gap-y-2" role="tablist" aria-label="Filtrer par catégorie">
+            {categories.map(item => (
+              <button key={item} role="tab" aria-selected={category === item} onClick={() => setCategory(item)} className={`filter-tab ${category === item ? "selected" : ""}`}>
+                {item}
+              </button>
+            ))}
           </div>
+          <label className="flex items-center gap-2 border-b border-foreground/25 pb-1 md:w-72">
+            <Search className="h-4 w-4 text-muted-foreground" />
+            <span className="sr-only">Rechercher un projet</span>
+            <input value={search} onChange={event => setSearch(event.target.value)} placeholder="Rechercher (titre, techno…)" className="w-full bg-transparent py-1.5 text-sm outline-none placeholder:text-muted-foreground" />
+          </label>
+        </div>
+
+        <div className="mt-6">
           {isLoading ? (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="space-y-4">
               {[1, 2, 3].map(item => (
-                <div className="skeleton-card" key={item} />
+                <div key={item} className="skeleton-block h-24" />
               ))}
             </div>
+          ) : data.length ? (
+            <ProjectIndex projects={data} />
           ) : (
-            <motion.div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3" variants={staggerContainer} initial="hidden" animate="visible">
-              {data.map(project => (
-                <motion.div key={project.id} variants={staggerItem}>
-                  <SpotlightCard>
-                    <Link href={`/projects/${project.slug}`} className="project-card group">
-                      <div className="project-image">
-                        {project.imageUrl ? <img src={project.imageUrl} alt="" /> : <div className="project-image-fallback"><Terminal /></div>}
-                        <span className="project-category">{project.category}</span>
-                        <span className="project-arrow">
-                          <ArrowUpRight className="h-4 w-4" />
-                        </span>
-                      </div>
-                      <div className="p-5">
-                        <h3 className="font-display text-xl font-semibold">{project.title}</h3>
-                        <p className="mt-3 text-sm leading-6 text-muted-foreground">{project.shortDescription}</p>
-                        <div className="mt-5 flex flex-wrap gap-2">
-                          {project.technologies.split(",").map(tag => (
-                            <span key={tag} className="tag">
-                              {tag.trim()}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    </Link>
-                  </SpotlightCard>
-                </motion.div>
-              ))}
-              {!data.length && <div className="empty-state md:col-span-2 lg:col-span-3">Aucun projet ne correspond à votre recherche.</div>}
-            </motion.div>
+            <p className="empty-state mt-6">Aucun projet ne correspond à cette recherche.</p>
           )}
         </div>
       </main>
