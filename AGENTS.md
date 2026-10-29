@@ -27,10 +27,11 @@ See [README.md](README.md) for the full product overview, environment setup, and
 
 Run project tasks from the repo root:
 
-- `npm install` or `pnpm install` to install dependencies
+- `npm install` to install dependencies (npm is the only package manager; `package-lock.json` is the lockfile)
 - `npm run dev` to run the Vite + Express app in development mode
 - `npm run check` to run the TypeScript type check
 - `npm run build` to build the frontend and server bundles
+- `npm run build:vercel` to produce the Vercel Build Output (`.vercel/output`) used in production
 - `npm test` to run Vitest tests
 - `npm run seed` to seed the database content
 - `npm run db:generate` and `npm run db:migrate` for Drizzle schema updates
