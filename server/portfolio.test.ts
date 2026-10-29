@@ -20,4 +20,15 @@ describe("portfolio access control", () => {
     const caller = appRouter.createCaller(context());
     await expect(caller.public.createMessage({ name: "A", email: "bad", subject: "x", message: "short" })).rejects.toMatchObject({ code: "BAD_REQUEST" });
   });
+
+  it("rate-limits the contact form per IP", async () => {
+    const ctx = context();
+    (ctx.req as { ip?: string }).ip = "203.0.113.7";
+    const caller = appRouter.createCaller(ctx);
+    const invalid = { name: "A", email: "bad", subject: "x", message: "short" };
+    for (let i = 0; i < 5; i++) {
+      await expect(caller.public.createMessage(invalid)).rejects.toMatchObject({ code: "BAD_REQUEST" });
+    }
+    await expect(caller.public.createMessage(invalid)).rejects.toMatchObject({ code: "TOO_MANY_REQUESTS" });
+  });
 });

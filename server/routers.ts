@@ -2,7 +2,7 @@ import { COOKIE_NAME } from "@shared/const";
 import { signSession, verifyPassword } from "./_core/auth";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
-import { adminProcedure, publicProcedure, router } from "./_core/trpc";
+import { adminProcedure, publicProcedure, rateLimit, router } from "./_core/trpc";
 import { getDb, getSiteProfile, getUserByEmail, listAboutCards, listCertifications, listEducations, listLanguages, listMessages, listProjects, listSkills, listStrengths } from "./db";
 import { messages, projects, skills, siteProfile, aboutCards, certifications, strengths, languages, educations } from "../drizzle/schema";
 import { TRPCError } from "@trpc/server";
@@ -130,6 +130,7 @@ export const appRouter = router({
   auth: router({
     me: publicProcedure.query(opts => opts.ctx.user),
     login: publicProcedure
+      .use(rateLimit({ max: 5, windowMs: 15 * 60 * 1000 }))
       .input(z.object({ email: z.string().email(), password: z.string().min(6) }))
       .mutation(async ({ input, ctx }) => {
         const db = await requireDb();
@@ -175,7 +176,7 @@ export const appRouter = router({
     strengths: publicProcedure.query(() => listStrengths()),
     languages: publicProcedure.query(() => listLanguages()),
     educations: publicProcedure.query(() => listEducations()),
-    createMessage: publicProcedure.input(messageFields).mutation(async ({ input }) => {
+    createMessage: publicProcedure.use(rateLimit({ max: 5, windowMs: 60 * 60 * 1000 })).input(messageFields).mutation(async ({ input }) => {
       if (input.honeypot) return { success: true };
       const db = await requireDb();
       await db.insert(messages).values({ name: input.name, email: input.email, subject: input.subject, message: input.message, read: 0 });

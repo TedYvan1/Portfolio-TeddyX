@@ -1,7 +1,7 @@
 import { asc, desc, eq } from "drizzle-orm";
 import postgres from "postgres";
 import { drizzle } from "drizzle-orm/postgres-js";
-import { InsertUser, User, users, projects, skills, messages, siteProfile, aboutCards, certifications, strengths, languages, educations } from "../drizzle/schema";
+import { User, users, projects, skills, messages, siteProfile, aboutCards, certifications, strengths, languages, educations } from "../drizzle/schema";
 
 let _db: ReturnType<typeof drizzle> | null = null;
 let _client: ReturnType<typeof postgres> | null = null;
@@ -17,39 +17,6 @@ export async function getDb() {
     }
   }
   return _db;
-}
-
-export async function upsertUser(user: InsertUser): Promise<void> {
-  if (!user.openId) throw new Error("User openId is required for upsert");
-  const db = await getDb();
-  if (!db) return;
-  const values: InsertUser = { openId: user.openId };
-  const updateSet: Record<string, unknown> = {};
-  const textFields = ["name", "email", "loginMethod"] as const;
-  type TextField = (typeof textFields)[number];
-  const assignNullable = (field: TextField) => {
-    const value = user[field];
-    if (value === undefined) return;
-    const normalized = value ?? null;
-    (values as any)[field] = normalized;
-    updateSet[field] = normalized;
-  };
-  textFields.forEach(assignNullable);
-  if (user.passwordHash !== undefined) {
-    (values as any).passwordHash = user.passwordHash;
-    updateSet.passwordHash = user.passwordHash;
-  }
-  if (user.lastSignedIn !== undefined) {
-    values.lastSignedIn = user.lastSignedIn;
-    updateSet.lastSignedIn = user.lastSignedIn;
-  }
-  if (user.role !== undefined) {
-    values.role = user.role;
-    updateSet.role = user.role;
-  }
-  values.lastSignedIn ??= new Date();
-  if (Object.keys(updateSet).length === 0) updateSet.lastSignedIn = new Date();
-  await db.insert(users).values(values).onConflictDoUpdate({ target: users.openId, set: updateSet as any });
 }
 
 export async function getUserByOpenId(openId: string): Promise<User | undefined> {
