@@ -1,4 +1,3 @@
-import { createClient } from "@supabase/supabase-js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import type { Request } from "express";
@@ -10,16 +9,9 @@ import { COOKIE_NAME } from "@shared/const";
 const SESSION_ISSUER = "portfolio-admin";
 const SESSION_AUDIENCE = "portfolio-admin-dashboard";
 
-export type SupabaseAuthUser = User;
-
 function getJwtSecret(): string {
   if (!ENV.jwtSecret) throw new Error("JWT_SECRET is not set");
   return ENV.jwtSecret;
-}
-
-export function getSupabaseAdmin() {
-  if (!ENV.supabaseUrl || !ENV.supabaseServiceKey) return null;
-  return createClient(ENV.supabaseUrl, ENV.supabaseServiceKey, { auth: { persistSession: false } });
 }
 
 export async function hashPassword(password: string): Promise<string> {

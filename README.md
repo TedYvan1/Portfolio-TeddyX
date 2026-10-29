@@ -6,7 +6,7 @@ Portfolio personnel full-stack (réseaux, sécurité informatique, génie logici
 
 - **Frontend** : React 19, TypeScript, Vite 7, Tailwind CSS 4, Framer Motion, shadcn/ui (Radix)
 - **Backend** : Express, tRPC 11, validation Zod
-- **Base de données** : PostgreSQL (Supabase) avec Drizzle ORM
+- **Base de données** : PostgreSQL avec Drizzle ORM
 - **Authentification** : JWT signé (HS256, issuer/audience) dans un cookie `httpOnly` `SameSite=Lax`, mots de passe hachés avec bcrypt, accès admin vérifié côté serveur (`adminProcedure`)
 
 ## Fonctionnalités
@@ -20,7 +20,7 @@ Portfolio personnel full-stack (réseaux, sécurité informatique, génie logici
 ## Prérequis
 
 - Node.js 20 ou plus
-- Une base PostgreSQL (par exemple un projet [Supabase](https://supabase.com))
+- Une base PostgreSQL
 
 ## Installation
 
@@ -33,10 +33,9 @@ Renseigne ensuite `.env` (voir [.env.example](.env.example)) :
 
 | Variable | Rôle |
 | --- | --- |
-| `DATABASE_URL` | Chaîne de connexion PostgreSQL (Supabase : Project Settings > Database > URI) |
+| `DATABASE_URL` | Chaîne de connexion PostgreSQL |
 | `JWT_SECRET` | Longue chaîne aléatoire pour signer les sessions (`openssl rand -base64 48`) |
 | `ADMIN_EMAIL`, `ADMIN_PASSWORD` | Compte admin créé par le seed |
-| `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` | Configuration Supabase (optionnel) |
 | `PORT` | Port du serveur (3000 par défaut, bascule sur un port libre si occupé) |
 
 Ne commite jamais `.env` : il est ignoré par Git.
@@ -49,6 +48,8 @@ npm run seed         # remplit les tables vides et crée le compte admin
 ```
 
 Le seed ne remplace jamais le contenu existant : il ne remplit que les tables vides et ajoute les projets manquants (identifiés par leur slug). Pour tout réinitialiser, utilise `npm run seed -- --reset` : **cela efface d'abord tout le contenu**.
+
+Pour repartir d'une base vierge sans Node.js, exécute [drizzle/rebuild.sql](drizzle/rebuild.sql) dans l'éditeur SQL de ton hébergeur PostgreSQL ou avec `psql` (après y avoir mis l'email et le mot de passe admin) : il supprime tout, recrée le schéma, insère le contenu et marque les migrations comme appliquées. Ce fichier est généré à partir du schéma et de [server/seedData.ts](server/seedData.ts) : régénère-le s'ils changent.
 
 Après une modification de [drizzle/schema.ts](drizzle/schema.ts), génère une nouvelle migration avec `npm run db:generate`. Ne modifie jamais une migration déjà appliquée.
 
