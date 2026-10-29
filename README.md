@@ -1,137 +1,86 @@
-# Portfolio TeddyX
+# Ted Yvan KAMANAN — Portfolio & CMS
 
-Portfolio personnel full-stack développé avec React, TypeScript, Express et PostgreSQL, avec un back-office d’administration pour gérer les projets, compétences, certifications et messages.
+Portfolio personnel full-stack (réseaux, sécurité informatique, génie logiciel) avec un espace d'administration sécurisé pour gérer tout le contenu du site : profil, projets, compétences, certifications, parcours, langues et messages.
 
 ## Stack technique
 
-- Frontend : React + TypeScript + Vite + Tailwind
-- Backend : Express + tRPC
-- Base de données : PostgreSQL + Drizzle ORM
-- Authentification : session cookie + bcrypt
-- UI : shadcn/ui + Radix + Lucide + Framer Motion
+- **Frontend** : React 19, TypeScript, Vite 7, Tailwind CSS 4, Framer Motion, shadcn/ui (Radix)
+- **Backend** : Express, tRPC 11, validation Zod
+- **Base de données** : PostgreSQL avec Drizzle ORM
+- **Authentification** : JWT signé (HS256, issuer/audience) dans un cookie `httpOnly` `SameSite=Lax`, mots de passe hachés avec bcrypt, accès admin vérifié côté serveur (`adminProcedure`)
 
 ## Fonctionnalités
 
-- Page d’accueil portfolio
-- Fiches de projets détaillées
-- Section compétences / certifications
-- Formulaire de contact
-- Espace d’administration sécurisé
-- CMS interne pour modifier les contenus du site
+- Page d'accueil : présentation, compétences, certifications, parcours, langues, projets vedettes, formulaire de contact
+- Galerie `/projects` avec recherche et filtre par catégorie, fiches `/projects/:slug`
+- Thème clair/sombre, animations respectant `prefers-reduced-motion`
+- Espace `/admin` (connexion sur `/admin/login`) : CMS complet du contenu et lecture des messages
+- Sécurité : pas d'inscription publique, limitation des tentatives de connexion et des envois du formulaire de contact, erreurs internes masquées en production
 
 ## Prérequis
 
-- Node.js 20+
-- PostgreSQL
-- Un fichier `.env` avec les variables de configuration
-
-## Variables d’environnement
-
-Créez un fichier `.env` à la racine du projet :
-
-```env
-DATABASE_URL=postgresql://user:password@localhost:5432/portfolio
-PORT=3000
-ADMIN_EMAIL=admin@exemple.com
-ADMIN_PASSWORD=motdepassefort
-```
+- Node.js 20 ou plus
+- Une base PostgreSQL
 
 ## Installation
 
 ```bash
 npm install
-# ou
-pnpm install
+cp .env.example .env
 ```
+
+Renseigne ensuite `.env` (voir [.env.example](.env.example)) :
+
+| Variable | Rôle |
+| --- | --- |
+| `DATABASE_URL` | Chaîne de connexion PostgreSQL |
+| `JWT_SECRET` | Longue chaîne aléatoire pour signer les sessions (`openssl rand -base64 48`) |
+| `ADMIN_EMAIL`, `ADMIN_PASSWORD` | Compte admin créé par le seed |
+| `PORT` | Port du serveur (3000 par défaut, bascule sur un port libre si occupé) |
+
+Ne commite jamais `.env` : il est ignoré par Git.
 
 ## Base de données
 
-Générer ou synchroniser le schéma :
-
 ```bash
-npm run db:generate
-npm run db:push
+npm run db:migrate   # applique les migrations du dossier drizzle/
+npm run seed         # remplit les tables vides et crée le compte admin
 ```
 
-OU pour migrer :
+Le seed ne remplace jamais le contenu existant : il ne remplit que les tables vides et ajoute les projets manquants (identifiés par leur slug). Pour tout réinitialiser, utilise `npm run seed -- --reset` : **cela efface d'abord tout le contenu**.
+
+Pour repartir d'une base vierge sans Node.js, exécute [drizzle/rebuild.sql](drizzle/rebuild.sql) dans l'éditeur SQL de ton hébergeur PostgreSQL ou avec `psql` (après y avoir mis l'email et le mot de passe admin) : il supprime tout, recrée le schéma, insère le contenu et marque les migrations comme appliquées. Ce fichier est généré à partir du schéma et de [server/seedData.ts](server/seedData.ts) : régénère-le s'ils changent.
+
+Après une modification de [drizzle/schema.ts](drizzle/schema.ts), génère une nouvelle migration avec `npm run db:generate`. Ne modifie jamais une migration déjà appliquée.
+
+## Développement
 
 ```bash
-npm run db:migrate
+npm run dev      # Vite + Express sur http://localhost:3000
+npm run check    # vérification TypeScript
+npm test         # tests Vitest
 ```
 
-## Peuplement des données
+L'administration est accessible sur `http://localhost:3000/admin/login` avec les identifiants `ADMIN_EMAIL` / `ADMIN_PASSWORD` du seed. Le seed ne modifie jamais un compte existant : après avoir changé `ADMIN_PASSWORD` dans `.env`, lance `npm run admin:password`.
 
-Pour initialiser les contenus de démonstration et créer l’utilisateur admin :
-
-```bash
-ADMIN_EMAIL=admin@exemple.com ADMIN_PASSWORD=motdepassefort npm run seed
-```
-
-## Lancer le projet
-
-Mode développement :
+## Production
 
 ```bash
-npm run dev
-```
-
-Production :
-
-```bash
-npm run build
+npm run build    # build du frontend (dist/public) et du serveur (dist/index.js)
 npm run start
 ```
 
-## Accès admin
+Sur l'hébergeur, définis les mêmes variables d'environnement que dans `.env`, avec `NODE_ENV=production`. Le serveur fait confiance au premier proxy (`trust proxy`) pour connaître l'IP réelle des visiteurs.
 
-Ouvrez l’URL suivante dans le navigateur :
+## Intégration continue
 
-```text
-http://localhost:3000/admin
-```
+À chaque push sur `main` et à chaque pull request, GitHub Actions lance `npm run check`, `npm test` et `npm run build` (voir [.github/workflows/ci.yml](.github/workflows/ci.yml)).
 
-Identifiants par défaut (si définis via `ADMIN_EMAIL` et `ADMIN_PASSWORD`) :
+## Structure
 
 ```text
-Email: admin@exemple.com
-Mot de passe: motdepassefort
+client/    Frontend React (pages, composants, styles)
+server/    API Express + tRPC, authentification, accès base, seed, tests
+shared/    Constantes et types partagés
+drizzle/   Schéma, migrations et métadonnées Drizzle
 ```
-
-## Scripts disponibles
-
-```bash
-npm run dev
-npm run build
-npm run start
-npm run check
-npm run test
-npm run seed
-npm run db:generate
-npm run db:migrate
-npm run db:push
-npm run db:studio
-```
-
-## Structure du projet
-
-```text
-.
-├── client/                # Frontend React
-├── server/                # Backend Express + tRPC
-├── shared/                # Types et constantes partagées
-├── drizzle/               # Schéma et migrations Drizzle
-├── patches/               # Correctifs applicatifs
-├── .env                   # Variables locales
-├── package.json
-├── tsconfig.json
-├── vite.config.ts
-├── vitest.config.ts
-├── drizzle.config.ts
-└── README.md
-```
-
-## Notes
-
-- Le back-office est protégé par une vérification de session côté serveur.
-- Si la base de données n’est pas configurée, certaines fonctionnalités admin ne fonctionneront pas.
-- Le projet utilise le port 3000 par défaut, et bascule sur un port libre si nécessaire.

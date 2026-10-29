@@ -19,8 +19,7 @@ export function getSessionCookieOptions(
   return {
     httpOnly: true,
     path: "/",
-    // The admin and API share the same site; Lax blocks cross-site sends while
-    // keeping normal navigation and local development working.
+    // Front et API partagent la même origine : "lax" suffit et reste accepté en HTTP (dev).
     sameSite: "lax",
     secure: isSecureRequest(req),
   };

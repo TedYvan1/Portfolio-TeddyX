@@ -1,13 +1,16 @@
 import { COOKIE_NAME, SESSION_MAX_AGE_MS } from "@shared/const";
-import { hashPassword, signSession, verifyPassword } from "./_core/auth";
+import { signSession, verifyPassword } from "./_core/auth";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
-import { adminProcedure, publicProcedure, router } from "./_core/trpc";
-import { getDb, getSiteProfile, getUserByEmail, listAboutCards, listCertifications, listMessages, listProjects, listSkills } from "./db";
-import { messages, projects, skills, siteProfile, aboutCards, certifications, users } from "../drizzle/schema";
+import { adminProcedure, publicProcedure, rateLimit, router } from "./_core/trpc";
+import { getDb, getSiteProfile, getUserByEmail, listAboutCards, listCertifications, listEducations, listLanguages, listMessages, listProjects, listSkills, listStrengths } from "./db";
+import { messages, projects, skills, siteProfile, aboutCards, certifications, strengths, languages, educations } from "../drizzle/schema";
 import { TRPCError } from "@trpc/server";
-import { and, desc, eq, like, or } from "drizzle-orm";
+import { and, desc, eq, ilike, or } from "drizzle-orm";
 import { z } from "zod";
+
+// Échappe les jokers LIKE (%, _ et \) pour une recherche littérale.
+const escapeLike = (value: string) => value.replace(/[\\%_]/g, char => `\\${char}`);
 
 const urlSchema = z.union([z.string().url().max(500), z.literal("")]).optional();
 const projectFields = z.object({
@@ -95,6 +98,27 @@ const certificationFields = z.object({
   displayOrder: z.number().int().min(0).max(999),
 });
 
+const strengthFields = z.object({
+  label: z.string().trim().min(2).max(120),
+  displayOrder: z.number().int().min(0).max(999),
+});
+
+const languageFields = z.object({
+  name: z.string().trim().min(2).max(80),
+  level: z.string().trim().min(2).max(120),
+  displayOrder: z.number().int().min(0).max(999),
+});
+
+const educationFields = z.object({
+  title: z.string().trim().min(2).max(255),
+  institution: z.string().trim().min(2).max(255),
+  location: z.string().trim().max(120).optional(),
+  period: z.string().trim().min(1).max(120),
+  description: z.string().trim().max(2000).optional(),
+  displayOrder: z.number().int().min(0).max(999),
+});
+
+
 async function requireDb() {
   const db = await getDb();
   if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Base de données indisponible." });
@@ -106,6 +130,7 @@ export const appRouter = router({
   auth: router({
     me: publicProcedure.query(opts => opts.ctx.user),
     login: publicProcedure
+      .use(rateLimit({ max: 5, windowMs: 15 * 60 * 1000 }))
       .input(z.object({ email: z.string().email(), password: z.string().min(6) }))
       .mutation(async ({ input, ctx }) => {
         const db = await requireDb();
@@ -119,16 +144,6 @@ export const appRouter = router({
         ctx.res.cookie(COOKIE_NAME, token, { ...cookieOptions, maxAge: SESSION_MAX_AGE_MS });
         return { success: true as const, user: { id: user.id, email: user.email, role: user.role, name: user.name } };
       }),
-    register: publicProcedure
-      .input(z.object({ email: z.string().email(), password: z.string().min(6).max(72), name: z.string().trim().min(1).max(100).optional() }))
-      .mutation(async ({ input }) => {
-        const db = await requireDb();
-        const existing = await getUserByEmail(input.email);
-        if (existing) throw new TRPCError({ code: "CONFLICT", message: "Email déjà utilisé." });
-        const passwordHash = await hashPassword(input.password);
-        const [row] = await db.insert(users).values({ openId: `user-${Date.now()}`, email: input.email, passwordHash, name: input.name ?? null, role: "user" }).returning({ id: users.id });
-        return { success: true as const, id: row.id };
-      }),
     logout: publicProcedure.mutation(({ ctx }) => {
       const cookieOptions = getSessionCookieOptions(ctx.req);
       ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: 0 });
@@ -140,7 +155,10 @@ export const appRouter = router({
       const db = await requireDb();
       const filters = [eq(projects.published, 1)];
       if (input?.category && input.category !== "Tous") filters.push(eq(projects.category, input.category));
-      if (input?.search) filters.push(or(like(projects.title, `%${input.search}%`), like(projects.technologies, `%${input.search}%`))!);
+      if (input?.search) {
+        const pattern = `%${escapeLike(input.search)}%`;
+        filters.push(or(ilike(projects.title, pattern), ilike(projects.technologies, pattern))!);
+      }
       return db.select().from(projects).where(and(...filters)).orderBy(desc(projects.featured), desc(projects.createdAt));
     }),
     projectBySlug: publicProcedure.input(z.object({ slug: z.string().min(1) })).query(async ({ input }) => {
@@ -156,7 +174,10 @@ export const appRouter = router({
     }),
     aboutCards: publicProcedure.query(() => listAboutCards()),
     certifications: publicProcedure.query(() => listCertifications()),
-    createMessage: publicProcedure.input(messageFields).mutation(async ({ input }) => {
+    strengths: publicProcedure.query(() => listStrengths()),
+    languages: publicProcedure.query(() => listLanguages()),
+    educations: publicProcedure.query(() => listEducations()),
+    createMessage: publicProcedure.use(rateLimit({ max: 5, windowMs: 60 * 60 * 1000 })).input(messageFields).mutation(async ({ input }) => {
       if (input.honeypot) return { success: true };
       const db = await requireDb();
       await db.insert(messages).values({ name: input.name, email: input.email, subject: input.subject, message: input.message, read: 0 });
@@ -274,6 +295,63 @@ export const appRouter = router({
     deleteCertification: adminProcedure.input(z.object({ id: z.number().int().positive() })).mutation(async ({ input }) => {
       const db = await requireDb();
       await db.delete(certifications).where(eq(certifications.id, input.id));
+      return { success: true } as const;
+    }),
+
+    // ── CMS: atouts (strengths)
+    strengths: adminProcedure.query(() => listStrengths()),
+    createStrength: adminProcedure.input(strengthFields).mutation(async ({ input }) => {
+      const db = await requireDb();
+      await db.insert(strengths).values(input);
+      return { success: true } as const;
+    }),
+    updateStrength: adminProcedure.input(strengthFields.extend({ id: z.number().int().positive() })).mutation(async ({ input }) => {
+      const db = await requireDb();
+      const { id, ...values } = input;
+      await db.update(strengths).set(values).where(eq(strengths.id, id));
+      return { success: true } as const;
+    }),
+    deleteStrength: adminProcedure.input(z.object({ id: z.number().int().positive() })).mutation(async ({ input }) => {
+      const db = await requireDb();
+      await db.delete(strengths).where(eq(strengths.id, input.id));
+      return { success: true } as const;
+    }),
+
+    // ── CMS: langues (languages)
+    languages: adminProcedure.query(() => listLanguages()),
+    createLanguage: adminProcedure.input(languageFields).mutation(async ({ input }) => {
+      const db = await requireDb();
+      await db.insert(languages).values(input);
+      return { success: true } as const;
+    }),
+    updateLanguage: adminProcedure.input(languageFields.extend({ id: z.number().int().positive() })).mutation(async ({ input }) => {
+      const db = await requireDb();
+      const { id, ...values } = input;
+      await db.update(languages).set(values).where(eq(languages.id, id));
+      return { success: true } as const;
+    }),
+    deleteLanguage: adminProcedure.input(z.object({ id: z.number().int().positive() })).mutation(async ({ input }) => {
+      const db = await requireDb();
+      await db.delete(languages).where(eq(languages.id, input.id));
+      return { success: true } as const;
+    }),
+
+    // ── CMS: parcours (educations)
+    educations: adminProcedure.query(() => listEducations()),
+    createEducation: adminProcedure.input(educationFields).mutation(async ({ input }) => {
+      const db = await requireDb();
+      await db.insert(educations).values({ ...input, location: input.location || null, description: input.description || null });
+      return { success: true } as const;
+    }),
+    updateEducation: adminProcedure.input(educationFields.extend({ id: z.number().int().positive() })).mutation(async ({ input }) => {
+      const db = await requireDb();
+      const { id, ...values } = input;
+      await db.update(educations).set({ ...values, location: values.location || null, description: values.description || null }).where(eq(educations.id, id));
+      return { success: true } as const;
+    }),
+    deleteEducation: adminProcedure.input(z.object({ id: z.number().int().positive() })).mutation(async ({ input }) => {
+      const db = await requireDb();
+      await db.delete(educations).where(eq(educations.id, input.id));
       return { success: true } as const;
     }),
   }),

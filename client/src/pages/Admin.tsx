@@ -1,22 +1,28 @@
 import { useEffect, useState } from "react";
-import { BarChart3, ChevronRight, FileText, FolderKanban, GraduationCap, Layers, LayoutDashboard, LogOut, Menu, Plus, Save, ShieldAlert, Trash2, User, X } from "lucide-react";
+import { BarChart3, ChevronRight, FileText, FolderKanban, GraduationCap, Languages, Layers, LayoutDashboard, LogOut, Menu, Plus, Save, School, ShieldAlert, Sparkles, Trash2, User, X } from "lucide-react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
-import type { Project, Skill, Message, SiteProfile, AboutCard, Certification } from "@shared/types";
+import type { Project, Skill, Message, SiteProfile, AboutCard, Certification, Strength, Language, Education } from "@shared/types";
 import Login from "./Login";
 
-type Section = "overview" | "projects" | "skills" | "messages" | "profile" | "about" | "certifications";
-type ProjectDraft = { title: string; slug: string; shortDescription: string; description: string; imageUrl: string; githubUrl: string; liveUrl: string; category: string; technologies: string; featured: number; published: number; };
+type Section = "overview" | "projects" | "skills" | "messages" | "profile" | "about" | "certifications" | "strengths" | "languages" | "educations";
+type ProjectDraft = { title: string; slug: string; shortDescription: string; description: string; imageUrl: string; githubUrl: string; liveUrl: string; category: string; technologies: string; featured: number; published: number };
 type SkillDraft = { name: string; category: string; level: "Beginner" | "Intermediate" | "Advanced"; icon: string; description: string; displayOrder: number };
 type ProfileDraft = Omit<SiteProfile, "id" | "createdAt" | "updatedAt">;
 type AboutCardDraft = { label: string; title: string; description: string; displayOrder: number };
 type CertDraft = { title: string; issuer: string; dateLabel: string; type: string; description: string; linkUrl: string; displayOrder: number };
+type StrengthDraft = { label: string; displayOrder: number };
+type LanguageDraft = { name: string; level: string; displayOrder: number };
+type EducationDraft = { title: string; institution: string; location: string; period: string; description: string; displayOrder: number };
 
 const blankProject: ProjectDraft = { title: "", slug: "", shortDescription: "", description: "", imageUrl: "", githubUrl: "", liveUrl: "", category: "Full-Stack", technologies: "", featured: 0, published: 1 };
 const blankSkill: SkillDraft = { name: "", category: "Frontend", level: "Intermediate", icon: "Code2", description: "", displayOrder: 0 };
 const blankAbout: AboutCardDraft = { label: "01", title: "", description: "", displayOrder: 0 };
 const blankCert: CertDraft = { title: "", issuer: "", dateLabel: "", type: "Réseaux", description: "", linkUrl: "", displayOrder: 0 };
+const blankStrength: StrengthDraft = { label: "", displayOrder: 0 };
+const blankLanguage: LanguageDraft = { name: "", level: "", displayOrder: 0 };
+const blankEducation: EducationDraft = { title: "", institution: "", location: "", period: "", description: "", displayOrder: 0 };
 
 export default function Admin() {
   const { user, loading, logout } = useAuth();
@@ -36,6 +42,9 @@ function AdminShell({ logout, user }: { logout: () => Promise<void>; user: NonNu
   const profileQ = trpc.admin.siteProfile.useQuery(undefined, { staleTime: 15_000 });
   const aboutCardsQ = trpc.admin.aboutCards.useQuery(undefined, { staleTime: 15_000 });
   const certsQ = trpc.admin.certifications.useQuery(undefined, { staleTime: 15_000 });
+  const strengthsQ = trpc.admin.strengths.useQuery(undefined, { staleTime: 15_000 });
+  const languagesQ = trpc.admin.languages.useQuery(undefined, { staleTime: 15_000 });
+  const educationsQ = trpc.admin.educations.useQuery(undefined, { staleTime: 15_000 });
   const utils = trpc.useUtils();
 
   // Projects
@@ -71,6 +80,28 @@ function AdminShell({ logout, user }: { logout: () => Promise<void>; user: NonNu
   const updateCert = trpc.admin.updateCertification.useMutation({ onSuccess: () => { toast.success("Certification mise à jour"); setCertDraft(blankCert); setEditingCert(null); utils.admin.invalidate(); utils.public.invalidate(); }, onError: error => toast.error(error.message) });
   const deleteCert = trpc.admin.deleteCertification.useMutation({ onSuccess: () => { toast.success("Certification supprimée"); utils.admin.invalidate(); utils.public.invalidate(); }, onError: error => toast.error(error.message) });
 
+  // Atouts (strengths)
+  const [strengthDraft, setStrengthDraft] = useState<StrengthDraft>(blankStrength);
+  const [editingStrength, setEditingStrength] = useState<number | null>(null);
+  const createStrength = trpc.admin.createStrength.useMutation({ onSuccess: () => { toast.success("Atout ajouté"); setStrengthDraft(blankStrength); utils.admin.invalidate(); utils.public.invalidate(); }, onError: error => toast.error(error.message) });
+  const updateStrength = trpc.admin.updateStrength.useMutation({ onSuccess: () => { toast.success("Atout mis à jour"); setStrengthDraft(blankStrength); setEditingStrength(null); utils.admin.invalidate(); utils.public.invalidate(); }, onError: error => toast.error(error.message) });
+  const deleteStrength = trpc.admin.deleteStrength.useMutation({ onSuccess: () => { toast.success("Atout supprimé"); utils.admin.invalidate(); utils.public.invalidate(); }, onError: error => toast.error(error.message) });
+
+  // Langues (languages)
+  const [languageDraft, setLanguageDraft] = useState<LanguageDraft>(blankLanguage);
+  const [editingLanguage, setEditingLanguage] = useState<number | null>(null);
+  const createLanguage = trpc.admin.createLanguage.useMutation({ onSuccess: () => { toast.success("Langue ajoutée"); setLanguageDraft(blankLanguage); utils.admin.invalidate(); utils.public.invalidate(); }, onError: error => toast.error(error.message) });
+  const updateLanguage = trpc.admin.updateLanguage.useMutation({ onSuccess: () => { toast.success("Langue mise à jour"); setLanguageDraft(blankLanguage); setEditingLanguage(null); utils.admin.invalidate(); utils.public.invalidate(); }, onError: error => toast.error(error.message) });
+  const deleteLanguage = trpc.admin.deleteLanguage.useMutation({ onSuccess: () => { toast.success("Langue supprimée"); utils.admin.invalidate(); utils.public.invalidate(); }, onError: error => toast.error(error.message) });
+
+  // Parcours (educations)
+  const [educationDraft, setEducationDraft] = useState<EducationDraft>(blankEducation);
+  const [editingEducation, setEditingEducation] = useState<number | null>(null);
+  const createEducation = trpc.admin.createEducation.useMutation({ onSuccess: () => { toast.success("Parcours ajouté"); setEducationDraft(blankEducation); utils.admin.invalidate(); utils.public.invalidate(); }, onError: error => toast.error(error.message) });
+  const updateEducation = trpc.admin.updateEducation.useMutation({ onSuccess: () => { toast.success("Parcours mis à jour"); setEducationDraft(blankEducation); setEditingEducation(null); utils.admin.invalidate(); utils.public.invalidate(); }, onError: error => toast.error(error.message) });
+  const deleteEducation = trpc.admin.deleteEducation.useMutation({ onSuccess: () => { toast.success("Parcours supprimé"); utils.admin.invalidate(); utils.public.invalidate(); }, onError: error => toast.error(error.message) });
+
+
   const markRead = trpc.admin.markMessageAsRead.useMutation({ onSuccess: () => utils.admin.invalidate(), onError: error => toast.error(error.message) });
   const deleteMessage = trpc.admin.deleteMessage.useMutation({ onSuccess: () => { toast.success("Message supprimé"); utils.admin.invalidate(); }, onError: error => toast.error(error.message) });
 
@@ -79,6 +110,9 @@ function AdminShell({ logout, user }: { logout: () => Promise<void>; user: NonNu
     { key: "profile" as const, label: "Profil & CV", icon: User },
     { key: "about" as const, label: "À propos", icon: Layers },
     { key: "certifications" as const, label: "Certifications", icon: GraduationCap, count: certsQ.data?.length },
+    { key: "strengths" as const, label: "Atouts", icon: Sparkles, count: strengthsQ.data?.length },
+    { key: "languages" as const, label: "Langues", icon: Languages, count: languagesQ.data?.length },
+    { key: "educations" as const, label: "Parcours", icon: School, count: educationsQ.data?.length },
     { key: "projects" as const, label: "Projets", icon: FolderKanban, count: overview.data?.projects },
     { key: "skills" as const, label: "Compétences", icon: BarChart3, count: overview.data?.skills },
     { key: "messages" as const, label: "Messages", icon: FileText, count: overview.data?.unread },
@@ -89,10 +123,16 @@ function AdminShell({ logout, user }: { logout: () => Promise<void>; user: NonNu
   const saveAbout = (event: React.FormEvent) => { event.preventDefault(); if (editingAbout) updateAbout.mutate({ ...aboutDraft, id: editingAbout }); else createAbout.mutate(aboutDraft); };
   const saveCert = (event: React.FormEvent) => { event.preventDefault(); const payload = { ...certDraft, linkUrl: certDraft.linkUrl || undefined }; if (editingCert) updateCert.mutate({ ...payload, id: editingCert }); else createCert.mutate(payload); };
   const saveProfile = (event: React.FormEvent) => { event.preventDefault(); if (profileDraft) upsertProfile.mutate(profileDraft); };
-  const editProject = (project: Project) => { setEditingProject(project.id); setProjectDraft({ title: project.title, slug: project.slug, shortDescription: project.shortDescription, description: project.description, imageUrl: project.imageUrl ?? "", githubUrl: project.githubUrl ?? "", liveUrl: project.liveUrl ?? "", category: project.category, technologies: project.technologies, featured: project.featured, published: project.published }); };
-  const editSkill = (skill: Skill) => { setEditingSkill(skill.id); setSkillDraft({ name: skill.name, category: skill.category, level: skill.level, icon: skill.icon ?? "", description: skill.description ?? "", displayOrder: skill.displayOrder }); };
-  const editAbout = (card: AboutCard) => { setEditingAbout(card.id); setAboutDraft({ label: card.label, title: card.title, description: card.description, displayOrder: card.displayOrder }); };
-  const editCert = (cert: Certification) => { setEditingCert(cert.id); setCertDraft({ title: cert.title, issuer: cert.issuer, dateLabel: cert.dateLabel, type: cert.type, description: cert.description, linkUrl: cert.linkUrl ?? "", displayOrder: cert.displayOrder }); };
+  const editProject = (project: Project) => { setEditingProject(project.id); setProjectDraft({ title: project.title, slug: project.slug, shortDescription: project.shortDescription, description: project.description, imageUrl: project.imageUrl ?? "", githubUrl: project.githubUrl ?? "", liveUrl: project.liveUrl ?? "", category: project.category, technologies: project.technologies, featured: project.featured, published: project.published }); setSection("projects"); };
+  const editSkill = (skill: Skill) => { setEditingSkill(skill.id); setSkillDraft({ name: skill.name, category: skill.category, level: skill.level, icon: skill.icon ?? "", description: skill.description ?? "", displayOrder: skill.displayOrder }); setSection("skills"); };
+  const editAbout = (card: AboutCard) => { setEditingAbout(card.id); setAboutDraft({ label: card.label, title: card.title, description: card.description, displayOrder: card.displayOrder }); setSection("about"); };
+  const editCert = (cert: Certification) => { setEditingCert(cert.id); setCertDraft({ title: cert.title, issuer: cert.issuer, dateLabel: cert.dateLabel, type: cert.type, description: cert.description, linkUrl: cert.linkUrl ?? "", displayOrder: cert.displayOrder }); setSection("certifications"); };
+  const saveStrength = (event: React.FormEvent) => { event.preventDefault(); if (editingStrength) updateStrength.mutate({ ...strengthDraft, id: editingStrength }); else createStrength.mutate(strengthDraft); };
+  const saveLanguage = (event: React.FormEvent) => { event.preventDefault(); if (editingLanguage) updateLanguage.mutate({ ...languageDraft, id: editingLanguage }); else createLanguage.mutate(languageDraft); };
+  const saveEducation = (event: React.FormEvent) => { event.preventDefault(); const payload = { ...educationDraft, location: educationDraft.location || undefined, description: educationDraft.description || undefined }; if (editingEducation) updateEducation.mutate({ ...payload, id: editingEducation }); else createEducation.mutate(payload); };
+  const editStrength = (item: Strength) => { setEditingStrength(item.id); setStrengthDraft({ label: item.label, displayOrder: item.displayOrder }); setSection("strengths"); };
+  const editLanguage = (item: Language) => { setEditingLanguage(item.id); setLanguageDraft({ name: item.name, level: item.level, displayOrder: item.displayOrder }); setSection("languages"); };
+  const editEducation = (item: Education) => { setEditingEducation(item.id); setEducationDraft({ title: item.title, institution: item.institution, location: item.location ?? "", period: item.period, description: item.description ?? "", displayOrder: item.displayOrder }); setSection("educations"); };
 
   return (
     <div className="admin-layout">
@@ -131,6 +171,9 @@ function AdminShell({ logout, user }: { logout: () => Promise<void>; user: NonNu
           {section === "profile" && !profileDraft && <p className="text-sm text-muted-foreground">Chargement du profil...</p>}
           {section === "about" && <AboutManager cards={aboutCardsQ.data ?? []} draft={aboutDraft} setDraft={setAboutDraft} editingId={editingAbout} onEdit={editAbout} onCancel={() => { setEditingAbout(null); setAboutDraft(blankAbout); }} onSubmit={saveAbout} onDelete={id => deleteAbout.mutate({ id })} pending={createAbout.isPending || updateAbout.isPending || deleteAbout.isPending} />}
           {section === "certifications" && <CertificationsManager certs={certsQ.data ?? []} draft={certDraft} setDraft={setCertDraft} editingId={editingCert} onEdit={editCert} onCancel={() => { setEditingCert(null); setCertDraft(blankCert); }} onSubmit={saveCert} onDelete={id => deleteCert.mutate({ id })} pending={createCert.isPending || updateCert.isPending || deleteCert.isPending} />}
+          {section === "strengths" && <StrengthsManager items={strengthsQ.data ?? []} draft={strengthDraft} setDraft={setStrengthDraft} editingId={editingStrength} onEdit={editStrength} onCancel={() => { setEditingStrength(null); setStrengthDraft(blankStrength); }} onSubmit={saveStrength} onDelete={id => deleteStrength.mutate({ id })} pending={createStrength.isPending || updateStrength.isPending || deleteStrength.isPending} />}
+          {section === "languages" && <LanguagesManager items={languagesQ.data ?? []} draft={languageDraft} setDraft={setLanguageDraft} editingId={editingLanguage} onEdit={editLanguage} onCancel={() => { setEditingLanguage(null); setLanguageDraft(blankLanguage); }} onSubmit={saveLanguage} onDelete={id => deleteLanguage.mutate({ id })} pending={createLanguage.isPending || updateLanguage.isPending || deleteLanguage.isPending} />}
+          {section === "educations" && <EducationsManager items={educationsQ.data ?? []} draft={educationDraft} setDraft={setEducationDraft} editingId={editingEducation} onEdit={editEducation} onCancel={() => { setEditingEducation(null); setEducationDraft(blankEducation); }} onSubmit={saveEducation} onDelete={id => deleteEducation.mutate({ id })} pending={createEducation.isPending || updateEducation.isPending || deleteEducation.isPending} />}
           {section === "projects" && <ProjectsManager projects={projects.data ?? []} draft={projectDraft} setDraft={setProjectDraft} editingId={editingProject} onEdit={editProject} onCancel={() => { setEditingProject(null); setProjectDraft(blankProject); }} onSubmit={saveProject} onDelete={id => deleteProject.mutate({ id })} pending={createProject.isPending || updateProject.isPending || deleteProject.isPending} />}
           {section === "skills" && <SkillsManager skills={skills.data ?? []} draft={skillDraft} setDraft={setSkillDraft} editingId={editingSkill} onEdit={editSkill} onCancel={() => { setEditingSkill(null); setSkillDraft(blankSkill); }} onSubmit={saveSkill} onDelete={id => deleteSkill.mutate({ id })} pending={createSkill.isPending || updateSkill.isPending || deleteSkill.isPending} />}
           {section === "messages" && <MessagesManager messages={messages.data ?? []} onRead={id => markRead.mutate({ id })} onDelete={id => deleteMessage.mutate({ id })} />}
@@ -155,10 +198,10 @@ function ProfileManager({ draft, setDraft, onSubmit, pending }: { draft: Profile
   );
   return (
     <form className="space-y-6" onSubmit={onSubmit}>
-      <div><p className="text-sm text-muted-foreground">Tout le contenu textuel du site</p><h2 className="mt-1 font-display text-2xl font-semibold">Profil & CV</h2><p className="mt-2 text-sm text-muted-foreground">Complétez les informations affichées sur la page d'accueil et les blocs de contact.</p></div>
-      <div className="admin-panel"><h3 className="font-display text-lg font-semibold">Identité</h3><div className="mt-4 grid gap-4 md:grid-cols-2">{field("displayName", "Nom d'affichage")}{field("fullName", "Nom complet")}{field("role", "Rôle")}{field("email", "Email")}{field("phone", "Téléphone")}{field("availability", "Disponibilité")}</div></div>
-      <div className="admin-panel"><h3 className="font-display text-lg font-semibold">Hero</h3><div className="mt-4 grid gap-4 md:grid-cols-2">{field("heroEyebrow", "Eyebrow")}{field("heroLocation", "Localisation")}{field("heroTitle", "Titre")}{field("heroTitleAccent", "Accent")}{field("heroSubtitle", "Sous-titre")}{field("heroTags", "Tags")}{field("codeFocus", "Focus code")}{field("codeMindset", "Mindset")}{field("codeStack", "Stack")}{field("codeStatus", "Statut")}{field("heroDescription", "Description", true)} </div></div>
-      <div className="admin-panel"><h3 className="font-display text-lg font-semibold">Liens</h3><div className="mt-4 grid gap-4 md:grid-cols-2">{field("githubUrl", "GitHub")}{field("linkedinUrl", "LinkedIn")}{field("cvUrl", "CV")}{field("footerBio", "Bio footer", true)}</div></div>
+      <div><p className="text-sm text-muted-foreground">Tout le contenu textuel du site</p><h2 className="mt-1 font-display text-2xl font-semibold">Profil & CV</h2><p className="mt-2 text-sm text-muted-foreground">Modifiez ici toutes les informations issues du CV : hero, sections, contact, liens.</p></div>
+      <div className="admin-panel"><h3 className="font-display text-lg font-semibold">Identité</h3><div className="mt-4 grid gap-4 md:grid-cols-2">{field("displayName", "Nom d'affichage (ex: Ted Yvan KAMANAN)")}{field("fullName", "Nom complet")}{field("role", "Rôle / Titre")}{field("email", "Email")}{field("phone", "Téléphone")}{field("availability", "Disponibilité")}{field("githubUrl", "URL GitHub")}{field("linkedinUrl", "URL LinkedIn")}{field("cvUrl", "URL du CV (fichier)")} <div className="md:col-span-2">{field("footerBio", "Bio footer", true)}</div></div></div>
+      <div className="admin-panel"><h3 className="font-display text-lg font-semibold">Hero</h3><div className="mt-4 grid gap-4 md:grid-cols-2">{field("heroEyebrow", "Eyebrow hero")}{field("heroLocation", "Localisation hero")}{field("heroTitle", "Titre hero")}{field("heroTitleAccent", "Accent titre hero")}{field("heroSubtitle", "Sous-titre hero")}<div className="md:col-span-2">{field("heroDescription", "Description hero", true)}</div>{field("heroTags", "Tags hero (séparés par des virgules)")}{field("codeFocus", "Code focus")}{field("codeMindset", "Code mindset")}{field("codeStack", "Code stack (virgules)")}{field("codeStatus", "Code status")}</div></div>
+      <div className="admin-panel"><h3 className="font-display text-lg font-semibold">Sections</h3><div className="mt-4 grid gap-4 md:grid-cols-2">{field("aboutEyebrow", "Eyebrow À propos")}{field("aboutTitle", "Titre À propos")}<div className="md:col-span-2">{field("aboutDescription", "Description À propos", true)}</div>{field("skillsEyebrow", "Eyebrow Compétences")}{field("skillsTitle", "Titre Compétences")}<div className="md:col-span-2">{field("skillsDescription", "Description Compétences", true)}</div>{field("certificationsEyebrow", "Eyebrow Certifications")}{field("certificationsTitle", "Titre Certifications")}<div className="md:col-span-2">{field("certificationsDescription", "Description Certifications", true)}</div>{field("projectsEyebrow", "Eyebrow Projets")}{field("projectsTitle", "Titre Projets")}<div className="md:col-span-2">{field("projectsDescription", "Description Projets", true)}</div>{field("contactEyebrow", "Eyebrow Contact")}{field("contactTitle", "Titre Contact")}<div className="md:col-span-2">{field("contactDescription", "Description Contact", true)}</div></div></div>
       <div className="flex justify-end"><button type="submit" className="button-primary" disabled={pending}><Save className="h-4 w-4" /> {pending ? "Enregistrement..." : "Enregistrer le profil"}</button></div>
     </form>
   );
@@ -223,6 +266,78 @@ function SkillsManager({ skills, draft, setDraft, editingId, onEdit, onCancel, o
   const [showForm, setShowForm] = useState(false);
   const update = (key: keyof SkillDraft, value: string | number) => setDraft(prev => ({ ...prev, [key]: value }));
   return <div className="space-y-6"><div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end"><div><p className="text-sm text-muted-foreground">Stack technique</p><h2 className="mt-1 font-display text-2xl font-semibold">Compétences</h2></div><button className="button-primary" onClick={() => { setShowForm(true); onCancel(); }}><Plus className="h-4 w-4" /> Ajouter</button></div>{(showForm || editingId) && <form className="admin-panel" onSubmit={onSubmit}><div className="panel-heading"><div><p className="eyebrow">{editingId ? "Modifier" : "Créer"}</p><h3 className="mt-2 font-display text-xl font-semibold">Compétence</h3></div><button type="button" className="icon-button" onClick={() => { setShowForm(false); onCancel(); }}><X /></button></div><div className="grid gap-4 md:grid-cols-2"><label className="admin-field"><span>Nom</span><input value={draft.name} onChange={e => update("name", e.target.value)} /></label><label className="admin-field"><span>Catégorie</span><input value={draft.category} onChange={e => update("category", e.target.value)} /></label><label className="admin-field"><span>Niveau</span><select value={draft.level} onChange={e => update("level", e.target.value as SkillDraft["level"])}><option value="Beginner">Beginner</option><option value="Intermediate">Intermediate</option><option value="Advanced">Advanced</option></select></label><label className="admin-field"><span>Icône</span><input value={draft.icon} onChange={e => update("icon", e.target.value)} /></label><label className="admin-field"><span>Ordre</span><input type="number" value={draft.displayOrder} onChange={e => update("displayOrder", Number(e.target.value))} /></label><label className="admin-field md:col-span-2"><span>Description</span><textarea value={draft.description} onChange={e => update("description", e.target.value)} rows={3} /></label></div><div className="mt-6 flex justify-end gap-3"><button type="button" className="button-outline" onClick={() => { setShowForm(false); onCancel(); }}>Annuler</button><button type="submit" className="button-primary" disabled={pending}><Save className="h-4 w-4" /> {pending ? "Enregistrement..." : editingId ? "Mettre à jour" : "Créer"}</button></div></form>}{skills.length === 0 ? <p className="text-sm text-muted-foreground">Aucune compétence pour le moment.</p> : <div className="grid gap-4 md:grid-cols-2">{skills.map(skill => <div key={skill.id} className="admin-panel"><p className="eyebrow text-[10px]">{skill.category}</p><h3 className="mt-2 font-semibold">{skill.name}</h3><p className="mt-2 text-sm text-muted-foreground">{skill.level}</p><div className="mt-4 flex justify-end gap-2"><button className="button-outline" onClick={() => onEdit(skill)}>Modifier</button><button className="button-outline text-destructive" onClick={() => onDelete(skill.id)}>Supprimer</button></div></div>)}</div>}</div>;
+}
+
+function StrengthsManager({ items, draft, setDraft, editingId, onEdit, onCancel, onSubmit, onDelete, pending }: { items: Strength[]; draft: StrengthDraft; setDraft: React.Dispatch<React.SetStateAction<StrengthDraft>>; editingId: number | null; onEdit: (item: Strength) => void; onCancel: () => void; onSubmit: (event: React.FormEvent) => void; onDelete: (id: number) => void; pending: boolean }) {
+  const [showForm, setShowForm] = useState(false);
+  const open = showForm || editingId !== null;
+  const close = () => { setShowForm(false); onCancel(); };
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end"><div><p className="text-sm text-muted-foreground">Section CV « Atouts »</p><h2 className="mt-1 font-display text-2xl font-semibold">Atouts</h2></div><button className="button-primary" onClick={() => { setShowForm(true); onCancel(); }}><Plus className="h-4 w-4" /> Nouvel atout</button></div>
+      {open && (
+        <form className="admin-panel" onSubmit={onSubmit}>
+          <div className="panel-heading"><div><p className="eyebrow">{editingId ? "Modifier" : "Créer"}</p><h3 className="mt-2 font-display text-xl font-semibold">Atout</h3></div><button type="button" className="icon-button" onClick={close}><X className="h-4 w-4" /></button></div>
+          <div className="grid gap-4 md:grid-cols-2">
+            <label className="admin-field md:col-span-2"><span>Intitulé</span><input value={draft.label} onChange={e => setDraft(prev => ({ ...prev, label: e.target.value }))} placeholder="Adaptabilité" /></label>
+            <label className="admin-field"><span>Ordre</span><input type="number" value={draft.displayOrder} onChange={e => setDraft(prev => ({ ...prev, displayOrder: Number(e.target.value) }))} /></label>
+          </div>
+          <div className="mt-6 flex justify-end gap-3"><button type="button" className="button-outline" onClick={close}>Annuler</button><button type="submit" className="button-primary" disabled={pending}><Save className="h-4 w-4" /> {pending ? "..." : editingId ? "Mettre à jour" : "Créer"}</button></div>
+        </form>
+      )}
+      <div className="grid gap-4 md:grid-cols-3">{items.map(item => <div key={item.id} className="admin-panel flex flex-col"><h3 className="font-semibold">{item.label}</h3><div className="mt-4 flex gap-2"><button className="button-outline flex-1 justify-center" onClick={() => { setShowForm(true); onEdit(item); }}>Modifier</button><button className="icon-button" onClick={() => onDelete(item.id)}><Trash2 className="h-4 w-4" /></button></div></div>)}{!items.length && <p className="col-span-full py-8 text-center text-sm text-muted-foreground">Aucun atout.</p>}</div>
+    </div>
+  );
+}
+
+function LanguagesManager({ items, draft, setDraft, editingId, onEdit, onCancel, onSubmit, onDelete, pending }: { items: Language[]; draft: LanguageDraft; setDraft: React.Dispatch<React.SetStateAction<LanguageDraft>>; editingId: number | null; onEdit: (item: Language) => void; onCancel: () => void; onSubmit: (event: React.FormEvent) => void; onDelete: (id: number) => void; pending: boolean }) {
+  const [showForm, setShowForm] = useState(false);
+  const open = showForm || editingId !== null;
+  const close = () => { setShowForm(false); onCancel(); };
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end"><div><p className="text-sm text-muted-foreground">Section CV « Langues »</p><h2 className="mt-1 font-display text-2xl font-semibold">Langues</h2></div><button className="button-primary" onClick={() => { setShowForm(true); onCancel(); }}><Plus className="h-4 w-4" /> Nouvelle langue</button></div>
+      {open && (
+        <form className="admin-panel" onSubmit={onSubmit}>
+          <div className="panel-heading"><div><p className="eyebrow">{editingId ? "Modifier" : "Créer"}</p><h3 className="mt-2 font-display text-xl font-semibold">Langue</h3></div><button type="button" className="icon-button" onClick={close}><X className="h-4 w-4" /></button></div>
+          <div className="grid gap-4 md:grid-cols-2">
+            <label className="admin-field"><span>Langue</span><input value={draft.name} onChange={e => setDraft(prev => ({ ...prev, name: e.target.value }))} placeholder="Français" /></label>
+            <label className="admin-field"><span>Niveau</span><input value={draft.level} onChange={e => setDraft(prev => ({ ...prev, level: e.target.value }))} placeholder="Langue maternelle" /></label>
+            <label className="admin-field"><span>Ordre</span><input type="number" value={draft.displayOrder} onChange={e => setDraft(prev => ({ ...prev, displayOrder: Number(e.target.value) }))} /></label>
+          </div>
+          <div className="mt-6 flex justify-end gap-3"><button type="button" className="button-outline" onClick={close}>Annuler</button><button type="submit" className="button-primary" disabled={pending}><Save className="h-4 w-4" /> {pending ? "..." : editingId ? "Mettre à jour" : "Créer"}</button></div>
+        </form>
+      )}
+      <div className="grid gap-4 md:grid-cols-2">{items.map(item => <div key={item.id} className="admin-panel flex flex-col"><h3 className="font-semibold">{item.name}</h3><p className="mt-1 text-sm text-muted-foreground">{item.level}</p><div className="mt-4 flex gap-2"><button className="button-outline flex-1 justify-center" onClick={() => { setShowForm(true); onEdit(item); }}>Modifier</button><button className="icon-button" onClick={() => onDelete(item.id)}><Trash2 className="h-4 w-4" /></button></div></div>)}{!items.length && <p className="col-span-full py-8 text-center text-sm text-muted-foreground">Aucune langue.</p>}</div>
+    </div>
+  );
+}
+
+function EducationsManager({ items, draft, setDraft, editingId, onEdit, onCancel, onSubmit, onDelete, pending }: { items: Education[]; draft: EducationDraft; setDraft: React.Dispatch<React.SetStateAction<EducationDraft>>; editingId: number | null; onEdit: (item: Education) => void; onCancel: () => void; onSubmit: (event: React.FormEvent) => void; onDelete: (id: number) => void; pending: boolean }) {
+  const [showForm, setShowForm] = useState(false);
+  const open = showForm || editingId !== null;
+  const close = () => { setShowForm(false); onCancel(); };
+  const update = (key: keyof EducationDraft, value: string | number) => setDraft(prev => ({ ...prev, [key]: value }));
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end"><div><p className="text-sm text-muted-foreground">Section CV « Diplômes et Formations »</p><h2 className="mt-1 font-display text-2xl font-semibold">Parcours</h2></div><button className="button-primary" onClick={() => { setShowForm(true); onCancel(); }}><Plus className="h-4 w-4" /> Nouveau parcours</button></div>
+      {open && (
+        <form className="admin-panel" onSubmit={onSubmit}>
+          <div className="panel-heading"><div><p className="eyebrow">{editingId ? "Modifier" : "Créer"}</p><h3 className="mt-2 font-display text-xl font-semibold">Diplôme ou formation</h3></div><button type="button" className="icon-button" onClick={close}><X className="h-4 w-4" /></button></div>
+          <div className="grid gap-4 md:grid-cols-2">
+            <label className="admin-field"><span>Intitulé</span><input value={draft.title} onChange={e => update("title", e.target.value)} placeholder="Baccalauréat Série D" /></label>
+            <label className="admin-field"><span>Établissement</span><input value={draft.institution} onChange={e => update("institution", e.target.value)} placeholder="Lycée Municipal de Brobo" /></label>
+            <label className="admin-field"><span>Période</span><input value={draft.period} onChange={e => update("period", e.target.value)} placeholder="De sept. 2023 à juil. 2024" /></label>
+            <label className="admin-field"><span>Lieu (optionnel)</span><input value={draft.location} onChange={e => update("location", e.target.value)} placeholder="Brobo, Côte d'Ivoire" /></label>
+            <label className="admin-field"><span>Ordre</span><input type="number" value={draft.displayOrder} onChange={e => update("displayOrder", Number(e.target.value))} /></label>
+            <label className="admin-field md:col-span-2"><span>Description (optionnel)</span><textarea value={draft.description} onChange={e => update("description", e.target.value)} rows={3} /></label>
+          </div>
+          <div className="mt-6 flex justify-end gap-3"><button type="button" className="button-outline" onClick={close}>Annuler</button><button type="submit" className="button-primary" disabled={pending}><Save className="h-4 w-4" /> {pending ? "..." : editingId ? "Mettre à jour" : "Créer"}</button></div>
+        </form>
+      )}
+      <div className="grid gap-4 md:grid-cols-2">{items.map(item => <div key={item.id} className="admin-panel flex flex-col"><p className="eyebrow text-[10px]">{item.period}</p><h3 className="mt-2 font-semibold">{item.title}</h3><p className="mt-1 text-sm text-primary">{item.institution}{item.location ? ` · ${item.location}` : ""}</p>{item.description && <p className="mt-3 text-sm text-muted-foreground">{item.description}</p>}<div className="mt-4 flex gap-2"><button className="button-outline flex-1 justify-center" onClick={() => { setShowForm(true); onEdit(item); }}>Modifier</button><button className="icon-button" onClick={() => onDelete(item.id)}><Trash2 className="h-4 w-4" /></button></div></div>)}{!items.length && <p className="col-span-full py-8 text-center text-sm text-muted-foreground">Aucun parcours.</p>}</div>
+    </div>
+  );
 }
 
 function MessagesManager({ messages, onRead, onDelete }: { messages: Message[]; onRead: (id: number) => void; onDelete: (id: number) => void }) {

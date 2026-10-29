@@ -7,7 +7,7 @@ export const users = pgTable("users", {
   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
   openId: varchar("openId", { length: 64 }).notNull().unique(),
   name: text("name"),
-  email: varchar("email", { length: 320 }),
+  email: varchar("email", { length: 320 }).unique(),
   passwordHash: varchar("passwordHash", { length: 255 }),
   loginMethod: varchar("loginMethod", { length: 64 }),
   role: roleEnum("role").default("user").notNull(),
@@ -57,23 +57,23 @@ export const messages = pgTable("messages", {
 
 export const siteProfile = pgTable("siteProfile", {
   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
-  displayName: varchar("displayName", { length: 80 }).notNull().default("yvan.dev"),
+  displayName: varchar("displayName", { length: 80 }).notNull().default("Ted Yvan KAMANAN"),
   fullName: varchar("fullName", { length: 180 }).notNull().default("Konin Ted Yvan Axel Kamanan"),
-  role: varchar("role", { length: 255 }).notNull().default("Étudiant en Réseaux & Sécurité Informatique et en Génie Logiciel"),
+  role: varchar("role", { length: 255 }).notNull().default("Recherche de stage en Génie Logiciel et Réseaux"),
   heroEyebrow: varchar("heroEyebrow", { length: 180 }).notNull().default("À la recherche d'un stage"),
   heroLocation: varchar("heroLocation", { length: 180 }).notNull().default("Abidjan · Bouaké"),
   heroTitle: varchar("heroTitle", { length: 255 }).notNull().default("Je développe des solutions"),
-  heroTitleAccent: varchar("heroTitleAccent", { length: 120 }).notNull().default("clairs."),
+  heroTitleAccent: varchar("heroTitleAccent", { length: 120 }).notNull().default("claires."),
   heroSubtitle: varchar("heroSubtitle", { length: 255 }).notNull().default("Je sécurise mes applications."),
-  heroDescription: text("heroDescription").notNull().default("Étudiant en Réseaux & Sécurité Informatique et en Génie Logiciel. Je conçois des applications web performantes et sécurisées, avec une forte capacité d'analyse et d'adaptation."),
-  heroTags: varchar("heroTags", { length: 500 }).notNull().default("HTML · CSS · JavaScript,Node · MySQL,Réseaux · JWT"),
+  heroDescription: text("heroDescription").notNull().default("Étudiant en Réseaux & Sécurité Informatique et en Génie Logiciel, je conçois des applications web et mobiles avec une forte capacité d'analyse et d'adaptation. Je recherche un stage pour évoluer vers le développement Full Stack."),
+  heroTags: varchar("heroTags", { length: 500 }).notNull().default("Flutter · Dart · React,Node.js · Express · PostgreSQL,JWT · Sécurité des API"),
   codeFocus: varchar("codeFocus", { length: 80 }).notNull().default("full-stack"),
   codeMindset: varchar("codeMindset", { length: 80 }).notNull().default("secure-by-design"),
-  codeStack: varchar("codeStack", { length: 255 }).notNull().default("React,Node.js,PostgreSQL,Linux"),
+  codeStack: varchar("codeStack", { length: 255 }).notNull().default("Flutter,React,Node.js,PostgreSQL"),
   codeStatus: varchar("codeStatus", { length: 80 }).notNull().default("building"),
   aboutEyebrow: varchar("aboutEyebrow", { length: 120 }).notNull().default("01 / À propos"),
   aboutTitle: varchar("aboutTitle", { length: 255 }).notNull().default("Une approche hybride, entre produit et infrastructure."),
-  aboutDescription: text("aboutDescription").notNull().default("Je suis Konin Ted Yvan Axel Kamanan, étudiant en Licence 3 Réseaux et Sécurité Informatique à l'UVCI et en Licence 2 Génie Logiciel à l'Université Nord-Sud de Bouaké. J'allie analyse, adaptabilité et curiosité pour concevoir des applications web performantes et sécurisées."),
+  aboutDescription: text("aboutDescription").notNull().default("Je suis Konin Ted Yvan Axel Kamanan, étudiant en Licence 3 Réseaux et Sécurité Informatique à l'UVCI et en Licence 3 Génie Logiciel à l'Université Nord-Sud de Bouaké. Je combine une formation en développement web et mobile avec rigueur, curiosité technique et volonté d'apprendre les bonnes pratiques (Git, bases de données, sécurité), pour évoluer comme stagiaire puis développeur Full Stack."),
   skillsEyebrow: varchar("skillsEyebrow", { length: 120 }).notNull().default("02 / Compétences"),
   skillsTitle: varchar("skillsTitle", { length: 255 }).notNull().default("Les outils que j'utilise pour passer de l'idée au produit."),
   skillsDescription: text("skillsDescription").notNull().default("Une base technique en progression constante, organisée autour de la qualité, de la simplicité et de la sécurité."),
@@ -87,10 +87,10 @@ export const siteProfile = pgTable("siteProfile", {
   contactTitle: varchar("contactTitle", { length: 255 }).notNull().default("Construisons quelque chose d'utile."),
   contactDescription: text("contactDescription").notNull().default("Vous avez un projet web, une idée à prototyper ou simplement envie d'échanger ? Écrivez-moi, je réponds sous 48 heures."),
   email: varchar("email", { length: 320 }).notNull().default("y.vannky10@gmail.com"),
-  phone: varchar("phone", { length: 50 }).notNull().default("07 58 11 79 44"),
-  availability: varchar("availability", { length: 120 }).notNull().default("Stage recherché"),
-  githubUrl: varchar("githubUrl", { length: 500 }).notNull().default("https://github.com/"),
-  linkedinUrl: varchar("linkedinUrl", { length: 500 }).notNull().default("https://linkedin.com/"),
+  phone: varchar("phone", { length: 50 }).notNull().default("+225 07 58 11 79 44"),
+  availability: varchar("availability", { length: 120 }).notNull().default("Stage · Télétravail ou présentiel"),
+  githubUrl: varchar("githubUrl", { length: 500 }).notNull().default("https://github.com/TedYvan1"),
+  linkedinUrl: varchar("linkedinUrl", { length: 500 }).notNull().default("https://www.linkedin.com/in/ted-yvan-kamanan-7b752038b"),
   cvUrl: varchar("cvUrl", { length: 500 }).notNull().default("/cv.pdf"),
   footerBio: text("footerBio").notNull().default("Étudiant en réseaux, sécurité informatique et génie logiciel, à la recherche d'un stage."),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
@@ -120,6 +120,35 @@ export const certifications = pgTable("certifications", {
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
+export const strengths = pgTable("strengths", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  label: varchar("label", { length: 120 }).notNull(),
+  displayOrder: integer("displayOrder").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+
+export const languages = pgTable("languages", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  name: varchar("name", { length: 80 }).notNull(),
+  level: varchar("level", { length: 120 }).notNull(),
+  displayOrder: integer("displayOrder").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+
+export const educations = pgTable("educations", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  title: varchar("title", { length: 255 }).notNull(),
+  institution: varchar("institution", { length: 255 }).notNull(),
+  location: varchar("location", { length: 120 }),
+  period: varchar("period", { length: 120 }).notNull(),
+  description: text("description"),
+  displayOrder: integer("displayOrder").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 export type Project = typeof projects.$inferSelect;
@@ -134,3 +163,9 @@ export type AboutCard = typeof aboutCards.$inferSelect;
 export type InsertAboutCard = typeof aboutCards.$inferInsert;
 export type Certification = typeof certifications.$inferSelect;
 export type InsertCertification = typeof certifications.$inferInsert;
+export type Strength = typeof strengths.$inferSelect;
+export type InsertStrength = typeof strengths.$inferInsert;
+export type Language = typeof languages.$inferSelect;
+export type InsertLanguage = typeof languages.$inferInsert;
+export type Education = typeof educations.$inferSelect;
+export type InsertEducation = typeof educations.$inferInsert;
