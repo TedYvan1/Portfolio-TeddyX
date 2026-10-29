@@ -29,13 +29,18 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 async function startServer() {
   const app = express();
   const server = createServer(app);
-  app.use(express.json({ limit: "50mb" }));
-  app.use(express.urlencoded({ limit: "50mb", extended: true }));
+  // Derrière un proxy (Render, Railway…), req.ip doit refléter l'IP du visiteur pour la limitation de requêtes.
+  app.set("trust proxy", 1);
+  app.use(express.json({ limit: "1mb" }));
+  app.use(express.urlencoded({ limit: "1mb", extended: true }));
   app.use(
     "/api/trpc",
     createExpressMiddleware({
       router: appRouter,
       createContext,
+      onError({ path, error }) {
+        if (error.code === "INTERNAL_SERVER_ERROR") console.error(`[tRPC] ${path}:`, error);
+      },
     }),
   );
   if (process.env.NODE_ENV === "development") {

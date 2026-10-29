@@ -1,6 +1,8 @@
 import "dotenv/config";
 import postgres from "postgres";
 import { drizzle } from "drizzle-orm/postgres-js";
+import { count } from "drizzle-orm";
+import type { PgTable } from "drizzle-orm/pg-core";
 import { projects, skills, siteProfile, aboutCards, certifications, strengths, languages, educations, users } from "../drizzle/schema";
 import { hashPassword } from "./_core/auth";
 
@@ -96,23 +98,37 @@ const seedEducations = [
   { title: "Baccalauréat Série D", institution: "Lycée Municipal de Brobo", location: "Brobo, Côte d'Ivoire", period: "De sept. 2023 à juil. 2024", description: null, displayOrder: 3 },
 ];
 
+// Par défaut, le seed ne remplit que les tables vides : le contenu modifié depuis l'admin est conservé.
+// `npm run seed -- --reset` efface d'abord tout le contenu (projets, compétences, profil…).
+const reset = process.argv.includes("--reset");
+
+async function seedIfEmpty(table: PgTable, rows: Record<string, unknown>[], label: string) {
+  const [existing] = await db.select({ n: count() }).from(table);
+  if (existing.n > 0) {
+    console.log(`- ${label} : ${existing.n} ligne(s) déjà présente(s), ignoré`);
+    return;
+  }
+  await db.insert(table).values(rows as any);
+  console.log(`- ${label} : ${rows.length} ligne(s) ajoutée(s)`);
+}
+
 async function main() {
-  await db.delete(projects);
-  await db.delete(skills);
-  await db.delete(aboutCards);
-  await db.delete(certifications);
-  await db.delete(strengths);
-  await db.delete(languages);
-  await db.delete(educations);
-  await db.delete(siteProfile);
-  await db.insert(siteProfile).values({});
-  await db.insert(projects).values(seedProjects);
-  await db.insert(skills).values(seedSkills);
-  await db.insert(aboutCards).values(seedAboutCards);
-  await db.insert(certifications).values(seedCertifications);
-  await db.insert(strengths).values(seedStrengths);
-  await db.insert(languages).values(seedLanguages);
-  await db.insert(educations).values(seedEducations);
+  if (reset) {
+    console.log("--reset : suppression du contenu existant");
+    for (const table of [projects, skills, aboutCards, certifications, strengths, languages, educations, siteProfile]) {
+      await db.delete(table);
+    }
+  }
+  await seedIfEmpty(siteProfile, [{}], "Profil");
+  // Les projets sont identifiés par leur slug : les nouveaux projets du seed sont ajoutés sans toucher aux autres.
+  const insertedProjects = await db.insert(projects).values(seedProjects).onConflictDoNothing({ target: projects.slug }).returning({ id: projects.id });
+  console.log(`- Projets : ${insertedProjects.length} ligne(s) ajoutée(s)`);
+  await seedIfEmpty(skills, seedSkills, "Compétences");
+  await seedIfEmpty(aboutCards, seedAboutCards, "Cartes À propos");
+  await seedIfEmpty(certifications, seedCertifications, "Certifications");
+  await seedIfEmpty(strengths, seedStrengths, "Atouts");
+  await seedIfEmpty(languages, seedLanguages, "Langues");
+  await seedIfEmpty(educations, seedEducations, "Parcours");
 
   // Seed admin user if ADMIN_EMAIL + ADMIN_PASSWORD provided
   const adminEmail = process.env.ADMIN_EMAIL;
@@ -126,7 +142,7 @@ async function main() {
     console.log(`Admin user seeded: ${adminEmail}`);
   }
 
-  console.log("Seed completed (profile + about + certifications + projects + skills)");
+  console.log("Seed terminé.");
   await client.end();
 }
 
