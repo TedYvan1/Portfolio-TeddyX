@@ -24,15 +24,15 @@ const fallbackProfile = {
   heroTitle: "Je développe des solutions",
   heroTitleAccent: "claires.",
   heroSubtitle: "Je sécurise mes applications.",
-  heroDescription: "Étudiant en Réseaux & Sécurité Informatique et en Génie Logiciel. Je conçois des applications web performantes et sécurisées, avec une forte capacité d'analyse et d'adaptation.",
-  heroTags: "React · TypeScript · Node.js,PostgreSQL · MySQL,Réseaux · Linux · JWT",
+  heroDescription: "Étudiant en Réseaux & Sécurité Informatique et en Génie Logiciel, je conçois des applications web et mobiles avec une forte capacité d'analyse et d'adaptation. Je recherche un stage pour évoluer vers le développement Full Stack.",
+  heroTags: "Flutter · Dart · React,Node.js · Express · PostgreSQL,JWT · Sécurité des API",
   codeFocus: "full-stack",
   codeMindset: "secure-by-design",
-  codeStack: "React,Node.js,PostgreSQL,Linux",
+  codeStack: "Flutter,React,Node.js,PostgreSQL",
   codeStatus: "building",
   aboutEyebrow: "01 / À propos",
   aboutTitle: "Une approche hybride, entre produit et infrastructure.",
-  aboutDescription: "Je suis Konin Ted Yvan Axel Kamanan, étudiant en Licence 3 Réseaux et Sécurité Informatique à l'UVCI et en Licence 2 Génie Logiciel à l'Université Nord-Sud de Bouaké. J'allie analyse, adaptabilité et curiosité pour concevoir des applications web performantes et sécurisées.",
+  aboutDescription: "Je suis Konin Ted Yvan Axel Kamanan, étudiant en Licence 3 Réseaux et Sécurité Informatique à l'UVCI et en Licence 3 Génie Logiciel à l'Université Nord-Sud de Bouaké. Je combine une formation en développement web et mobile avec rigueur, curiosité technique et volonté d'apprendre les bonnes pratiques (Git, bases de données, sécurité), pour évoluer comme stagiaire puis développeur Full Stack.",
   skillsEyebrow: "02 / Compétences",
   skillsTitle: "Les outils que j'utilise pour passer de l'idée au produit.",
   skillsDescription: "Une base technique en progression constante, organisée autour de la qualité, de la simplicité et de la sécurité.",
@@ -44,7 +44,7 @@ const fallbackProfile = {
   contactDescription: "Vous avez un projet web, une idée à prototyper ou simplement envie d'échanger ? Écrivez-moi, je réponds sous 48 heures.",
   email: "y.vannky10@gmail.com",
   phone: "+225 07 58 11 79 44",
-  availability: "Stage recherché",
+  availability: "Stage · Télétravail ou présentiel",
 };
 
 const fallbackCards = [

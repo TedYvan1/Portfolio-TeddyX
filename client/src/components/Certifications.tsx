@@ -6,6 +6,7 @@ import { trpc } from "@/lib/trpc";
 
 const fallbackCerts = [
   { id: 1, title: "Notions de base sur les réseaux", issuer: "Cybastion IT Academy", dateLabel: "2026", type: "Réseaux", description: "Certification qui renforce les fondamentaux des réseaux et la compréhension des échanges entre systèmes.", linkUrl: null as string | null },
+  { id: 3, title: "Certificat de participation - VIBEATHON 2026", issuer: "VIBEATHON", dateLabel: "2026", type: "Hackathon", description: "Participation au VIBEATHON 2026, compétition de développement en équipe.", linkUrl: null as string | null },
   { id: 2, title: "Introduction à la cybersécurité", issuer: "Cisco Networking Academy", dateLabel: "2025", type: "Sécurité", description: "Premiers repères sur les menaces, la protection des systèmes et les bonnes pratiques de cybersécurité.", linkUrl: null as string | null },
 ];
 

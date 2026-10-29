@@ -2,7 +2,7 @@
 
 ## Project overview
 
-This repository is a portfolio and CMS application for a personal brand site. The app is split between a Vite/React frontend and an Express + tRPC backend, backed by PostgreSQL via Drizzle ORM and Supabase. The admin area is protected by JWT-based auth and `adminProcedure` checks.
+This repository is a portfolio and CMS application for a personal brand site. The app is split between a Vite/React frontend and an Express + tRPC backend, backed by PostgreSQL via Drizzle ORM. The admin area is protected by JWT-based auth and `adminProcedure` checks.
 
 See [README.md](README.md) for the full product overview, environment setup, and deployment notes.
 
@@ -21,7 +21,7 @@ See [README.md](README.md) for the full product overview, environment setup, and
 - When changing database behavior, update the Drizzle schema and regenerate or push migrations as needed.
 - Treat admin-only access as a first-class concern: routes and actions tied to admin functionality should verify role-based permissions consistently.
 - Preserve the project’s current stack choices: React + Vite on the client, Express + tRPC on the server, and Drizzle/Postgres for persistence.
-- The project historically removed Manus-specific code and keeps the stack focused on standard Postgres/Supabase patterns.
+- The project historically removed Manus-specific code and keeps the stack focused on standard Postgres patterns.
 
 ## Typical commands
 
@@ -39,7 +39,7 @@ Run project tasks from the repo root:
 
 - Configure the required environment variables before running the app or database commands.
 - Backend env vars use the service names described in [README.md](README.md), while frontend values must be prefixed with `VITE_` as needed.
-- JWT auth, Supabase config, and database setup are all part of the standard working environment for this project.
+- JWT auth and database setup are all part of the standard working environment for this project.
 
 ## Safe change guidance
 
