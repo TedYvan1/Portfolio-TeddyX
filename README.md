@@ -1,68 +1,85 @@
-# TeddyX — Portfolio Full-Stack & Cybersécurité
+# Ted Yvan KAMANAN — Portfolio & CMS
 
-Portfolio professionnel pour Konin Ted Yvan Axel Kamanan. Expérience publique, base de données Supabase (Postgres), espace d'administration protégé et CMS complet.
+Portfolio personnel full-stack (réseaux, sécurité informatique, génie logiciel) avec un espace d'administration sécurisé pour gérer tout le contenu du site : profil, projets, compétences, certifications, parcours, langues et messages.
 
-## Stack
+## Stack technique
 
-**React 19, Vite 7, TypeScript, Tailwind CSS 4, Framer Motion, Express, tRPC, Drizzle ORM, PostgreSQL (Supabase), Supabase Auth/JS**. Auth admin par JWT (email + mot de passe haché `bcryptjs`) — aucun OAuth Manus.
+- **Frontend** : React 19, TypeScript, Vite 7, Tailwind CSS 4, Framer Motion, shadcn/ui (Radix)
+- **Backend** : Express, tRPC 11, validation Zod
+- **Base de données** : PostgreSQL (Supabase) avec Drizzle ORM
+- **Authentification** : JWT signé (HS256, issuer/audience) dans un cookie `httpOnly` `SameSite=Lax`, mots de passe hachés avec bcrypt, accès admin vérifié côté serveur (`adminProcedure`)
 
 ## Fonctionnalités
 
-- Page d'accueil avec hero (Aurora, BlurText, ShinyText), présentation, compétences, certifications, projets vedettes et contact.
-- Galerie `/projects` avec recherche et filtrage par catégorie.
-- Pages détail `/projects/:slug`.
-- Mode clair/sombre persistant, animations Framer Motion respectant `prefers-reduced-motion`.
-- CMS complet : profil (toutes les données du CV), cartes À propos, certifications, projets, compétences, messages.
-- Espace `/admin` protégé par rôle `admin` (`adminProcedure`).
+- Page d'accueil : présentation, compétences, certifications, parcours, langues, projets vedettes, formulaire de contact
+- Galerie `/projects` avec recherche et filtre par catégorie, fiches `/projects/:slug`
+- Thème clair/sombre, animations respectant `prefers-reduced-motion`
+- Espace `/admin` (connexion sur `/admin/login`) : CMS complet du contenu et lecture des messages
+- Sécurité : pas d'inscription publique, limitation des tentatives de connexion et des envois du formulaire de contact, erreurs internes masquées en production
+
+## Prérequis
+
+- Node.js 20 ou plus
+- Une base PostgreSQL (par exemple un projet [Supabase](https://supabase.com))
 
 ## Installation
 
 ```bash
 npm install
 cp .env.example .env
-# Renseigne DATABASE_URL, SUPABASE_URL, SUPABASE_ANON_KEY, JWT_SECRET
 ```
 
-### Supabase
+Renseigne ensuite `.env` (voir [.env.example](.env.example)) :
 
-1. Crée un projet sur https://supabase.com
-2. Project Settings > Database > Connection string > URI -> `DATABASE_URL`
-3. Project Settings > API > `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
-4. Ajoute les mêmes valeurs avec préfixe `VITE_` pour le frontend.
+| Variable | Rôle |
+| --- | --- |
+| `DATABASE_URL` | Chaîne de connexion PostgreSQL (Supabase : Project Settings > Database > URI) |
+| `JWT_SECRET` | Longue chaîne aléatoire pour signer les sessions (`openssl rand -base64 48`) |
+| `ADMIN_EMAIL`, `ADMIN_PASSWORD` | Compte admin créé par le seed |
+| `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` | Configuration Supabase (optionnel) |
+| `PORT` | Port du serveur (3000 par défaut, bascule sur un port libre si occupé) |
 
-### Base de données
+Ne commite jamais `.env` : il est ignoré par Git.
+
+## Base de données
 
 ```bash
-npm run db:generate   # génère drizzle/0000_*.sql
-npm run db:migrate    # ou npm run db:push
-npm run seed          # charge le profil, cartes, certifications, projets, compétences
-# Crée l'admin si ADMIN_EMAIL + ADMIN_PASSWORD sont définis
-ADMIN_EMAIL=admin@example.com ADMIN_PASSWORD=secret npm run seed
+npm run db:migrate   # applique les migrations du dossier drizzle/
+npm run seed         # remplit les tables vides et crée le compte admin
 ```
 
-Tables : `users`, `projects`, `skills`, `messages`, `siteProfile`, `aboutCards`, `certifications`.
+Le seed ne remplace jamais le contenu existant : il ne remplit que les tables vides et ajoute les projets manquants (identifiés par leur slug). Pour tout réinitialiser, utilise `npm run seed -- --reset` : **cela efface d'abord tout le contenu**.
 
-## Scripts
+Après une modification de [drizzle/schema.ts](drizzle/schema.ts), génère une nouvelle migration avec `npm run db:generate`. Ne modifie jamais une migration déjà appliquée.
+
+## Développement
 
 ```bash
-npm run dev      # vite + express (tsx watch)
-npm run check    # tsc --noEmit
-npm run build    # vite build + esbuild server
-npm run start    # node dist/index.js
-npm test
+npm run dev      # Vite + Express sur http://localhost:3000
+npm run check    # vérification TypeScript
+npm test         # tests Vitest
 ```
 
-## Variables d'environnement
+L'administration est accessible sur `http://localhost:3000/admin/login` avec les identifiants `ADMIN_EMAIL` / `ADMIN_PASSWORD` du seed.
 
-Voir `.env.example` : `DATABASE_URL`, `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `JWT_SECRET`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `PORT`.
+## Production
 
-## Déconnexion de Manus
+```bash
+npm run build    # build du frontend (dist/public) et du serveur (dist/index.js)
+npm run start
+```
 
-Toutes les dépendances Manus ont été retirées : `vite-plugin-manus-runtime`, debug collector, `__manus__`, OAuth, `server/_core/{sdk,oauth,storage*,map,dataApi,heartbeat,llm,notification,voiceTranscription}`, `Map.tsx`, `AIChatBox.tsx`, `ManusDialog.tsx`, `mysql2` remplacé par `pg` + `postgres`. Droit Drizzle passé à `postgresql`.
+Sur l'hébergeur, définis les mêmes variables d'environnement que dans `.env`, avec `NODE_ENV=production`. Le serveur fait confiance au premier proxy (`trust proxy`) pour connaître l'IP réelle des visiteurs.
 
-## Auth
+## Intégration continue
 
-- `POST /api/trpc/auth.login` { email, password } -> pose cookie `app_session_id` (JWT 7j)
-- Pas d'inscription publique : le compte admin est créé par `npm run seed` (`ADMIN_EMAIL` + `ADMIN_PASSWORD`).
-- `POST /api/trpc/auth.logout` -> clear cookie
-- `useAuth()` lit `auth.me` (ctx.user via JWT).
+À chaque push sur `main` et à chaque pull request, GitHub Actions lance `npm run check`, `npm test` et `npm run build` (voir [.github/workflows/ci.yml](.github/workflows/ci.yml)).
+
+## Structure
+
+```text
+client/    Frontend React (pages, composants, styles)
+server/    API Express + tRPC, authentification, accès base, seed, tests
+shared/    Constantes et types partagés
+drizzle/   Schéma, migrations et métadonnées Drizzle
+```
