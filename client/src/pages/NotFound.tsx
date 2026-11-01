@@ -6,34 +6,28 @@ export default function NotFound() {
   const [location] = useLocation();
   return (
     <SiteLayout>
-      <main className="container flex min-h-[80svh] flex-col justify-center pb-16 pt-32">
-        <div className="trace max-w-2xl">
-          <div className="trace-head">
-            <span>
-              <span className="text-primary">$</span> traceroute {location}
-            </span>
+      <main className="container flex min-h-[75svh] flex-col justify-center pb-16 pt-12">
+        <div className="pane max-w-2xl">
+          <div className="pane-bar">
+            <span className="pane-dots" aria-hidden="true"><i /><i /><i /></span>
+            <span>bash</span>
           </div>
-          <ol>
-            <li className="trace-row">
-              <span className="text-muted-foreground">1</span>
-              <span className="trace-host">accueil</span>
-              <span className="trace-label">ok</span>
-              <span className="trace-meta">0 ms</span>
-            </li>
-            <li className="trace-row">
-              <span className="text-muted-foreground">2</span>
-              <span className="trace-host text-primary">{location}</span>
-              <span className="trace-label">hôte injoignable</span>
-              <span className="trace-meta">* * *</span>
-            </li>
-          </ol>
+          <div className="pane-body">
+            <p>
+              <span className="tok-prompt">ted@abidjan</span>:<span className="tok-path">~</span>$ cd {location}
+            </p>
+            <p className="text-destructive">bash : cd : {location} : aucun fichier ou dossier de ce type</p>
+            <p className="mt-2">
+              <span className="tok-prompt">ted@abidjan</span>:<span className="tok-path">~</span>$ <span className="cursor" aria-hidden="true" />
+            </p>
+          </div>
         </div>
-        <h1 className="mt-12 font-sans font-extrabold leading-[.8] tracking-[-.05em]" style={{ fontSize: "clamp(6rem, 26vw, 20rem)" }}>
-          404
+        <h1 className="hero-name mt-10">
+          <span className="text-primary">404</span>_
         </h1>
-        <p className="mt-6 max-w-lg font-serif text-3xl leading-tight">Cette page n'existe pas, ou elle a changé d'adresse.</p>
-        <Link href="/" className="button-primary mt-10 self-start">
-          <ArrowLeft className="h-4 w-4" /> Revenir à l'accueil
+        <p className="mt-4 max-w-lg text-lg text-muted-foreground">Cette page n'existe pas, ou elle a changé d'adresse.</p>
+        <Link href="/" className="button-primary mt-8 self-start">
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" /> cd ~
         </Link>
       </main>
     </SiteLayout>

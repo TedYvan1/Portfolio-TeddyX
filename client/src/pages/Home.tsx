@@ -1,9 +1,8 @@
 import { useEffect, useRef } from "react";
-import { ArrowUpRight } from "lucide-react";
 import { Link } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { useProfile } from "@/lib/profile";
-import { Hop, Reveal, SiteLayout } from "@/components/SiteLayout";
+import { Section, SiteLayout } from "@/components/SiteLayout";
 import { Hero } from "@/components/portfolio/Hero";
 import { ProjectIndex } from "@/components/portfolio/ProjectIndex";
 import { AboutSection, ContactSection, JourneySection, SkillsSection } from "@/components/portfolio/Sections";
@@ -46,32 +45,19 @@ export default function Home() {
     const target = window.location.hash && document.getElementById(window.location.hash.slice(1));
     if (target) requestAnimationFrame(() => target.scrollIntoView());
   }, [loading]);
-  const titleWords = profile.projectsTitle.trim().split(" ");
 
   return (
     <SiteLayout>
       <main>
-        <Hero educations={educations} projects={projects} />
+        <Hero projects={projects} skills={skills} educations={educations} certifications={certifications} languages={languages} />
 
         {projects.length > 0 && (
-          <Hop id="projects" number="01" label="Projets">
-            <Reveal className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
-              <div>
-                <h2 className="section-title">
-                  {titleWords.slice(0, -1).join(" ")} <em>{titleWords.at(-1)}</em>
-                </h2>
-                <p className="mt-6 max-w-2xl text-[15px] leading-7 text-muted-foreground">{profile.projectsDescription}</p>
-              </div>
-              <span className="mono-label shrink-0">{String(projects.length).padStart(2, "0")} projets publiés</span>
-            </Reveal>
-            <div className="mt-14">
-              <ProjectIndex projects={projects.slice(0, HOME_PROJECT_LIMIT)} />
-            </div>
-            <Link href="/projects" className="group mt-10 inline-flex items-center gap-2 text-sm font-medium">
-              <span className="link-underline">Voir l'index complet</span>
-              <ArrowUpRight className="h-4 w-4 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+          <Section id="projects" command={<>ls -la <span className="tok-path">~/projets</span></>} title={profile.projectsTitle} description={profile.projectsDescription}>
+            <ProjectIndex projects={projects.slice(0, HOME_PROJECT_LIMIT)} />
+            <Link href="/projects" className="link-mono mt-8 inline-flex items-center gap-2 text-sm">
+              cd ~/projets <span aria-hidden="true">→</span> index complet ({projects.length})
             </Link>
-          </Hop>
+          </Section>
         )}
 
         <AboutSection cards={aboutCards} strengths={strengths} languages={languages} />

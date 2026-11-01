@@ -3,9 +3,9 @@ import { splitList } from "@/lib/profile";
 
 // Trois compositions sobres, choisies de façon stable à partir du slug.
 const styles = [
-  { surface: "bg-primary text-primary-foreground", pattern: "cover-pattern-lines" },
-  { surface: "bg-foreground text-background", pattern: "cover-pattern-grid" },
-  { surface: "bg-signal text-white", pattern: "cover-pattern-dots" },
+  { surface: "bg-primary text-primary-foreground", pattern: "cover-pattern-grid" },
+  { surface: "bg-secondary text-foreground", pattern: "cover-pattern-lines" },
+  { surface: "bg-amber text-background", pattern: "cover-pattern-dots" },
 ];
 
 const pick = (slug: string) => styles[Array.from(slug).reduce((sum, char) => sum + char.charCodeAt(0), 0) % styles.length];
@@ -18,14 +18,17 @@ export function ProjectCover({ project, size = "md" }: { project: Pick<Project, 
   const style = pick(project.slug);
   return (
     <div className={`cover ${style.surface}`} role="img" aria-label={`Couverture du projet ${project.title}`}>
-      <div className={`absolute inset-0 -z-10 opacity-[.18] ${style.pattern}`} />
-      <div className="flex items-start justify-between font-mono text-[10px] uppercase tracking-[.16em] opacity-80">
+      <div className={`absolute inset-0 -z-10 opacity-[.14] ${style.pattern}`} />
+      <div className="flex items-start justify-between text-[10px] uppercase tracking-[.14em] opacity-80">
         <span>{project.category}</span>
-        <span>{project.slug}</span>
+        <span>v1.0</span>
       </div>
       <div>
-        <p className={`font-serif italic leading-[.9] ${size === "lg" ? "text-[clamp(3.5rem,11vw,9rem)]" : "text-5xl"}`}>{project.title}</p>
-        <p className="mt-3 font-mono text-[10px] uppercase tracking-[.16em] opacity-80">{splitList(project.technologies).slice(0, 4).join(" / ")}</p>
+        <p className={`font-extrabold leading-[.95] tracking-[-.04em] ${size === "lg" ? "text-[clamp(2.6rem,8vw,7rem)]" : "text-4xl"}`}>
+          {project.title}
+          <span className="opacity-60">_</span>
+        </p>
+        <p className="mt-3 text-[10px] uppercase tracking-[.14em] opacity-80">{splitList(project.technologies).slice(0, 4).join(" / ")}</p>
       </div>
     </div>
   );
