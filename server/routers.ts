@@ -121,7 +121,8 @@ const educationFields = z.object({
 
 async function requireDb() {
   const db = await getDb();
-  if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Base de données indisponible." });
+  // 503 (et non 500) : le message reste visible côté navigateur, qui sait alors que la base manque.
+  if (!db) throw new TRPCError({ code: "SERVICE_UNAVAILABLE", message: "Base de données indisponible (DATABASE_URL manquante ou invalide)." });
   return db;
 }
 

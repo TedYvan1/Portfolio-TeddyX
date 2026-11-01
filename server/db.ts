@@ -6,7 +6,13 @@ import { User, users, projects, skills, messages, siteProfile, aboutCards, certi
 let _db: ReturnType<typeof drizzle> | null = null;
 let _client: ReturnType<typeof postgres> | null = null;
 
+let _warnedMissingUrl = false;
+
 export async function getDb() {
+  if (!process.env.DATABASE_URL && !_warnedMissingUrl) {
+    _warnedMissingUrl = true;
+    console.warn("[Database] DATABASE_URL n'est pas définie : l'API renverra des listes vides.");
+  }
   if (!_db && process.env.DATABASE_URL) {
     try {
       // En serverless (Vercel), chaque instance garde une seule connexion pour ne pas saturer le pooler.
