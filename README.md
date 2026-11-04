@@ -1,26 +1,64 @@
-# Ted Yvan KAMANAN — Portfolio
+# Ted Yvan KAMANAN — Portfolio v2
 
-Portfolio personnel full-stack (réseaux, sécurité informatique, génie logiciel) avec un espace d'administration sécurisé pour gérer tout le contenu du site : profil, projets, compétences, certifications, parcours, langues et messages.
+Portfolio bilingue (FR/EN) d'un étudiant en réseaux, sécurité informatique et génie logiciel, avec un espace d'administration en ligne.
 
-## Stack technique
+## Stack
 
-- **Frontend** : React 19, TypeScript, Vite 7, Tailwind CSS 4, Framer Motion, shadcn/ui (Radix)
-- **Backend** : Express, tRPC 11, validation Zod
-- **Base de données** : PostgreSQL avec Drizzle ORM
-- **Authentification** : JWT signé (HS256, issuer/audience) dans un cookie `httpOnly` `SameSite=Lax`, mots de passe hachés avec bcrypt, accès admin vérifié côté serveur (`adminProcedure`)
+- **Next.js 16** (App Router, Cache Components), TypeScript, Tailwind CSS 4
+- **Supabase** : PostgreSQL avec règles RLS, authentification de l'admin, stockage des images et du CV
+- Déploiement : **Vercel**
 
-## Fonctionnalités
+## Démarrer
 
-- Page d'accueil : présentation, compétences, certifications, parcours, langues, projets vedettes, formulaire de contact
-- Galerie `/projects` avec recherche et filtre par catégorie, fiches `/projects/:slug`
-- Thème clair/sombre, animations respectant `prefers-reduced-motion`
-- Sécurité : pas d'inscription publique, limitation des tentatives de connexion et des envois du formulaire de contact, erreurs internes masquées en production
+```bash
+npm install
+cp .env.example .env    # renseigner l'URL et la clé publique Supabase
+npm run dev             # http://localhost:3000 → redirige vers /fr ou /en
+```
+
+## Base de données
+
+Les migrations sont dans [supabase/migrations](supabase/migrations), à exécuter dans l'ordre (SQL Editor → coller → Run) :
+
+1. `20261102000000_archive_v1.sql` range les tables de la v1 dans le schéma `legacy` (rien n'est supprimé) ;
+2. `20261103000000_init.sql` crée le schéma v2 (tables bilingues, règles de sécurité, bucket `media`).
+
+Remplir la base avec le contenu du CV (celui affiché tant que Supabase n'est pas configuré) :
+
+```bash
+npm run seed:cv -- --dry-run   # aperçu
+npm run seed:cv                # remplace le contenu (messages et admins conservés)
+```
+
+Ou reprendre les données de la v1 :
+
+```bash
+npm run import:legacy -- --dry-run   # aperçu
+npm run import:legacy                # import (remplace le contenu de la v2)
+```
+
+## Administration
+
+L'admin est sur `/admin` (connexion par e-mail et mot de passe Supabase). Pour créer le compte :
+
+1. Supabase → **Authentication → Users → Add user** (e-mail + mot de passe, « Auto Confirm User » coché) ;
+2. SQL Editor, en remplaçant l'adresse :
+
+   ```sql
+   insert into public.admins (user_id)
+   select id from auth.users where email = 'ton-adresse@exemple.com';
+   ```
+
+Tout le contenu se modifie depuis l'admin (profil, projets, labs, compétences, parcours…). Les fichiers partent directement du navigateur vers le bucket `media` ; chaque enregistrement met à jour le site public immédiatement. Les droits sont appliqués par la base (RLS) : un compte qui n'est pas dans `admins` ne peut rien modifier, même en contournant l'interface.
 
 ## Structure
 
 ```text
-client/    Frontend React (pages, composants, styles)
-server/    API Express + tRPC, authentification, accès base, seed, tests
-shared/    Constantes et types partagés
-drizzle/   Schéma, migrations et métadonnées Drizzle
+src/app/[lang]/   Site public, une arborescence par langue
+src/app/admin/    Administration (connexion, contenus, messages)
+src/i18n/         Langues et dictionnaires de l'interface
+src/lib/          Lecture du contenu (mise en cache) et clients Supabase
+src/lib/admin/    Description des contenus éditables, contrôle d'accès, lecture des formulaires
+supabase/         Migrations SQL
+scripts/          Import des données de la v1
 ```

@@ -1,0 +1,165 @@
+@import "tailwindcss";
+
+/* ─────────────────────────────────────────────────────────────
+   Direction « Graphe réseau vivant » : fond nuit, nœuds colorés par type,
+   liens fins parcourus par des paquets. Chaque type a sa couleur ET sa forme
+   (projet = carré, compétence = rond, parcours = losange, contact = anneau),
+   pour ne jamais dépendre de la couleur seule. Contrastes ≥ 6:1.
+   ───────────────────────────────────────────────────────────── */
+:root {
+  --background: #07090f;
+  --surface: #0e121b;
+  --surface-2: #141a26;
+  --foreground: #e8ecf4;
+  --muted: #9aa4b8;
+  --border: #1f2736;
+  --accent: #7c95ff;
+  --accent-foreground: #07090f;
+  --node-me: #e8ecf4;
+  --node-project: #7c95ff;
+  --node-skill: #c4f26b;
+  --node-journey: #f6c453;
+  --node-contact: #ff8fb1;
+  --danger: #ff8a80;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Formes : angles nets, comme les nœuds carrés du graphe. Un seul rayon, petit. */
+  --radius: 4px;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-project: var(--node-project);
+  --color-skill: var(--node-skill);
+  --color-journey: var(--node-journey);
+  --color-contact: var(--node-contact);
+  --color-danger: var(--danger);
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-code);
+}
+
+@layer base {
+  html { scroll-behavior: smooth; color-scheme: dark; }
+  body { background: var(--background); color: var(--foreground); }
+  ::selection { background: var(--accent); color: var(--accent-foreground); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  a, button, [role="button"], summary { cursor: pointer; }
+}
+
+@layer components {
+  .container-site { width: 100%; max-width: 1240px; margin-inline: auto; padding-inline: clamp(1rem, 4vw, 2.5rem); }
+
+  .eyebrow { font-family: var(--font-code), monospace; font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+
+  /* Fond « grille de points », discret, pour les pages de contenu */
+  .dot-grid { background-image: radial-gradient(rgb(232 236 244 / 0.07) 1px, transparent 1px); background-size: 28px 28px; }
+
+  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+
+  /* Boutons : une action principale, une secondaire */
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 2.75rem; padding: 0 1.125rem; border-radius: var(--radius); font-weight: 600; transition: background-color 0.18s, border-color 0.18s, color 0.18s; }
+  .btn-primary { background: var(--foreground); color: var(--background); }
+  .btn-primary:hover { background: var(--accent); }
+  .btn-secondary { border: 1px solid var(--border); color: var(--foreground); background: transparent; }
+  .btn-secondary:hover { border-color: var(--muted); }
+  .link-underline { background: linear-gradient(currentColor, currentColor) 0 100% / 0% 1.5px no-repeat; transition: background-size 0.3s var(--ease-out); }
+  .link-underline:hover { background-size: 100% 1.5px; }
+
+  .chip { display: inline-flex; align-items: center; gap: 0.5rem; border-radius: 2px; padding: 0.25rem 0.6rem; font-family: var(--font-code), monospace; font-size: 0.75rem; font-weight: 500; border: 1px solid var(--border); }
+  .tag { font-family: var(--font-code), monospace; font-size: 0.75rem; color: var(--muted); }
+
+  /* Pastilles de type de nœud (même forme que dans le graphe) */
+  .glyph { display: inline-block; width: 0.7rem; height: 0.7rem; flex: none; }
+  .glyph-project { background: var(--node-project); border-radius: 2px; }
+  .glyph-skill { background: var(--node-skill); border-radius: 999px; }
+  .glyph-journey { background: var(--node-journey); transform: rotate(45deg) scale(0.85); }
+  .glyph-contact { border: 2px solid var(--node-contact); border-radius: 999px; }
+
+  /* Champs de formulaire */
+  .field { display: grid; gap: 0.4rem; }
+  .field label { font-size: 0.875rem; font-weight: 600; }
+  .field input:not([type="checkbox"]), .field textarea, .field select { width: 100%; border: 1px solid var(--border); background: var(--background); color: var(--foreground); border-radius: var(--radius); padding: 0.75rem 0.9rem; font-size: 1rem; outline: none; transition: border-color 0.18s; }
+  .field input::placeholder, .field textarea::placeholder { color: #6f7a90; }
+  .field input:focus, .field textarea:focus, .field select:focus { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+  .field textarea { resize: vertical; line-height: 1.6; }
+  .field [aria-invalid="true"] { border-color: var(--danger); }
+  .field .error { font-size: 0.8125rem; color: var(--danger); }
+
+  /* Entrées du héros en CSS pur : visibles dès le premier rendu, sans attendre JavaScript */
+  .rise { animation: rise 0.6s var(--ease-out) both; }
+}
+
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* ─────────────────────────────────────────────────────────────
+   Mouvement : seulement là où il dit quelque chose.
+   - le graphe se met en réseau au chargement (du centre vers les feuilles) ;
+   - un panneau qui s'ouvre vient de son bord ; un menu se déplie ;
+   - un niveau se remplit, une frise se trace quand on les atteint ;
+   - d'une carte à sa page, la couverture et le titre voyagent.
+   Le reste ne bouge pas.
+   ───────────────────────────────────────────────────────────── */
+
+/* Graphe */
+.node-boot { animation: node-boot 0.55s var(--ease-out) both; }
+.label-boot { animation: fade-in 0.45s ease-out both; }
+.label-in { animation: fade-in 0.16s ease-out both; }
+.graph-links-boot { animation: fade-in 0.7s ease-out 0.35s both; }
+.node-halo { transform-box: fill-box; transform-origin: center; animation: halo-in 0.22s var(--ease-out) both; }
+@keyframes node-boot { from { opacity: 0; transform: scale(0.2); } to { opacity: 1; transform: none; } }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes halo-in { from { opacity: 0; transform: scale(0.6); } }
+
+/* Panneau de détail : monte du bas sur mobile, glisse depuis la droite sur grand écran */
+.panel-in { animation: from-bottom 0.32s var(--ease-out) both; }
+@media (min-width: 640px) { .panel-in { animation-name: from-right; } }
+@keyframes from-bottom { from { opacity: 0; transform: translateY(20px); } }
+@keyframes from-right { from { opacity: 0; transform: translateX(20px); } }
+
+/* Menu mobile : les entrées se déplient l'une après l'autre */
+.menu-in > * { animation: rise 0.3s var(--ease-out) both; }
+.menu-in > :nth-child(2) { animation-delay: 40ms; }
+.menu-in > :nth-child(3) { animation-delay: 80ms; }
+.menu-in > :nth-child(4) { animation-delay: 120ms; }
+.menu-in > :nth-child(5) { animation-delay: 160ms; }
+
+/* Niveaux de compétence : chaque segment se remplit (délai par segment, posé dans le HTML) */
+.level-fill { transform-origin: left; transition: transform 0.5s var(--ease-out); }
+[data-inview="false"] .level-fill { transform: scaleX(0); }
+
+/* Frise du parcours : la ligne se trace, puis chaque étape arrive */
+.timeline::before { content: ""; position: absolute; left: 0; top: 0.4rem; bottom: 0.4rem; width: 1px; background: var(--border); transform-origin: top; transition: transform 0.9s var(--ease-out); }
+.timeline-item { transition: opacity 0.45s ease-out, transform 0.45s var(--ease-out); }
+[data-inview="false"].timeline::before { transform: scaleY(0); }
+[data-inview="false"] .timeline-item { opacity: 0; transform: translateX(-8px); }
+
+/* Couverture générée : le mini-réseau s'éclaire au survol de la carte */
+.cover-link { stroke-opacity: 0.35; transition: stroke-opacity 0.3s ease-out; }
+.group:hover .cover-link, .group:focus-visible .cover-link { stroke-opacity: 0.8; }
+
+/* Boutons : un retour tactile discret à l'appui */
+.btn { transition-property: background-color, border-color, color, transform; }
+.btn:active:not(:disabled) { transform: translateY(1px); }
+
+/* Message envoyé : la coche se trace */
+.check-draw { stroke-dasharray: 24; stroke-dashoffset: 24; animation: draw 0.45s var(--ease-out) 0.2s forwards; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+
+/* Changements de page (View Transitions) : fondu court, en-tête immobile, morph carte → projet */
+::view-transition { pointer-events: none; }
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: 200ms; }
+::view-transition-group(site-header) { animation: none; z-index: 100; }
+::view-transition-old(site-header) { display: none; }
+::view-transition-new(site-header) { animation: none; }
+::view-transition-group(.morph) { animation-duration: 380ms; animation-timing-function: var(--ease-out); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; transition-delay: 0s !important; scroll-behavior: auto !important; }
+  ::view-transition-old(*), ::view-transition-new(*), ::view-transition-group(*) { animation-duration: 0s !important; animation-delay: 0s !important; }
+}
