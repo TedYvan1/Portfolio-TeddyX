@@ -1,10 +1,9 @@
-import { Archivo, Barlow_Condensed, JetBrains_Mono } from "next/font/google";
+import { Architects_Daughter, Caveat, Kalam } from "next/font/google";
 
-// Trois voix, comme sur du matériel réseau :
-// Archivo pour le texte et les titres, Barlow Condensed pour les bandes d'étiqueteuse,
-// JetBrains Mono pour la sérigraphie (numéros de port, références).
-const archivo = Archivo({ variable: "--font-body", subsets: ["latin"], weight: ["400", "500", "600", "700", "800"] });
-const tape = Barlow_Condensed({ variable: "--font-tape", subsets: ["latin"], weight: ["500", "600", "700"] });
-const mono = JetBrains_Mono({ variable: "--font-code", subsets: ["latin"], weight: ["400", "500"] });
+// Carnet d'ingénieur : Kalam pour l'écriture, Architects Daughter pour les annotations techniques,
+// Caveat pour les notes griffonnées dans la marge.
+const kalam = Kalam({ variable: "--font-body", subsets: ["latin"], weight: ["300", "400", "700"] });
+const architect = Architects_Daughter({ variable: "--font-code", subsets: ["latin"], weight: "400" });
+const caveat = Caveat({ variable: "--font-note", subsets: ["latin"], weight: ["500", "700"] });
 
-export const fontVariables = `${archivo.variable} ${tape.variable} ${mono.variable}`;
+export const fontVariables = `${kalam.variable} ${architect.variable} ${caveat.variable}`;

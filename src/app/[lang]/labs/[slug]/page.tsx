@@ -35,8 +35,8 @@ export default async function LabPage({ params }: PageProps<"/[lang]/labs/[slug]
     <article className="container-site py-12 md:py-20">
       <Link href={`/${locale}/labs`} className="link-underline font-mono text-sm text-muted">← {dict.labs.back}</Link>
       <div className="mt-8 max-w-3xl">
-        <p className="tape">{lab.platform}{lab.done_on ? ` · ${lab.done_on}` : ""}</p>
-        <h1 className="mt-5 text-[clamp(2.25rem,6vw,4.5rem)] leading-[1] font-extrabold tracking-[-0.035em]">{pick(lab.title, locale)}</h1>
+        <p className="label">{lab.platform}{lab.done_on ? ` · ${lab.done_on}` : ""}</p>
+        <h1 className="mt-5 text-[clamp(2.25rem,6vw,4.5rem)] leading-none font-bold">{pick(lab.title, locale)}</h1>
         <p className="mt-5 text-xl leading-relaxed text-muted">{pick(lab.summary, locale)}</p>
         {lab.tools.length > 0 && (
           <p className="mt-6 flex flex-wrap gap-2" aria-label={dict.labs.tools}>

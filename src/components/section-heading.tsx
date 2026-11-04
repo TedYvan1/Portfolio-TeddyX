@@ -1,20 +1,26 @@
 import { InView } from "./in-view";
 
 /**
- * Titre de section : une bande d'étiqueteuse (numéro de port + nom) qui s'imprime à l'arrivée,
- * puis le titre. Le numéro correspond au port du panneau de l'accueil.
+ * Titre de section du carnet : numéro et nom en lettrage d'architecte, puis le titre.
+ * `highlight` désigne le mot que le surligneur vient couvrir à l'arrivée à l'écran.
  */
-export function SectionHeading({ eyebrow, title, subtitle, id, port, as: Heading = "h2" }: { eyebrow: string; title: string; subtitle?: string; id?: string; port?: string; as?: "h1" | "h2" }) {
+export function SectionHeading({ eyebrow, title, subtitle, id, num, highlight, as: Heading = "h2" }: { eyebrow: string; title: string; subtitle?: string; id?: string; num?: string; highlight?: string; as?: "h1" | "h2" }) {
+  // « last » : le surligneur couvre le dernier mot du titre (hors ponctuation), quelle que soit la langue.
+  if (highlight === "last") highlight = title.replace(/[\s.!?…:;, ]+$/, "").split(/\s+/).pop();
+  const index = highlight ? title.lastIndexOf(highlight) : -1;
   return (
-    <InView className="max-w-3xl">
-      <p className="tape tape-print">
-        {port && <span className="tape-num">{port}</span>}
-        {eyebrow}
-      </p>
-      <Heading id={id} className="mt-5 text-[clamp(1.9rem,4.2vw,3.1rem)] leading-[1.04] font-extrabold tracking-[-0.025em] text-balance">
-        {title}
+    <InView className="grid max-w-3xl gap-3.5">
+      <p className="label">{num && <>{num} — </>}{eyebrow}</p>
+      <Heading id={id} className="text-[clamp(2rem,4.4vw,3.9rem)] leading-[1.05] font-bold text-balance">
+        {index === -1 ? title : (
+          <>
+            {title.slice(0, index)}
+            <mark className="hl">{highlight}</mark>
+            {title.slice(index + (highlight?.length ?? 0))}
+          </>
+        )}
       </Heading>
-      {subtitle && <p className="mt-4 text-lg leading-8 text-muted">{subtitle}</p>}
+      {subtitle && <p className="max-w-[52ch] text-muted">{subtitle}</p>}
     </InView>
   );
 }

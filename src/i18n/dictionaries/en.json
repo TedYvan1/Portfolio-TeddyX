@@ -42,7 +42,8 @@
     "inProgress": "In progress",
     "done": "Shipped",
     "read": "Read the case study",
-    "empty": "No published project yet."
+    "empty": "No published project yet.",
+    "highlight": "Real"
   },
   "project": {
     "back": "All projects",
@@ -68,7 +69,8 @@
     "eyebrow": "Profile",
     "title": "From the network to the interface, one standard: it has to hold.",
     "strengths": "Strengths",
-    "languages": "Languages"
+    "languages": "Languages",
+    "highlight": "hold"
   },
   "skills": {
     "eyebrow": "Skills",
@@ -77,13 +79,15 @@
       "Beginner",
       "Intermediate",
       "Advanced"
-    ]
+    ],
+    "highlight": "toolbox"
   },
   "journey": {
     "eyebrow": "Journey",
     "title": "Two degrees in parallel, one direction.",
     "education": "Education",
-    "certifications": "Certifications"
+    "certifications": "Certifications",
+    "highlight": "direction"
   },
   "labs": {
     "eyebrow": "Labs",
@@ -92,7 +96,8 @@
     "empty": "The first labs are coming soon.",
     "back": "All labs",
     "tools": "Tools",
-    "platform": "Platform"
+    "platform": "Platform",
+    "highlight": "security"
   },
   "contact": {
     "eyebrow": "Contact",
@@ -119,7 +124,8 @@
       "unavailable": "Sending is temporarily unavailable. Please email me directly.",
       "summary": "The form has errors:"
     },
-    "direct": "Or directly"
+    "direct": "Or directly",
+    "highlight": "question"
   },
   "footer": {
     "rights": "All rights reserved.",
@@ -131,12 +137,8 @@
     "back": "Back to home"
   },
   "panel": {
-    "label": "Patch panel: each port leads to a part of the site",
-    "serial": "TY-PP01 · 8 PORTS · CAT6",
-    "hint": "Move your cursor through the cables · one port = one section",
-    "port": "Port",
-    "linked": "linked",
-    "free": "free",
+    "label": "Network diagram: each node leads to a part of the site",
+    "hint": "click a node on the diagram",
     "ports": {
       "projects": "Projects",
       "labs": "Labs",
@@ -146,7 +148,9 @@
       "contact": "Contact",
       "cv": "Resume",
       "github": "GitHub"
-    }
+    },
+    "router": "← the router",
+    "margin": "my network, at a glance"
   },
   "theme": {
     "label": "Theme",
