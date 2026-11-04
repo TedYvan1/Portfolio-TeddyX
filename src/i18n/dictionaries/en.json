@@ -175,6 +175,17 @@
       "contact": "RING!",
       "fly": "ZOOOM!",
       "scroll": "Scroll, the story moves on →"
+    },
+    "deck": {
+      "all": "All",
+      "hint": "Pick a family and the cards get dealt. Hover them to make them shine.",
+      "cards": "cards",
+      "rarity": [
+        "Common",
+        "Rare",
+        "Legendary"
+      ],
+      "families": "Skill families"
     }
   }
 }

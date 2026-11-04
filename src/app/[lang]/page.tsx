@@ -7,6 +7,7 @@ import { SectionHeading } from "@/components/section-heading";
 import { ContactForm } from "@/components/contact-form";
 import { InView } from "@/components/in-view";
 import { JourneyStrip } from "@/components/journey-strip";
+import { SkillDeck } from "@/components/skill-deck";
 
 const TINTS = ["var(--blue)", "var(--red)", "var(--yellow)"];
 // Couleur du texte posé sur chaque aplat (contraste suffisant de jour comme de nuit)
@@ -141,28 +142,7 @@ export default async function Home() {
       {skills.length > 0 && (
         <section id="skills" className="container-site scroll-mt-24 pt-24 md:pt-32" aria-labelledby="skills-title">
           <SectionHeading id="skills-title" chapter={`${c.chapter} 2`} eyebrow={dict.skills.eyebrow} title={dict.skills.title} sfx={c.chapterSfx.skills} />
-          <InView className="skewable mt-12 grid grid-cols-[minmax(0,1fr)] gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {skills.map((category, categoryIndex) => (
-              <div key={pick(category.name, "fr")} className="flip-in panel p-5" style={{ rotate: `${[-0.8, 0.6, -0.4][categoryIndex % 3]}deg` }}>
-                <h3 className="display text-[1.9rem]" style={{ color: categoryIndex % 3 === 2 ? "var(--ink)" : TINTS[categoryIndex % 3] }}>{pick(category.name, locale)}</h3>
-                <ul className="mt-3 grid gap-2.5">
-                  {category.skills.map((skill, skillIndex) => (
-                    <li key={skill.name} className="grid gap-1">
-                      <span className="flex justify-between gap-3 text-[15px] font-bold">
-                        <span className="min-w-0">{skill.name}</span>
-                        <span className="shrink-0 text-[12px] text-muted uppercase">{dict.skills.levels[skill.level - 1]}</span>
-                      </span>
-                      {/* Jauge de pouvoir : trois crans, remplis de trame à l'arrivée à l'écran */}
-                      <span aria-hidden="true" className="relative h-3.5 overflow-hidden rounded-full border-[2.5px] border-ink bg-page">
-                        <span className="power absolute inset-y-0 left-0 border-r-[2.5px] border-ink dots-strong" style={{ width: `${(skill.level / 3) * 100}%`, backgroundColor: TINTS[categoryIndex % 3], transitionDelay: `${categoryIndex * 90 + skillIndex * 70 + 200}ms` }} />
-                        <span className="absolute inset-y-0 left-1/3 w-[2.5px] bg-ink/40" /><span className="absolute inset-y-0 left-2/3 w-[2.5px] bg-ink/40" />
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </InView>
+          <SkillDeck families={skills.map(category => ({ name: pick(category.name, locale), skills: category.skills }))} levels={dict.skills.levels} labels={c.deck} />
         </section>
       )}
 

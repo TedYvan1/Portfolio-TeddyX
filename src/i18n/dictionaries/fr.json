@@ -175,6 +175,17 @@
       "contact": "DRING !",
       "fly": "ZOOOM !",
       "scroll": "Défilez, l’histoire avance →"
+    },
+    "deck": {
+      "all": "Toutes",
+      "hint": "Choisis une famille : les cartes se distribuent. Survole-les pour les faire briller.",
+      "cards": "cartes",
+      "rarity": [
+        "Commune",
+        "Rare",
+        "Légendaire"
+      ],
+      "families": "Familles de compétences"
     }
   }
 }
