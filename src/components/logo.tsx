@@ -1,10 +1,9 @@
-/** Logo TK : un T entouré au stylo, surligné en vert. Il s'écrit au chargement. */
-export function LogoMark({ size = 38 }: { size?: number }) {
+/** Logo : les initiales TY dans une étoile d'action jaune, encrée. */
+export function LogoMark({ size = 44 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 64 64" aria-hidden="true" className="logo flex-none overflow-visible">
-      <rect x="8" y="30" width="34" height="9" className="logo-hl" />
-      <path d="M17 18 H45 M31 18 V48" pathLength={1} className="ink" strokeWidth="6" style={{ ["--d" as string]: "750ms", ["--dur" as string]: "500ms" }} />
-      <path d="M52 30 C 54 12, 22 4, 10 20 C 0 36, 14 58, 34 57 C 52 56, 60 42, 55 26" pathLength={1} className="ink logo-o" strokeWidth="3.2" style={{ ["--d" as string]: "100ms", ["--dur" as string]: "800ms" }} />
+    <svg width={size} height={size} viewBox="0 0 48 48" aria-hidden="true" className="flex-none">
+      <path d="M24 2l5 8 9-4-1 10 9 3-7 7 6 8-10 1 0 10-9-5-6 8-4-9-10 3 3-10-8-5 8-6-3-9 10 1 4-9z" fill="var(--yellow)" stroke="var(--ink)" strokeWidth="2.5" strokeLinejoin="round" />
+      <text x="24" y="31" textAnchor="middle" fontSize="19" fontFamily="var(--font-display), sans-serif" fill="#141210" letterSpacing="0.5">TY</text>
     </svg>
   );
 }

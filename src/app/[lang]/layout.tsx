@@ -6,6 +6,7 @@ import { getDictionary, getLocale } from "@/i18n/dictionaries";
 import { getContent } from "@/lib/content";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { ComicSfx } from "@/components/comic-sfx";
 import { themeScript } from "@/lib/theme-script";
 import { fontVariables } from "../fonts";
 import "../globals.css";
@@ -16,8 +17,8 @@ export async function generateStaticParams() {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f5f4ef" },
-    { media: "(prefers-color-scheme: dark)", color: "#131412" },
+    { media: "(prefers-color-scheme: light)", color: "#f6eedb" },
+    { media: "(prefers-color-scheme: dark)", color: "#10131d" },
   ],
 };
 
@@ -43,7 +44,8 @@ export default async function RootLayout({ children }: LayoutProps<"/[lang]">) {
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-(--radius) focus:bg-foreground focus:px-4 focus:py-2 focus:text-background">
           {dict.nav.skip}
         </a>
-        <SiteHeader locale={locale} nav={dict.nav} theme={dict.theme} />
+        <SiteHeader locale={locale} nav={dict.nav} theme={dict.theme} comic={dict.comic} />
+        <ComicSfx words={dict.comic.sfx} />
         <main id="main" className="flex-1">
           {children}
         </main>

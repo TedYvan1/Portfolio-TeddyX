@@ -14,26 +14,26 @@ export default async function LabsPage() {
   const [locale, dict, { labs }] = await Promise.all([getLocale(), getDictionary(), getContent()]);
   return (
     <div className="container-site py-14 md:py-20">
-      <SectionHeading as="h1" num="04" highlight={dict.labs.highlight} eyebrow={dict.labs.eyebrow} title={dict.labs.title} subtitle={dict.labs.subtitle} />
+      <SectionHeading as="h1" chapter={`${dict.comic.chapter} 4`} eyebrow={dict.labs.eyebrow} title={dict.labs.title} subtitle={dict.labs.subtitle} />
       {labs.length ? (
         <ul className="mt-12 grid gap-8 md:grid-cols-2">
           {labs.map((lab, index) => (
             <li key={lab.slug}>
-              <Link href={`/${locale}/labs/${lab.slug}`} className="card-lift panel block h-full p-7" style={{ transform: `rotate(${index % 2 ? 0.8 : -0.8}deg)` }}>
-                <p className="tag">{lab.platform}{lab.done_on ? ` · ${lab.done_on.slice(0, 4)}` : ""}</p>
-                <h2 className="mt-2 text-2xl font-bold">{pick(lab.title, locale)}</h2>
-                <p className="mt-2 text-[15px] text-muted">{pick(lab.summary, locale)}</p>
-                <p className="tag mt-4">{lab.tools.join(" · ")}</p>
+              <Link href={`/${locale}/labs/${lab.slug}`} data-sfx className="cover-card panel block h-full p-6" style={{ transform: `rotate(${index % 2 ? 0.8 : -0.8}deg)` }}>
+                <p className="caption">{lab.platform}{lab.done_on ? ` · ${lab.done_on.slice(0, 4)}` : ""}</p>
+                <h2 className="display mt-3 text-3xl">{pick(lab.title, locale)}</h2>
+                <p className="mt-1 text-[15px] text-muted">{pick(lab.summary, locale)}</p>
+                <p className="tag mt-3">{lab.tools.join(" · ")}</p>
               </Link>
             </li>
           ))}
         </ul>
       ) : (
-        // Page encore blanche du carnet
-        <div className="panel relative mt-14 max-w-xl -rotate-1 p-10">
-          <span aria-hidden="true" className="scotch" />
-          <p className="note text-3xl">{locale === "fr" ? "à venir…" : "coming soon…"}</p>
-          <p className="mt-3 text-lg text-muted">{dict.labs.empty}</p>
+        // Case vide : « bientôt dans vos kiosques »
+        <div className="panel dots mt-14 grid max-w-2xl place-items-center gap-4 p-10 text-center -rotate-1">
+          <span className="burst display text-2xl" style={{ width: 120, height: 120 }}>{dict.comic.next}…</span>
+          <p className="display text-3xl">{dict.comic.soon}</p>
+          <p className="text-muted">{dict.labs.empty}</p>
         </div>
       )}
     </div>

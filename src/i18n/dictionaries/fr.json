@@ -136,25 +136,36 @@
     "text": "Cette page n'existe pas, ou elle a changé d'adresse.",
     "back": "Revenir à l'accueil"
   },
-  "panel": {
-    "label": "Schéma réseau : chaque nœud mène à une partie du site",
-    "hint": "clique sur un nœud du schéma",
-    "ports": {
-      "projects": "Projets",
-      "labs": "Labs",
-      "skills": "Compétences",
-      "journey": "Parcours",
-      "about": "Profil",
-      "contact": "Contact",
-      "cv": "CV",
-      "github": "GitHub"
-    },
-    "router": "← le routeur",
-    "margin": "mon réseau, en un coup d’œil"
-  },
   "theme": {
     "label": "Thème",
     "toLight": "Passer au thème clair",
     "toDark": "Passer au thème sombre"
+  },
+  "comic": {
+    "issue": "Épisode 1",
+    "place": "Abidjan, de nos jours…",
+    "meanwhile": "Pendant ce temps, entre Abidjan et Bouaké…",
+    "next": "À suivre",
+    "contents": "Au sommaire",
+    "chapter": "Chapitre",
+    "end": "Fin de l’épisode",
+    "publisher": "Éditions Ted Yvan",
+    "sfx": [
+      "CLIC !",
+      "TAP !",
+      "ZIP !",
+      "POP !",
+      "TCHAK !"
+    ],
+    "night": "Édition de nuit",
+    "day": "Édition de jour",
+    "issueShort": "N°",
+    "with": "Avec",
+    "soon": "Bientôt dans vos kiosques…",
+    "oops": "OUPS !",
+    "cta": "Lui écrire",
+    "bzzt": "BZZT !",
+    "lab": "Le labo",
+    "hello": "Salut ! Moi c’est"
   }
 }

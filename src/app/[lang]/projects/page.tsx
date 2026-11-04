@@ -13,9 +13,9 @@ export default async function ProjectsPage() {
   const [locale, dict, { projects }] = await Promise.all([getLocale(), getDictionary(), getContent()]);
   return (
     <div className="container-site py-14 md:py-20">
-      <SectionHeading as="h1" num="01" highlight={dict.projects.highlight} eyebrow={dict.projects.eyebrow} title={dict.projects.title} subtitle={dict.projects.subtitle} />
+      <SectionHeading as="h1" chapter={`${dict.comic.chapter} 1`} eyebrow={dict.projects.eyebrow} title={dict.projects.title} subtitle={dict.projects.subtitle} />
       {projects.length ? (
-        <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
           {projects.map((project, index) => <ProjectCard key={project.slug} project={project} locale={locale} dict={dict} index={index} />)}
         </div>
       ) : (

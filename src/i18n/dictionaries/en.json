@@ -136,25 +136,36 @@
     "text": "This page doesn't exist, or it has moved.",
     "back": "Back to home"
   },
-  "panel": {
-    "label": "Network diagram: each node leads to a part of the site",
-    "hint": "click a node on the diagram",
-    "ports": {
-      "projects": "Projects",
-      "labs": "Labs",
-      "skills": "Skills",
-      "journey": "Journey",
-      "about": "Profile",
-      "contact": "Contact",
-      "cv": "Resume",
-      "github": "GitHub"
-    },
-    "router": "← the router",
-    "margin": "my network, at a glance"
-  },
   "theme": {
     "label": "Theme",
     "toLight": "Switch to light theme",
     "toDark": "Switch to dark theme"
+  },
+  "comic": {
+    "issue": "Episode 1",
+    "place": "Abidjan, present day…",
+    "meanwhile": "Meanwhile, between Abidjan and Bouaké…",
+    "next": "To be continued",
+    "contents": "In this issue",
+    "chapter": "Chapter",
+    "end": "End of episode",
+    "publisher": "Ted Yvan Comics",
+    "sfx": [
+      "CLICK!",
+      "TAP!",
+      "ZIP!",
+      "POP!",
+      "WHAM!"
+    ],
+    "night": "Night edition",
+    "day": "Day edition",
+    "issueShort": "No.",
+    "with": "Starring",
+    "soon": "Coming soon to a newsstand near you…",
+    "oops": "OOPS!",
+    "cta": "Write to him",
+    "bzzt": "BZZT!",
+    "lab": "The lab",
+    "hello": "Hi! I’m"
   }
 }
