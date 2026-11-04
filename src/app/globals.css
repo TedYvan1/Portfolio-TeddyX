@@ -221,3 +221,70 @@
   .sfx, .speed { display: none; }
   ::view-transition-old(*), ::view-transition-new(*), ::view-transition-group(*) { animation-duration: 0s !important; animation-delay: 0s !important; }
 }
+
+/* ─────────────────────────────────────────────────────────────
+   Animations de défilement
+   ───────────────────────────────────────────────────────────── */
+
+/* Titre de chapitre qui s'abat : grossit, s'écrase, secoue ; l'onomatopée explose derrière */
+[data-inview="true"] .slam { animation: slam 0.55s var(--spring) both; }
+[data-inview="true"] .slam-caption { animation: rise 0.4s var(--ease-out) both; }
+[data-inview="true"] .slam-sub { animation: rise 0.5s var(--ease-out) 0.35s both; }
+[data-inview="true"] .slam-sfx { animation: sfx-burst 0.7s var(--spring) 0.15s both; }
+[data-inview="false"] :is(.slam, .slam-caption, .slam-sub, .slam-sfx) { opacity: 0; }
+@keyframes slam {
+  0% { opacity: 0; transform: scale(2.4) rotate(-4deg); }
+  55% { opacity: 1; transform: scale(0.94) rotate(1deg); }
+  70% { transform: translateX(-6px) rotate(-1deg); }
+  85% { transform: translateX(4px); }
+  100% { transform: none; }
+}
+@keyframes sfx-burst {
+  0% { opacity: 0; transform: scale(0.2) rotate(-25deg); }
+  60% { opacity: 0.95; transform: scale(1.12) rotate(-8deg); }
+  100% { opacity: 0.9; transform: scale(1) rotate(-10deg); }
+}
+.slam-sfx { transform: rotate(-10deg); }
+
+/* Effet de vitesse au défilement (valeur posée par ScrollFx) */
+.skewable { transform: skewY(var(--skew, 0deg)); transform-origin: center; }
+
+/* Défilement piloté par le navigateur (Chrome, Edge, Safari récent) ; sinon rien ne bouge */
+@supports (animation-timeline: view()) {
+  /* Couvertures d'album qui arrivent en volant, depuis la gauche ou la droite */
+  .fly-in { animation: fly-in linear both; animation-timeline: view(); animation-range: entry 0% cover 38%; }
+  .fly-in:nth-child(3n + 1) { --fx: -46vw; --fr: -28deg; }
+  .fly-in:nth-child(3n + 2) { --fx: 0; --fr: 14deg; --fy: 260px; }
+  .fly-in:nth-child(3n + 3) { --fx: 46vw; --fr: 30deg; }
+  @keyframes fly-in { from { opacity: 0; translate: var(--fx, 0) var(--fy, 120px); rotate: var(--fr, 0deg); scale: 0.6; } }
+
+  /* Planche d'accueil : en la quittant, chaque calque file à sa vitesse */
+  .par-slow, .par-fast, .par-tilt, .par-zoom { animation-timeline: view(); animation-range: exit 0% exit 100%; animation-fill-mode: both; animation-timing-function: linear; }
+  .par-slow { animation-name: par-slow; }
+  .par-fast { animation-name: par-fast; }
+  .par-tilt { animation-name: par-tilt; }
+  .par-zoom { animation-name: par-zoom; }
+  @keyframes par-slow { to { translate: 0 -60px; } }
+  @keyframes par-fast { to { translate: 0 -220px; rotate: -6deg; } }
+  @keyframes par-tilt { to { translate: 40px 120px; rotate: 18deg; scale: 1.2; } }
+  @keyframes par-zoom { to { scale: 0.86; rotate: -3deg; opacity: 0.4; } }
+
+  /* Cases (compétences, principes, certifications) qui basculent en place, comme une page qu'on tourne */
+  .flip-in { animation: flip-in linear both; animation-timeline: view(); animation-range: entry 5% cover 30%; transform-origin: left bottom; }
+  @keyframes flip-in { from { opacity: 0; rotate: y -70deg; translate: 0 40px; } }
+
+  /* Barre de lecture : un trait d'encre jaune qui avance sous l'en-tête */
+  .read-progress { animation: read-progress linear both; animation-timeline: scroll(root); transform-origin: left; }
+  @keyframes read-progress { from { scale: 0 1; } to { scale: 1 1; } }
+}
+@supports not (animation-timeline: view()) { .read-progress { display: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .fly-in, .par-slow, .par-fast, .par-tilt, .par-zoom, .flip-in, .read-progress { animation: none !important; }
+  .skewable { transform: none; }
+  [data-inview="false"] :is(.slam, .slam-caption, .slam-sub, .slam-sfx) { opacity: 1; }
+}
+
+/* Onomatopée de l'avion en papier : apparaît en fin de strip */
+.plane-sfx { opacity: 0; transform: scale(0.4) rotate(-12deg); transition: opacity 0.2s, transform 0.4s var(--spring); }
+[data-done="true"] .plane-sfx { opacity: 1; transform: rotate(-8deg); }

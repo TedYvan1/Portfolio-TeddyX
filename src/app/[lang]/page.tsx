@@ -6,6 +6,7 @@ import { ProjectCard } from "@/components/project-card";
 import { SectionHeading } from "@/components/section-heading";
 import { ContactForm } from "@/components/contact-form";
 import { InView } from "@/components/in-view";
+import { JourneyStrip } from "@/components/journey-strip";
 
 const TINTS = ["var(--blue)", "var(--red)", "var(--yellow)"];
 // Couleur du texte posé sur chaque aplat (contraste suffisant de jour comme de nuit)
@@ -69,26 +70,26 @@ export default async function Home() {
     <>
       {/* ── La planche d'accueil ─────────── */}
       <section className="container-site pt-6 md:pt-10" aria-labelledby="hero-title">
-        <div className="grid gap-4 md:gap-5 lg:grid-cols-[1.55fr_1fr]">
+        <div className="par-zoom grid gap-4 md:gap-5 lg:grid-cols-[1.55fr_1fr]">
           {/* Case 1 : le héros */}
           <div className="panel panel-drop dots overflow-hidden p-5 sm:p-8 lg:row-span-2" style={{ ["--from-rot" as string]: "-2deg" }}>
             <p className="caption -rotate-1">{c.issue} — {c.place}</p>
             <div className="mt-5 grid items-center gap-4 sm:grid-cols-[1.2fr_1fr]">
-              <div>
+              <div className="par-fast">
                 <h1 id="hero-title" className="pop-title text-[clamp(3.4rem,8.4vw,7rem)]">{profile.display_name}</h1>
                 <p className="mt-3 eyebrow">{pick(profile.role, locale)}</p>
               </div>
-              <div className="mx-auto w-full max-w-[320px]"><HeroDrawing bzzt={c.bzzt} /></div>
+              <div className="par-tilt mx-auto w-full max-w-[320px]"><HeroDrawing bzzt={c.bzzt} /></div>
             </div>
-            <div className="bubble bubble-pop mt-5 max-w-xl text-[clamp(1.05rem,1.5vw,1.25rem)] font-bold" style={{ animationDelay: "0.55s" }}>
+            <div className="par-slow"><div className="bubble bubble-pop mt-5 max-w-xl text-[clamp(1.05rem,1.5vw,1.25rem)] font-bold" style={{ animationDelay: "0.55s" }}>
               <Spoken text={`${c.hello} ${firstName}. ${pick(profile.headline, locale)}`} start={700} />
-            </div>
+            </div></div>
           </div>
 
           {/* Case 2 : les chiffres, en étoiles d'action */}
           <div className="panel panel-drop overflow-hidden bg-blue p-5 text-(--on-blue) sm:p-6" style={{ animationDelay: "0.18s", ["--from-rot" as string]: "3deg" }}>
             <p className="caption rotate-1">{c.meanwhile}</p>
-            <ul className="mt-5 grid grid-cols-3 gap-2">
+            <ul className="par-slow mt-5 grid grid-cols-3 gap-2">
               {stats.map((stat, index) => (
                 <li key={stat.label} className="grid justify-items-center gap-2 text-center">
                   <span className="burst display text-[1.9rem] text-[#141210]" style={{ width: 92, height: 92, transform: `rotate(${[-8, 6, -4][index]}deg)` }}>{stat.value}</span>
@@ -125,10 +126,10 @@ export default async function Home() {
       {projects.length > 0 && (
         <section id="projects" className="container-site scroll-mt-24 pt-24 md:pt-32" aria-labelledby="projects-title">
           <div className="flex flex-wrap items-end justify-between gap-6">
-            <SectionHeading id="projects-title" chapter={`${c.chapter} 1`} eyebrow={dict.projects.eyebrow} title={dict.projects.title} subtitle={dict.projects.subtitle} />
+            <SectionHeading id="projects-title" chapter={`${c.chapter} 1`} eyebrow={dict.projects.eyebrow} title={dict.projects.title} subtitle={dict.projects.subtitle} sfx={c.chapterSfx.projects} />
             <Link href={`/${locale}/projects`} className="link-underline font-bold">{dict.projects.all} →</Link>
           </div>
-          <div className="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="skewable mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
             {(featured.length ? featured : projects).slice(0, 3).map((project, index) => (
               <ProjectCard key={project.slug} project={project} locale={locale} dict={dict} index={index} />
             ))}
@@ -139,10 +140,10 @@ export default async function Home() {
       {/* ── Chapitre 2 : la fiche personnage, avec ses jauges de pouvoir ───────── */}
       {skills.length > 0 && (
         <section id="skills" className="container-site scroll-mt-24 pt-24 md:pt-32" aria-labelledby="skills-title">
-          <SectionHeading id="skills-title" chapter={`${c.chapter} 2`} eyebrow={dict.skills.eyebrow} title={dict.skills.title} />
-          <InView className="mt-12 grid grid-cols-[minmax(0,1fr)] gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <SectionHeading id="skills-title" chapter={`${c.chapter} 2`} eyebrow={dict.skills.eyebrow} title={dict.skills.title} sfx={c.chapterSfx.skills} />
+          <InView className="skewable mt-12 grid grid-cols-[minmax(0,1fr)] gap-6 md:grid-cols-2 lg:grid-cols-3">
             {skills.map((category, categoryIndex) => (
-              <div key={pick(category.name, "fr")} className="scene panel p-5" style={{ transitionDelay: `${categoryIndex * 90}ms`, rotate: `${[-0.8, 0.6, -0.4][categoryIndex % 3]}deg` }}>
+              <div key={pick(category.name, "fr")} className="flip-in panel p-5" style={{ rotate: `${[-0.8, 0.6, -0.4][categoryIndex % 3]}deg` }}>
                 <h3 className="display text-[1.9rem]" style={{ color: categoryIndex % 3 === 2 ? "var(--ink)" : TINTS[categoryIndex % 3] }}>{pick(category.name, locale)}</h3>
                 <ul className="mt-3 grid gap-2.5">
                   {category.skills.map((skill, skillIndex) => (
@@ -165,35 +166,38 @@ export default async function Home() {
         </section>
       )}
 
-      {/* ── Chapitre 3 : le parcours en strip, les certifications en badges ───────── */}
-      <section id="journey" className="container-site scroll-mt-24 pt-24 md:pt-32" aria-labelledby="journey-title">
-        <SectionHeading id="journey-title" chapter={`${c.chapter} 3`} eyebrow={dict.journey.eyebrow} title={dict.journey.title} />
+      {/* ── Chapitre 3 : le parcours en strip horizontal épinglé ───────── */}
+      <section id="journey" className="scroll-mt-24 pt-24 md:pt-32" aria-labelledby="journey-title">
+        <div className="container-site">
+          <SectionHeading id="journey-title" chapter={`${c.chapter} 3`} eyebrow={dict.journey.eyebrow} title={dict.journey.title} sfx={c.chapterSfx.journey} />
+        </div>
         <h3 className="sr-only">{dict.journey.education}</h3>
-        <InView as="ol" className="mt-12 grid gap-4 md:grid-cols-3">
+        <JourneyStrip fly={c.chapterSfx.fly} hint={c.chapterSfx.scroll}>
           {educations.map((item, index) => (
-            <li key={pick(item.title, "fr")} className="scene panel flex flex-col p-5" style={{ transitionDelay: `${index * 140}ms`, rotate: `${[-1, 0.8, -0.5][index % 3]}deg` }}>
+            <div key={pick(item.title, "fr")} className="panel flex min-h-[220px] flex-col p-5" style={{ rotate: `${[-1, 0.8, -0.5][index % 3]}deg` }}>
               <p className="caption self-start">{pick(item.period, locale)}</p>
-              <p className="display mt-4 text-[1.7rem]">{pick(item.title, locale)}</p>
+              <p className="display mt-4 text-[1.8rem]">{pick(item.title, locale)}</p>
               <p className="mt-1 text-[15px] text-muted">{item.institution}{item.location ? ` · ${item.location}` : ""}</p>
-            </li>
+            </div>
           ))}
-        </InView>
-        <h3 className="display mt-14 text-3xl">{dict.journey.certifications} !</h3>
-        <ul className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {certifications.map((item, index) => (
-            <li key={pick(item.title, "fr")} className="panel flex items-center gap-4 p-4">
-              <span className="burst display flex-none text-xl" style={{ width: 76, height: 76, background: TINTS[(index + 2) % 3], color: ON_TINTS[(index + 2) % 3], transform: `rotate(${index % 2 ? 8 : -8}deg)` }}>{item.year ?? "—"}</span>
+            <div key={pick(item.title, "fr")} className="panel flex min-h-[220px] flex-col justify-center gap-4 p-5">
+              <span className="burst display flex-none text-2xl" style={{ width: 92, height: 92, background: TINTS[(index + 2) % 3], color: ON_TINTS[(index + 2) % 3], transform: `rotate(${index % 2 ? 8 : -8}deg)` }}>{item.year ?? "—"}</span>
               <span>
+                <span className="eyebrow">{dict.journey.certifications}</span>
                 {item.url ? (
-                  <a href={item.url} target="_blank" rel="noreferrer" className="link-underline leading-snug font-bold">{pick(item.title, locale)}</a>
+                  <a href={item.url} target="_blank" rel="noreferrer" className="link-underline mt-1 block text-lg leading-snug font-bold">{pick(item.title, locale)}</a>
                 ) : (
-                  <span className="block leading-snug font-bold">{pick(item.title, locale)}</span>
+                  <span className="mt-1 block text-lg leading-snug font-bold">{pick(item.title, locale)}</span>
                 )}
                 <span className="mt-0.5 block text-[13px] text-muted">{item.issuer} · {pick(item.kind, locale)}</span>
               </span>
-            </li>
+            </div>
           ))}
-        </ul>
+          <div className="panel dots grid min-h-[220px] place-items-center bg-yellow p-5 text-center text-[#141210]">
+            <span className="display text-5xl">{c.next}…</span>
+          </div>
+        </JourneyStrip>
       </section>
 
       {/* ── Chapitre 4 : le labo ───────── */}
@@ -210,7 +214,7 @@ export default async function Home() {
 
       {/* ── Chapitre 5 : le profil, en grande bulle ───────── */}
       <section id="about" className="container-site scroll-mt-24 pt-24 md:pt-32" aria-labelledby="about-title">
-        <SectionHeading id="about-title" chapter={`${c.chapter} 5`} eyebrow={dict.about.eyebrow} title={dict.about.title} />
+        <SectionHeading id="about-title" chapter={`${c.chapter} 5`} eyebrow={dict.about.eyebrow} title={dict.about.title} sfx={c.chapterSfx.about} />
         <div className="mt-10 grid gap-10 lg:grid-cols-[1.4fr_1fr]">
           <div className="bubble text-lg" style={{ ["--tail" as string]: "60px" }}>
             <p>{pick(profile.bio, locale)}</p>
@@ -242,9 +246,9 @@ export default async function Home() {
           </div>
         </div>
         {principles.length > 0 && (
-          <InView as="ol" className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <InView as="ol" className="skewable mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {principles.map((principle, index) => (
-              <li key={pick(principle.title, "fr")} className="scene panel p-5" style={{ transitionDelay: `${index * 100}ms` }}>
+              <li key={pick(principle.title, "fr")} className="flip-in panel p-5">
                 <span className="display text-5xl" style={{ color: TINTS[index % 3], WebkitTextStroke: "1.5px var(--ink)" }}>{index + 1}</span>
                 <h3 className="display mt-1 text-2xl">{pick(principle.title, locale)}</h3>
                 <p className="mt-1 text-[15px] text-muted">{pick(principle.body, locale)}</p>
@@ -258,7 +262,7 @@ export default async function Home() {
       <section id="contact" className="container-site scroll-mt-24 pt-24 md:pt-32" aria-labelledby="contact-title">
         <div className="grid gap-12 lg:grid-cols-12">
           <div className="lg:col-span-5">
-            <SectionHeading id="contact-title" chapter={`${c.chapter} 6`} eyebrow={dict.contact.eyebrow} title={dict.contact.title} subtitle={dict.contact.subtitle} />
+            <SectionHeading id="contact-title" chapter={`${c.chapter} 6`} eyebrow={dict.contact.eyebrow} title={dict.contact.title} subtitle={dict.contact.subtitle} sfx={c.chapterSfx.contact} />
             <dl className="mt-8 grid gap-1">
               <dt className="eyebrow">{dict.contact.direct}</dt>
               <dd><a href={`mailto:${profile.email}`} data-sfx className="link-underline text-xl font-bold break-all">{profile.email}</a></dd>

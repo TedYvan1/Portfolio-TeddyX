@@ -7,6 +7,7 @@ import { getContent } from "@/lib/content";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { ComicSfx } from "@/components/comic-sfx";
+import { ScrollFx } from "@/components/scroll-fx";
 import { themeScript } from "@/lib/theme-script";
 import { fontVariables } from "../fonts";
 import "../globals.css";
@@ -46,6 +47,7 @@ export default async function RootLayout({ children }: LayoutProps<"/[lang]">) {
         </a>
         <SiteHeader locale={locale} nav={dict.nav} theme={dict.theme} comic={dict.comic} />
         <ComicSfx words={dict.comic.sfx} />
+        <ScrollFx />
         <main id="main" className="flex-1">
           {children}
         </main>

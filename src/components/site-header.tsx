@@ -35,6 +35,8 @@ export function SiteHeader({ locale, nav, theme, comic }: Props) {
 
   return (
     <header style={{ viewTransitionName: "site-header" }} className={`sticky top-0 z-50 border-b-[3px] transition-[background-color,border-color] duration-200 ${scrolled || open ? "border-ink bg-page" : "border-transparent"}`}>
+      {/* Barre de lecture : avance avec le défilement de la page */}
+      <span aria-hidden="true" className="read-progress pointer-events-none absolute inset-x-0 -bottom-[5px] h-[5px] border-b-2 border-ink bg-yellow" />
       <div className="container-site flex h-[72px] items-center justify-between gap-3">
         <Link href={`/${locale}`} className="flex items-center gap-2" data-sfx>
           <LogoMark />

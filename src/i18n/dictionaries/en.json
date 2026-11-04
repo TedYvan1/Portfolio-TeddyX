@@ -166,6 +166,15 @@
     "cta": "Write to him",
     "bzzt": "BZZT!",
     "lab": "The lab",
-    "hello": "Hi! I’m"
+    "hello": "Hi! I’m",
+    "chapterSfx": {
+      "projects": "BAM!",
+      "skills": "POW!",
+      "journey": "VROOM!",
+      "about": "HEY!",
+      "contact": "RING!",
+      "fly": "ZOOOM!",
+      "scroll": "Scroll, the story moves on →"
+    }
   }
 }

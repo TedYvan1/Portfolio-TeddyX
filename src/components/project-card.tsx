@@ -52,7 +52,7 @@ export function StatusBurst({ project, dict, size = 84 }: { project: Project; di
 export function ProjectCard({ project, locale, dict, index = 0 }: { project: Project; locale: Locale; dict: Dictionary; index?: number }) {
   const tilt = [-1, 1.2, -0.6][index % 3];
   return (
-    <Link href={`/${locale}/projects/${project.slug}`} data-sfx className="cover-card panel group flex h-full flex-col overflow-visible" style={{ transform: `rotate(${tilt}deg)` }}>
+    <Link href={`/${locale}/projects/${project.slug}`} data-sfx className="fly-in cover-card panel group flex h-full flex-col overflow-visible" style={{ transform: `rotate(${tilt}deg)` }}>
       {/* Même nom que sur la page du projet : la couverture et le titre « voyagent » d'une page à l'autre. */}
       <ViewTransition name={`project-cover-${project.slug}`} share="morph" default="none">
         <div className="relative aspect-[4/3] overflow-hidden border-b-[3px] border-ink">

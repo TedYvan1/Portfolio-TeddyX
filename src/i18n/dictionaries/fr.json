@@ -166,6 +166,15 @@
     "cta": "Lui écrire",
     "bzzt": "BZZT !",
     "lab": "Le labo",
-    "hello": "Salut ! Moi c’est"
+    "hello": "Salut ! Moi c’est",
+    "chapterSfx": {
+      "projects": "BAM !",
+      "skills": "POW !",
+      "journey": "VROUM !",
+      "about": "HÉ HO !",
+      "contact": "DRING !",
+      "fly": "ZOOOM !",
+      "scroll": "Défilez, l’histoire avance →"
+    }
   }
 }
