@@ -14,24 +14,27 @@ export default async function LabsPage() {
   const [locale, dict, { labs }] = await Promise.all([getLocale(), getDictionary(), getContent()]);
   return (
     <div className="container-site py-16 md:py-24">
-      <SectionHeading eyebrow={dict.labs.eyebrow} title={dict.labs.title} subtitle={dict.labs.subtitle} glyph="skill" />
+      <SectionHeading as="h1" port="04" eyebrow={dict.labs.eyebrow} title={dict.labs.title} subtitle={dict.labs.subtitle} />
       {labs.length ? (
-        <ul className="mt-12 grid gap-4 md:grid-cols-2">
+        <ul className="mt-12 grid gap-5 md:grid-cols-2">
           {labs.map(lab => (
             <li key={lab.slug}>
-              <div>
-                <Link href={`/${locale}/labs/${lab.slug}`} className="group panel block h-full p-7 transition-transform hover:-translate-y-1">
-                  <p className="tag">{lab.platform}{lab.done_on ? ` · ${lab.done_on.slice(0, 4)}` : ""}</p>
-                  <h2 className="mt-3 text-xl font-bold">{pick(lab.title, locale)}</h2>
-                  <p className="mt-2 text-[15px] leading-7 text-muted">{pick(lab.summary, locale)}</p>
-                  <p className="tag mt-4">{lab.tools.join(" · ")}</p>
-                </Link>
-              </div>
+              <Link href={`/${locale}/labs/${lab.slug}`} className="module group panel block h-full p-7">
+                <p className="flex items-center gap-2 tag"><span aria-hidden="true" className="led led-on" />{lab.platform}{lab.done_on ? ` · ${lab.done_on.slice(0, 4)}` : ""}</p>
+                <h2 className="mt-3 text-xl font-extrabold">{pick(lab.title, locale)}</h2>
+                <p className="mt-2 text-[15px] leading-7 text-muted">{pick(lab.summary, locale)}</p>
+                <p className="tag mt-4">{lab.tools.join(" · ")}</p>
+              </Link>
             </li>
           ))}
         </ul>
       ) : (
-        <p className="panel mt-12 p-10 text-center text-lg text-muted">{dict.labs.empty}</p>
+        // Port libre : rien de branché pour l'instant.
+        <div className="mt-12 flex flex-col items-center gap-5 rounded-[4px] bg-rack px-6 py-14 text-center">
+          <span aria-hidden="true" className="flex items-center gap-1.5"><span className="led" /><span className="led" /></span>
+          <span aria-hidden="true" className="port-socket w-20" />
+          <p className="max-w-md text-lg text-[#e9e7e1]">{dict.labs.empty}</p>
+        </div>
       )}
     </div>
   );

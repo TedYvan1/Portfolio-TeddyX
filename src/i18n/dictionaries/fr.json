@@ -37,7 +37,7 @@
   "projects": {
     "eyebrow": "Projets",
     "title": "Des projets réels, expliqués de bout en bout.",
-    "subtitle": "Contexte, choix techniques, résultats : chaque projet est raconté comme une étude de cas.",
+    "subtitle": "Contexte, choix techniques, résultats : chaque projet est raconté comme une étude de cas.",
     "all": "Tous les projets",
     "inProgress": "En cours",
     "done": "Livré",
@@ -66,7 +66,7 @@
   },
   "about": {
     "eyebrow": "Profil",
-    "title": "Du réseau à l'interface, une seule exigence : que ça tienne.",
+    "title": "Du réseau à l'interface, une seule exigence : que ça tienne.",
     "strengths": "Atouts",
     "languages": "Langues"
   },
@@ -88,7 +88,7 @@
   "labs": {
     "eyebrow": "Labs",
     "title": "Labs réseau & sécurité",
-    "subtitle": "Exercices pratiques, configurations et comptes-rendus : la partie infrastructure de mon travail.",
+    "subtitle": "Exercices pratiques, configurations et comptes-rendus : la partie infrastructure de mon travail.",
     "empty": "Les premiers labs arrivent bientôt.",
     "back": "Tous les labs",
     "tools": "Outils",
@@ -96,8 +96,8 @@
   },
   "contact": {
     "eyebrow": "Contact",
-    "title": "Un stage, un projet, une question ?",
-    "subtitle": "Écrivez-moi : je réponds sous 48 heures.",
+    "title": "Un stage, un projet, une question ?",
+    "subtitle": "Écrivez-moi : je réponds sous 48 heures.",
     "name": "Nom",
     "email": "Email",
     "subject": "Sujet",
@@ -117,7 +117,7 @@
       "message": "Votre message doit faire au moins 20 caractères.",
       "rateLimit": "Trop de messages envoyés. Réessayez dans une heure.",
       "unavailable": "L'envoi est momentanément indisponible. Écrivez-moi directement par email.",
-      "summary": "Le formulaire contient des erreurs :"
+      "summary": "Le formulaire contient des erreurs :"
     },
     "direct": "Ou directement"
   },
@@ -130,25 +130,27 @@
     "text": "Cette page n'existe pas, ou elle a changé d'adresse.",
     "back": "Revenir à l'accueil"
   },
-  "graph": {
-    "hub": "Pôle",
-    "usedIn": "Utilisé dans",
-    "seeList": "Voir le détail",
-    "credential": "Voir le certificat",
-    "writeMe": "M’écrire",
-    "open": "Ouvrir",
-    "hint": "Glissez les nœuds · survolez · cliquez",
-    "legend": "Afficher",
-    "listView": "Tout voir en liste",
-    "close": "Fermer",
-    "label": "Graphe interactif de mon parcours : projets, compétences, formations et contact",
-    "me": "Moi",
-    "groups": {
-      "project": "Projets",
-      "skill": "Compétences",
+  "panel": {
+    "label": "Panneau de brassage : chaque port mène à une partie du site",
+    "serial": "TY-PP01 · 8 PORTS · CAT6",
+    "hint": "Bougez la souris dans les câbles · un port = une section",
+    "port": "Port",
+    "linked": "connecté",
+    "free": "libre",
+    "ports": {
+      "projects": "Projets",
+      "labs": "Labs",
+      "skills": "Compétences",
       "journey": "Parcours",
-      "contact": "Contact"
-    },
-    "keyboard": "Astuce clavier : Tab pour parcourir les nœuds, Entrée pour ouvrir."
+      "about": "Profil",
+      "contact": "Contact",
+      "cv": "CV",
+      "github": "GitHub"
+    }
+  },
+  "theme": {
+    "label": "Thème",
+    "toLight": "Passer au thème clair",
+    "toDark": "Passer au thème sombre"
   }
 }

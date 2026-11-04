@@ -1,17 +1,20 @@
-import type { NodeGroup } from "@/lib/graph";
+import { InView } from "./in-view";
 
-/** Titre de section ; la pastille reprend la forme du type de nœud correspondant dans le graphe. */
-export function SectionHeading({ eyebrow, title, subtitle, id, glyph }: { eyebrow: string; title: string; subtitle?: string; id?: string; glyph?: Exclude<NodeGroup, "me"> }) {
+/**
+ * Titre de section : une bande d'étiqueteuse (numéro de port + nom) qui s'imprime à l'arrivée,
+ * puis le titre. Le numéro correspond au port du panneau de l'accueil.
+ */
+export function SectionHeading({ eyebrow, title, subtitle, id, port, as: Heading = "h2" }: { eyebrow: string; title: string; subtitle?: string; id?: string; port?: string; as?: "h1" | "h2" }) {
   return (
-    <div className="max-w-3xl">
-      <p className="eyebrow flex items-center gap-2">
-        {glyph && <span aria-hidden="true" className={`glyph glyph-${glyph}`} />}
+    <InView className="max-w-3xl">
+      <p className="tape tape-print">
+        {port && <span className="tape-num">{port}</span>}
         {eyebrow}
       </p>
-      <h2 id={id} className="mt-3 text-[clamp(1.9rem,4.2vw,3rem)] leading-[1.06] font-bold tracking-[-0.02em]">
+      <Heading id={id} className="mt-5 text-[clamp(1.9rem,4.2vw,3.1rem)] leading-[1.04] font-extrabold tracking-[-0.025em] text-balance">
         {title}
-      </h2>
+      </Heading>
       {subtitle && <p className="mt-4 text-lg leading-8 text-muted">{subtitle}</p>}
-    </div>
+    </InView>
   );
 }

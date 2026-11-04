@@ -130,25 +130,27 @@
     "text": "This page doesn't exist, or it has moved.",
     "back": "Back to home"
   },
-  "graph": {
-    "hub": "Hub",
-    "usedIn": "Used in",
-    "seeList": "See details",
-    "credential": "View credential",
-    "writeMe": "Write to me",
-    "open": "Open",
-    "hint": "Drag nodes · hover · click",
-    "legend": "Show",
-    "listView": "See everything as a list",
-    "close": "Close",
-    "label": "Interactive graph of my journey: projects, skills, education and contact",
-    "me": "Me",
-    "groups": {
-      "project": "Projects",
-      "skill": "Skills",
+  "panel": {
+    "label": "Patch panel: each port leads to a part of the site",
+    "serial": "TY-PP01 · 8 PORTS · CAT6",
+    "hint": "Move your cursor through the cables · one port = one section",
+    "port": "Port",
+    "linked": "linked",
+    "free": "free",
+    "ports": {
+      "projects": "Projects",
+      "labs": "Labs",
+      "skills": "Skills",
       "journey": "Journey",
-      "contact": "Contact"
-    },
-    "keyboard": "Keyboard tip: Tab through the nodes, Enter to open."
+      "about": "Profile",
+      "contact": "Contact",
+      "cv": "Resume",
+      "github": "GitHub"
+    }
+  },
+  "theme": {
+    "label": "Theme",
+    "toLight": "Switch to light theme",
+    "toDark": "Switch to dark theme"
   }
 }

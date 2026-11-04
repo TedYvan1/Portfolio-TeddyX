@@ -28,15 +28,15 @@ export default async function LabPage({ params }: PageProps<"/[lang]/labs/[slug]
   const [{ slug }, locale, dict] = await Promise.all([params, getLocale(), getDictionary()]);
   const lab = await findLab(slug);
   if (!lab) notFound();
-  // Corps du lab : paragraphes séparés par une ligne vide (le rendu Markdown complet viendra avec l'admin).
+  // Corps du lab : paragraphes séparés par une ligne vide.
   const paragraphs = pick(lab.body, locale).split(/\n{2,}/).filter(Boolean);
 
   return (
     <article className="container-site py-12 md:py-20">
-      <Link href={`/${locale}/labs`} className="link-underline text-sm font-bold text-muted">← {dict.labs.back}</Link>
+      <Link href={`/${locale}/labs`} className="link-underline font-mono text-sm text-muted">← {dict.labs.back}</Link>
       <div className="mt-8 max-w-3xl">
-        <p className="eyebrow">{lab.platform}{lab.done_on ? ` · ${lab.done_on}` : ""}</p>
-        <h1 className="mt-4 text-[clamp(2.25rem,6vw,4.5rem)] leading-[1] font-bold tracking-[-0.025em]">{pick(lab.title, locale)}</h1>
+        <p className="tape">{lab.platform}{lab.done_on ? ` · ${lab.done_on}` : ""}</p>
+        <h1 className="mt-5 text-[clamp(2.25rem,6vw,4.5rem)] leading-[1] font-extrabold tracking-[-0.035em]">{pick(lab.title, locale)}</h1>
         <p className="mt-5 text-xl leading-relaxed text-muted">{pick(lab.summary, locale)}</p>
         {lab.tools.length > 0 && (
           <p className="mt-6 flex flex-wrap gap-2" aria-label={dict.labs.tools}>
