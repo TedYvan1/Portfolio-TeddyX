@@ -8,6 +8,7 @@ import { ContactForm } from "@/components/contact-form";
 import { InView } from "@/components/in-view";
 import { JourneyStrip } from "@/components/journey-strip";
 import { SkillDeck } from "@/components/skill-deck";
+import { techIcons } from "@/lib/tech-icons";
 
 const TINTS = ["var(--blue)", "var(--red)", "var(--yellow)"];
 // Couleur du texte posé sur chaque aplat (contraste suffisant de jour comme de nuit)
@@ -142,7 +143,7 @@ export default async function Home() {
       {skills.length > 0 && (
         <section id="skills" className="container-site scroll-mt-24 pt-24 md:pt-32" aria-labelledby="skills-title">
           <SectionHeading id="skills-title" chapter={`${c.chapter} 2`} eyebrow={dict.skills.eyebrow} title={dict.skills.title} sfx={c.chapterSfx.skills} />
-          <SkillDeck families={skills.map(category => ({ name: pick(category.name, locale), skills: category.skills }))} levels={dict.skills.levels} labels={c.deck} />
+          <SkillDeck families={skills.map(category => ({ name: pick(category.name, locale), skills: category.skills.map(skill => ({ ...skill, icons: techIcons(skill.name) })) }))} levels={dict.skills.levels} labels={c.deck} />
         </section>
       )}
 
