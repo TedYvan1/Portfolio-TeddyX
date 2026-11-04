@@ -1,0 +1,154 @@
+{
+  "meta": {
+    "title": "Ted Yvan Kamanan — Réseaux, sécurité et génie logiciel",
+    "description": "Étudiant en réseaux, sécurité informatique et génie logiciel à Abidjan. Applications web et mobiles sécurisées, à la recherche d'un stage.",
+    "projectsTitle": "Projets",
+    "labsTitle": "Labs réseau & sécurité"
+  },
+  "nav": {
+    "home": "Accueil",
+    "projects": "Projets",
+    "labs": "Labs",
+    "journey": "Parcours",
+    "contact": "Contact",
+    "cta": "Travaillons ensemble",
+    "language": "Langue",
+    "switchTo": "English",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu",
+    "skip": "Aller au contenu"
+  },
+  "hero": {
+    "eyebrow": "Étudiant ingénieur · Abidjan",
+    "primary": "Découvrir mon travail",
+    "cv": "Télécharger le CV",
+    "available": "Disponible pour un stage",
+    "featured": "Projet phare",
+    "domains": "Réseaux · Sécurité · Dev",
+    "tagline": "Réseaux · Sécurité · Génie logiciel"
+  },
+  "stats": {
+    "degrees": "2× L3",
+    "degreesLabel": "Réseaux & Sécurité · Génie Logiciel",
+    "certificationsLabel": "Certifications",
+    "projectsLabel": "Projets publiés",
+    "languages": "FR · EN"
+  },
+  "projects": {
+    "eyebrow": "Projets",
+    "title": "Des projets réels, expliqués de bout en bout.",
+    "subtitle": "Contexte, choix techniques, résultats : chaque projet est raconté comme une étude de cas.",
+    "all": "Tous les projets",
+    "inProgress": "En cours",
+    "done": "Livré",
+    "read": "Lire l'étude de cas",
+    "empty": "Aucun projet publié pour l'instant."
+  },
+  "project": {
+    "back": "Tous les projets",
+    "context": "Contexte",
+    "role": "Mon rôle",
+    "challenges": "Défis",
+    "solution": "Solution",
+    "results": "Résultats",
+    "stack": "Technologies",
+    "status": "Statut",
+    "year": "Année",
+    "category": "Catégorie",
+    "code": "Code source",
+    "live": "Voir en ligne",
+    "gallery": "Captures",
+    "next": "Projet suivant"
+  },
+  "seeking": {
+    "eyebrow": "Ce que je cherche",
+    "title": "Un stage où apprendre vite et livrer du concret."
+  },
+  "about": {
+    "eyebrow": "Profil",
+    "title": "Du réseau à l'interface, une seule exigence : que ça tienne.",
+    "strengths": "Atouts",
+    "languages": "Langues"
+  },
+  "skills": {
+    "eyebrow": "Compétences",
+    "title": "La boîte à outils.",
+    "levels": [
+      "Débutant",
+      "Intermédiaire",
+      "Avancé"
+    ]
+  },
+  "journey": {
+    "eyebrow": "Parcours",
+    "title": "Deux licences en parallèle, une même direction.",
+    "education": "Formation",
+    "certifications": "Certifications"
+  },
+  "labs": {
+    "eyebrow": "Labs",
+    "title": "Labs réseau & sécurité",
+    "subtitle": "Exercices pratiques, configurations et comptes-rendus : la partie infrastructure de mon travail.",
+    "empty": "Les premiers labs arrivent bientôt.",
+    "back": "Tous les labs",
+    "tools": "Outils",
+    "platform": "Plateforme"
+  },
+  "contact": {
+    "eyebrow": "Contact",
+    "title": "Un stage, un projet, une question ?",
+    "subtitle": "Écrivez-moi : je réponds sous 48 heures.",
+    "name": "Nom",
+    "email": "Email",
+    "subject": "Sujet",
+    "message": "Message",
+    "namePlaceholder": "Votre nom",
+    "emailPlaceholder": "vous@entreprise.com",
+    "subjectPlaceholder": "Proposition de stage, projet…",
+    "messagePlaceholder": "Quelques lignes sur votre besoin",
+    "required": "Champs obligatoires",
+    "send": "Envoyer le message",
+    "sending": "Envoi…",
+    "success": "Merci, votre message est bien parti. Je vous réponds sous 48 heures.",
+    "errors": {
+      "name": "Indiquez votre nom (2 caractères minimum).",
+      "email": "Indiquez une adresse email valide.",
+      "subject": "Indiquez un sujet (3 caractères minimum).",
+      "message": "Votre message doit faire au moins 20 caractères.",
+      "rateLimit": "Trop de messages envoyés. Réessayez dans une heure.",
+      "unavailable": "L'envoi est momentanément indisponible. Écrivez-moi directement par email.",
+      "summary": "Le formulaire contient des erreurs :"
+    },
+    "direct": "Ou directement"
+  },
+  "footer": {
+    "rights": "Tous droits réservés.",
+    "top": "Haut de page"
+  },
+  "notFound": {
+    "title": "Page introuvable",
+    "text": "Cette page n'existe pas, ou elle a changé d'adresse.",
+    "back": "Revenir à l'accueil"
+  },
+  "graph": {
+    "hub": "Pôle",
+    "usedIn": "Utilisé dans",
+    "seeList": "Voir le détail",
+    "credential": "Voir le certificat",
+    "writeMe": "M’écrire",
+    "open": "Ouvrir",
+    "hint": "Glissez les nœuds · survolez · cliquez",
+    "legend": "Afficher",
+    "listView": "Tout voir en liste",
+    "close": "Fermer",
+    "label": "Graphe interactif de mon parcours : projets, compétences, formations et contact",
+    "me": "Moi",
+    "groups": {
+      "project": "Projets",
+      "skill": "Compétences",
+      "journey": "Parcours",
+      "contact": "Contact"
+    },
+    "keyboard": "Astuce clavier : Tab pour parcourir les nœuds, Entrée pour ouvrir."
+  }
+}

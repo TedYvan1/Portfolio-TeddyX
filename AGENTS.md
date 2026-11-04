@@ -2,57 +2,47 @@
 
 ## Project overview
 
-This repository is a portfolio and CMS application for a personal brand site. The app is split between a Vite/React frontend and an Express + tRPC backend, backed by PostgreSQL via Drizzle ORM. The admin area is protected by JWT-based auth and `adminProcedure` checks.
+Portfolio v2 of Ted Yvan Kamanan (networks, cybersecurity, software engineering student). Next.js 16 (App Router, Cache Components) + Supabase (Postgres, Auth, Storage), bilingual FR/EN, with an online admin. Design direction: « Graphe réseau vivant » — dark, sharp corners (one 4px radius), IBM Plex Sans + Mono, each content type has its own colour AND shape (project = square, skill = dot, journey = diamond, contact = ring). No gradients, glows, glass or scroll fade-ins; the home graph is the one animated element.
 
-See [README.md](README.md) for the full product overview, environment setup, and deployment notes.
+The v1 (Vite + Express + tRPC + Drizzle) lives on `main` until the v2 cut-over; this branch (`v2`) contains only the new app.
 
 ## Key directories
 
-- `client/src/`: React app, pages, reusable components, hooks, contexts, and style utilities.
-- `server/`: backend entry points, routers, auth, database, and tests.
-- `shared/`: shared constants and types used by client and server.
-- `drizzle/`: schema, migrations, and database metadata.
-- `components.json`: UI component registry for the project’s design system.
+- `src/app/[lang]/`: public site, one route tree per locale (`/fr`, `/en`). `lang` is a root param (`next/root-params`).
+- `src/app/admin/`: admin (own root layout, French only). `(panel)/` pages call `requireAdmin()`; `actions.ts` holds every mutation.
+- `src/lib/admin/`: `collections.ts` describes each editable table (fields drive forms, validation and lists), `auth.ts` (`requireAdmin`), `form-data.ts` (parsing/validation).
+- `src/i18n/`: locales (`config.ts`), UI dictionaries (`dictionaries/*.json`), `getLocale()` / `getDictionary()`.
+- `src/lib/supabase/`: `public.ts` (anon client, no cookies — for cached public reads), `server.ts` (session client for admin and Server Actions), `browser.ts` (admin uploads straight to Storage).
+- `src/lib/content.ts`: cached content reads (`"use cache"` + `cacheLife` + `cacheTag("content")`).
+- `src/proxy.ts`: redirects paths without a locale to `/fr` or `/en` (Accept-Language); on `/admin` it refreshes the Supabase session and sends visitors without one to `/admin/login`.
+- `supabase/migrations/`: schema, RLS policies, storage bucket. Source of truth for the database.
+- `scripts/import-legacy.mjs`: one-off import of v1 data into the v2 schema.
 
 ## Working conventions
 
-- Keep client and server responsibilities separated: UI logic belongs in `client/src`, API and auth logic in `server/`.
-- Prefer the existing architecture and naming patterns instead of introducing new frameworks or patterns without a clear need.
-- When changing database behavior, update the Drizzle schema and regenerate or push migrations as needed.
-- Treat admin-only access as a first-class concern: routes and actions tied to admin functionality should verify role-based permissions consistently.
-- Preserve the project’s current stack choices: React + Vite on the client, Express + tRPC on the server, and Drizzle/Postgres for persistence.
-- The project historically removed Manus-specific code and keeps the stack focused on standard Postgres patterns.
+- Translatable text is stored as `jsonb` `{ "fr": "...", "en": "..." }` (`Localized`); render it with `pick(value, locale)`, which falls back to the other language.
+- Public pages read content through `src/lib/content.ts` only. Admin mutations must call `revalidateTag(CONTENT_TAG, "max")` (or `updateTag`) after writing.
+- Never use the cookie-based client inside a `"use cache"` function; never use a service-role key in the app. Security is enforced by RLS (`public.is_admin()`), not by the UI.
+- To make a new table editable, add it to `src/lib/admin/collections.ts` (limits must match the SQL constraints). Files are uploaded from the browser, never through a Server Action (Vercel body limit).
+- Contact messages go through the `public.submit_message` RPC (rate-limited), never a direct insert.
+- Any schema change is a new file in `supabase/migrations/`, validated before use.
 
 ## Typical commands
 
-Run project tasks from the repo root:
-
-- `npm install` to install dependencies (npm is the only package manager; `package-lock.json` is the lockfile)
-- `npm run dev` to run the Vite + Express app in development mode
-- `npm run check` to run the TypeScript type check
-- `npm run build` to build the frontend and server bundles
-- `npm run build:vercel` to produce the Vercel Build Output (`.vercel/output`) used in production
-- `npm test` to run Vitest tests
-- `npm run seed` to seed the database content
-- `npm run db:generate` and `npm run db:migrate` for Drizzle schema updates
-
-## Environment and configuration
-
-- Configure the required environment variables before running the app or database commands.
-- Backend env vars use the service names described in [README.md](README.md), while frontend values must be prefixed with `VITE_` as needed.
-- JWT auth and database setup are all part of the standard working environment for this project.
-
-## Safe change guidance
-
-- Keep fixes scoped to the relevant layer and avoid broad refactors.
-- Match the existing UI and data flow conventions instead of creating parallel implementations.
-- Prefer minimal, explicit edits that align with the codebase’s current patterns.
-- Verify with the smallest relevant command after changes, usually `npm run check` and the related test or feature workflow.
+- `npm run dev`, `npm run build`, `npm run start`
+- `npm run lint`, `npm run typecheck`
+- `npm run import:legacy -- --dry-run` then `npm run import:legacy` (needs `DATABASE_URL` in `.env`; reads v1 tables from the `legacy` schema created by `20261102000000_archive_v1.sql`)
 
 ## Validation
 
-Before concluding work, validate the changed behavior with the relevant commands, prioritizing:
+Before concluding work: `npm run typecheck`, `npm run lint`, `npm run build`, then check the affected pages in both locales.
 
-1. `npm run check` for TypeScript correctness
-2. `npm test` for regression coverage
-3. Feature-specific checks or manual validation for UI or API changes
+<!-- BEGIN:nextjs-agent-rules -->
+
+## This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

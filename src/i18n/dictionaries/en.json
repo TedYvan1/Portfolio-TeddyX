@@ -1,0 +1,154 @@
+{
+  "meta": {
+    "title": "Ted Yvan Kamanan — Networks, security and software engineering",
+    "description": "Networks, cybersecurity and software engineering student based in Abidjan. Secure web and mobile apps, looking for an internship.",
+    "projectsTitle": "Projects",
+    "labsTitle": "Networking & security labs"
+  },
+  "nav": {
+    "home": "Home",
+    "projects": "Projects",
+    "labs": "Labs",
+    "journey": "Journey",
+    "contact": "Contact",
+    "cta": "Let's work together",
+    "language": "Language",
+    "switchTo": "Français",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "skip": "Skip to content"
+  },
+  "hero": {
+    "eyebrow": "Engineering student · Abidjan",
+    "primary": "Explore my work",
+    "cv": "Download my CV",
+    "available": "Open to internships",
+    "featured": "Featured project",
+    "domains": "Networks · Security · Dev",
+    "tagline": "Networks · Security · Software engineering"
+  },
+  "stats": {
+    "degrees": "2× BSc",
+    "degreesLabel": "Networks & Security · Software Engineering",
+    "certificationsLabel": "Certifications",
+    "projectsLabel": "Published projects",
+    "languages": "FR · EN"
+  },
+  "projects": {
+    "eyebrow": "Projects",
+    "title": "Real projects, explained end to end.",
+    "subtitle": "Context, technical choices, results: each project is told as a case study.",
+    "all": "All projects",
+    "inProgress": "In progress",
+    "done": "Shipped",
+    "read": "Read the case study",
+    "empty": "No published project yet."
+  },
+  "project": {
+    "back": "All projects",
+    "context": "Context",
+    "role": "My role",
+    "challenges": "Challenges",
+    "solution": "Solution",
+    "results": "Results",
+    "stack": "Tech stack",
+    "status": "Status",
+    "year": "Year",
+    "category": "Category",
+    "code": "Source code",
+    "live": "Live site",
+    "gallery": "Screenshots",
+    "next": "Next project"
+  },
+  "seeking": {
+    "eyebrow": "What I'm looking for",
+    "title": "An internship where I learn fast and ship real work."
+  },
+  "about": {
+    "eyebrow": "Profile",
+    "title": "From the network to the interface, one standard: it has to hold.",
+    "strengths": "Strengths",
+    "languages": "Languages"
+  },
+  "skills": {
+    "eyebrow": "Skills",
+    "title": "The toolbox.",
+    "levels": [
+      "Beginner",
+      "Intermediate",
+      "Advanced"
+    ]
+  },
+  "journey": {
+    "eyebrow": "Journey",
+    "title": "Two degrees in parallel, one direction.",
+    "education": "Education",
+    "certifications": "Certifications"
+  },
+  "labs": {
+    "eyebrow": "Labs",
+    "title": "Networking & security labs",
+    "subtitle": "Hands-on exercises, configurations and write-ups: the infrastructure side of my work.",
+    "empty": "The first labs are coming soon.",
+    "back": "All labs",
+    "tools": "Tools",
+    "platform": "Platform"
+  },
+  "contact": {
+    "eyebrow": "Contact",
+    "title": "An internship, a project, a question?",
+    "subtitle": "Write to me: I reply within 48 hours.",
+    "name": "Name",
+    "email": "Email",
+    "subject": "Subject",
+    "message": "Message",
+    "namePlaceholder": "Your name",
+    "emailPlaceholder": "you@company.com",
+    "subjectPlaceholder": "Internship offer, project…",
+    "messagePlaceholder": "A few lines about what you need",
+    "required": "Required fields",
+    "send": "Send message",
+    "sending": "Sending…",
+    "success": "Thank you, your message is on its way. I'll reply within 48 hours.",
+    "errors": {
+      "name": "Please enter your name (at least 2 characters).",
+      "email": "Please enter a valid email address.",
+      "subject": "Please enter a subject (at least 3 characters).",
+      "message": "Your message must be at least 20 characters long.",
+      "rateLimit": "Too many messages sent. Please try again in an hour.",
+      "unavailable": "Sending is temporarily unavailable. Please email me directly.",
+      "summary": "The form has errors:"
+    },
+    "direct": "Or directly"
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "top": "Back to top"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "text": "This page doesn't exist, or it has moved.",
+    "back": "Back to home"
+  },
+  "graph": {
+    "hub": "Hub",
+    "usedIn": "Used in",
+    "seeList": "See details",
+    "credential": "View credential",
+    "writeMe": "Write to me",
+    "open": "Open",
+    "hint": "Drag nodes · hover · click",
+    "legend": "Show",
+    "listView": "See everything as a list",
+    "close": "Close",
+    "label": "Interactive graph of my journey: projects, skills, education and contact",
+    "me": "Me",
+    "groups": {
+      "project": "Projects",
+      "skill": "Skills",
+      "journey": "Journey",
+      "contact": "Contact"
+    },
+    "keyboard": "Keyboard tip: Tab through the nodes, Enter to open."
+  }
+}
