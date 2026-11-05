@@ -1,17 +1,23 @@
-import type { NodeGroup } from "@/lib/graph";
+import { InView } from "./in-view";
 
-/** Titre de section ; la pastille reprend la forme du type de nœud correspondant dans le graphe. */
-export function SectionHeading({ eyebrow, title, subtitle, id, glyph }: { eyebrow: string; title: string; subtitle?: string; id?: string; glyph?: Exclude<NodeGroup, "me"> }) {
+/**
+ * Ouverture de chapitre : un récitatif jaune « Chapitre N », puis le titre en lettrage de BD.
+ * À l'arrivée à l'écran, le titre s'abat avec une secousse et une grosse onomatopée (`sfx`)
+ * explose derrière lui.
+ */
+export function SectionHeading({ eyebrow, title, subtitle, id, chapter, sfx, as: Heading = "h2" }: { eyebrow: string; title: string; subtitle?: string; id?: string; chapter?: string; sfx?: string; as?: "h1" | "h2" }) {
   return (
-    <div className="max-w-3xl">
-      <p className="eyebrow flex items-center gap-2">
-        {glyph && <span aria-hidden="true" className={`glyph glyph-${glyph}`} />}
-        {eyebrow}
-      </p>
-      <h2 id={id} className="mt-3 text-[clamp(1.9rem,4.2vw,3rem)] leading-[1.06] font-bold tracking-[-0.02em]">
+    <InView className="relative isolate max-w-3xl">
+      {sfx && (
+        <span aria-hidden="true" className="slam-sfx pop-title pointer-events-none absolute -top-10 right-0 -z-10 text-[clamp(4rem,11vw,8.5rem)] text-red! opacity-90 sm:-right-24">
+          {sfx}
+        </span>
+      )}
+      <p className="caption slam-caption -rotate-1">{chapter ? `${chapter} · ` : ""}{eyebrow}</p>
+      <Heading id={id} className="slam display mt-4 text-[clamp(2.4rem,5.6vw,4.6rem)] text-balance">
         {title}
-      </h2>
-      {subtitle && <p className="mt-4 text-lg leading-8 text-muted">{subtitle}</p>}
-    </div>
+      </Heading>
+      {subtitle && <p className="slam-sub mt-3 max-w-[54ch] text-lg text-muted">{subtitle}</p>}
+    </InView>
   );
 }

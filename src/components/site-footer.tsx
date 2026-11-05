@@ -14,6 +14,7 @@ async function currentYear() {
   return new Date().getFullYear();
 }
 
+/** Quatrième de couverture : « Fin », l'éditeur, les liens. */
 export async function SiteFooter({ locale, dict, profile }: { locale: Locale; dict: Dictionary; profile: Profile }) {
   const year = await currentYear();
   const links = [
@@ -24,27 +25,28 @@ export async function SiteFooter({ locale, dict, profile }: { locale: Locale; di
   ].filter((link): link is { label: string; href: string } => Boolean(link.href));
 
   return (
-    <footer className="border-t border-border">
-      <div className="container-site grid gap-8 py-12 md:grid-cols-[1.5fr_1fr_auto] md:items-start">
-        <div>
-          <Link href={`/${locale}`} className="flex items-center gap-2.5 text-[17px] font-bold tracking-tight">
-            <LogoMark size={24} />
-            {profile.display_name}
-          </Link>
-          <p className="mt-3 max-w-sm text-[15px] leading-7 text-muted">{pick(profile.role, locale)} · {profile.location}</p>
+    <footer className="mt-28 border-t-[3px] border-ink bg-panel">
+      <div className="container-site grid gap-8 py-10 md:grid-cols-[1.3fr_1fr_auto] md:items-center">
+        <div className="flex items-center gap-4">
+          <LogoMark size={56} />
+          <div>
+            <p className="display text-3xl">{dict.comic.end}.</p>
+            <p className="text-[15px] text-muted">{pick(profile.role, locale)} · {profile.location}</p>
+          </div>
         </div>
-        <ul className="grid grid-cols-2 gap-3 text-[15px] font-semibold">
+        <ul className="flex flex-wrap gap-2">
           {links.map(link => (
             <li key={link.label}>
-              <a href={link.href} className="link-underline" {...(link.href.startsWith("http") ? { target: "_blank", rel: "noreferrer" } : {})}>
+              <a href={link.href} data-sfx className="chip min-h-11 px-3.5 text-sm shadow-[2px_2px_0_var(--shadow)]" {...(link.href.startsWith("http") ? { target: "_blank", rel: "noreferrer" } : {})}>
                 {link.label}
               </a>
             </li>
           ))}
         </ul>
-        <div className="flex flex-col gap-2 text-sm text-muted md:items-end">
-          <a href="#top" className="link-underline font-semibold text-foreground">↑ {dict.footer.top}</a>
-          <p>© {year} {profile.display_name}. {dict.footer.rights}</p>
+        <div className="flex flex-col gap-1 text-sm text-muted md:items-end">
+          <a href="#top" className="link-underline inline-flex min-h-11 items-center font-bold text-foreground">↑ {dict.footer.top}</a>
+          <p>© {year} {dict.comic.publisher}. {dict.footer.rights}</p>
+          <Link href={`/${locale}`} className="sr-only">{profile.display_name}</Link>
         </div>
       </div>
     </footer>

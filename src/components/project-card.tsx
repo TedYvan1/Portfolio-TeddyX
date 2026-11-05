@@ -6,78 +6,69 @@ import type { Dictionary } from "@/i18n/dictionaries";
 import { mediaUrl } from "@/lib/content";
 import type { Project } from "@/lib/types";
 
-/** Pseudo-aléatoire stable : la même couverture pour un même slug, à chaque rendu. */
-function seeded(slug: string) {
-  let state = Array.from(slug).reduce((hash, char) => (hash * 31 + char.charCodeAt(0)) >>> 0, 7);
-  return () => {
-    state = (state * 1664525 + 1013904223) >>> 0;
-    return state / 2 ** 32;
-  };
-}
+const COVER_COLORS = ["var(--blue)", "var(--red)", "var(--yellow)"];
 
 /**
- * Couverture générée quand un projet n'a pas encore de capture :
- * un mini-graphe (le projet au centre, ses technologies autour), dans l'esprit de l'accueil.
+ * Couverture d'album générée tant qu'il n'y a pas de capture :
+ * aplat de couleur tramé, rayons d'action, titre en lettrage, numéro d'épisode.
  */
-function GeneratedCover({ project, title }: { project: Project; title: string }) {
-  const random = seeded(project.slug);
-  const tech = project.tech.slice(0, 6);
-  const nodes = tech.map((name, index) => {
-    const angle = (index / tech.length) * Math.PI * 2 + random() * 0.6;
-    const distance = 70 + random() * 40;
-    return { name, x: 200 + Math.cos(angle) * distance * 1.5, y: 120 + Math.sin(angle) * distance * 0.75 };
-  });
+function GeneratedCover({ project, title, issue, index }: { project: Project; title: string; issue: string; index: number }) {
+  const color = COVER_COLORS[index % COVER_COLORS.length];
   return (
-    <div className="absolute inset-0 bg-surface-2" role="img" aria-label={title}>
-      <div aria-hidden="true" className="dot-grid absolute inset-0 opacity-70" />
-      <svg viewBox="0 0 400 240" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 h-full w-full" aria-hidden="true">
-        {nodes.map(node => <line key={`l-${node.name}`} className="cover-link" x1="200" y1="120" x2={node.x} y2={node.y} stroke="var(--muted)" />)}
-        {nodes.map(node => (
-          <g key={node.name}>
-            <circle cx={node.x} cy={node.y} r="5" fill="var(--node-skill)" />
-            <text x={node.x} y={node.y + 18} textAnchor="middle" fontSize="11" fill="var(--muted)" fontFamily="var(--font-code), monospace">{node.name}</text>
-          </g>
-        ))}
-        <rect x="186" y="106" width="28" height="28" rx="5" fill="var(--node-project)" />
+    <div className="absolute inset-0 overflow-hidden" style={{ background: color }} role="img" aria-label={title}>
+      {/* Rayons d'action depuis le centre */}
+      <svg viewBox="0 0 400 250" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 h-full w-full opacity-25" aria-hidden="true">
+        {Array.from({ length: 18 }, (_, ray) => {
+          const a1 = (ray / 18) * Math.PI * 2, a2 = a1 + 0.12;
+          return <path key={ray} d={`M200 125 L${200 + Math.cos(a1) * 400} ${125 + Math.sin(a1) * 400} L${200 + Math.cos(a2) * 400} ${125 + Math.sin(a2) * 400} Z`} fill="#141210" />;
+        })}
       </svg>
+      <div aria-hidden="true" className="cover-dots dots-strong absolute inset-0" />
+      <span aria-hidden="true" className="absolute top-3 left-3 border-[2.5px] border-[#141210] bg-[#fffaf0] px-2 py-0.5 text-[12px] font-bold text-[#141210] uppercase">{issue} {index + 1} · {project.year ?? ""}</span>
+      <span aria-hidden="true" className="pop-title absolute inset-x-4 top-1/2 -translate-y-1/2 -rotate-3 text-center text-[clamp(2.4rem,5vw,3.6rem)] [overflow-wrap:anywhere]" style={{ color: color === "var(--yellow)" ? "#fffaf0" : "var(--yellow)" }}>{title}</span>
+      <span aria-hidden="true" className="absolute right-3 bottom-3 rounded-full border-[2.5px] border-[#141210] bg-[#fffaf0] px-2.5 py-0.5 text-[11px] font-bold text-[#141210]">{project.tech.slice(0, 3).join(" · ")}</span>
     </div>
   );
 }
 
-export function ProjectCover({ project, locale, sizes, priority = false }: { project: Project; locale: Locale; sizes: string; priority?: boolean }) {
+export function ProjectCover({ project, locale, sizes, issue, index = 0, priority = false }: { project: Project; locale: Locale; sizes: string; issue: string; index?: number; priority?: boolean }) {
   const src = mediaUrl(project.cover_path);
   const title = pick(project.title, locale);
   if (src) return <Image src={src} alt={title} fill sizes={sizes} priority={priority} className="object-cover" />;
-  return <GeneratedCover project={project} title={title} />;
+  return <GeneratedCover project={project} title={title} issue={issue} index={index} />;
 }
 
-export function ProjectCard({ project, locale, dict }: { project: Project; locale: Locale; dict: Dictionary }) {
+/** Statut en étoile d'action : « Livré » en jaune, « En cours » en rouge. */
+export function StatusBurst({ project, dict, size = 84 }: { project: Project; dict: Dictionary; size?: number }) {
   const inProgress = project.status === "in_progress";
   return (
-    <Link href={`/${locale}/projects/${project.slug}`} className="group panel flex h-full flex-col overflow-hidden transition-colors duration-200 hover:border-muted">
+    <span className="burst display rotate-6 px-3 text-[15px] leading-tight" style={{ width: size, height: size, background: inProgress ? "var(--red)" : "var(--yellow)", color: inProgress ? "var(--on-red)" : "#141210" }}>
+      {inProgress ? `${dict.projects.inProgress}…` : `${dict.projects.done} !`}
+    </span>
+  );
+}
+
+/** Carte projet : une couverture d'album, qui se soulève au survol. */
+export function ProjectCard({ project, locale, dict, index = 0 }: { project: Project; locale: Locale; dict: Dictionary; index?: number }) {
+  const tilt = [-1, 1.2, -0.6][index % 3];
+  return (
+    <Link href={`/${locale}/projects/${project.slug}`} data-sfx className="fly-in cover-card panel group flex h-full flex-col overflow-visible" style={{ transform: `rotate(${tilt}deg)` }}>
       {/* Même nom que sur la page du projet : la couverture et le titre « voyagent » d'une page à l'autre. */}
       <ViewTransition name={`project-cover-${project.slug}`} share="morph" default="none">
-        <div className="relative aspect-[16/10] overflow-hidden border-b border-border">
-          <ProjectCover project={project} locale={locale} sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" />
+        <div className="relative aspect-[4/3] overflow-hidden border-b-[3px] border-ink">
+          <ProjectCover project={project} locale={locale} issue={dict.comic.issueShort} index={index} sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" />
         </div>
       </ViewTransition>
-      <div className="flex flex-1 flex-col p-6">
-        <div className="flex items-center justify-between gap-3">
-          <span className="tag flex items-center gap-2">
-            <span aria-hidden="true" className="glyph glyph-project" />
-            {project.category}{project.year ? ` · ${project.year}` : ""}
-          </span>
-          <span className={`chip ${inProgress ? "text-journey" : "text-skill"}`}>
-            <span aria-hidden="true" className={`h-1.5 w-1.5 rounded-full ${inProgress ? "bg-journey" : "bg-skill"}`} />
-            {inProgress ? dict.projects.inProgress : dict.projects.done}
-          </span>
-        </div>
+      <div className="absolute -top-5 -right-4 z-10"><StatusBurst project={project} dict={dict} /></div>
+      <div className="flex flex-1 flex-col p-5">
+        <p className="eyebrow">{project.category}{project.year ? ` · ${project.year}` : ""}</p>
         <ViewTransition name={`project-title-${project.slug}`} share="morph" default="none">
-          <h3 className="mt-3 w-fit text-xl font-bold tracking-tight">{pick(project.title, locale)}</h3>
+          <h3 className="display mt-1 w-fit text-[2.1rem]">{pick(project.title, locale)}</h3>
         </ViewTransition>
-        <p className="mt-2 flex-1 text-[15px] leading-7 text-muted">{pick(project.summary, locale)}</p>
-        <span className="mt-5 text-sm font-semibold text-accent">
-          {dict.projects.read} <span aria-hidden="true" className="inline-block transition-transform group-hover:translate-x-1">→</span>
+        <p className="mt-1 flex-1 text-[15px] text-muted">{pick(project.summary, locale)}</p>
+        <span className="mt-4 flex items-center justify-between font-bold">
+          <span className="link-underline">{dict.projects.read}</span>
+          <span aria-hidden="true" className="display text-2xl text-red transition-transform group-hover:translate-x-1">→</span>
         </span>
       </div>
     </Link>

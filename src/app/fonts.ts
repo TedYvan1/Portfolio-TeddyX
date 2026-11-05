@@ -1,7 +1,7 @@
-import { IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
+import { Bangers, Comic_Neue } from "next/font/google";
 
-// Une seule famille, deux voix : Plex Sans pour le texte, Plex Mono pour les étiquettes techniques.
-const plexSans = IBM_Plex_Sans({ variable: "--font-body", subsets: ["latin"], weight: ["400", "500", "600", "700"] });
-const plexMono = IBM_Plex_Mono({ variable: "--font-code", subsets: ["latin"], weight: ["400", "500"] });
+// Lettrage de BD : Bangers pour les titres et les onomatopées, Comic Neue pour les bulles et le texte.
+const bangers = Bangers({ variable: "--font-display", subsets: ["latin"], weight: "400" });
+const comic = Comic_Neue({ variable: "--font-body", subsets: ["latin"], weight: ["400", "700"] });
 
-export const fontVariables = `${plexSans.variable} ${plexMono.variable}`;
+export const fontVariables = `${bangers.variable} ${comic.variable}`;

@@ -1,157 +1,214 @@
 @import "tailwindcss";
 
 /* ─────────────────────────────────────────────────────────────
-   Direction « Graphe réseau vivant » : fond nuit, nœuds colorés par type,
-   liens fins parcourus par des paquets. Chaque type a sa couleur ET sa forme
-   (projet = carré, compétence = rond, parcours = losange, contact = anneau),
-   pour ne jamais dépendre de la couleur seule. Contrastes ≥ 6:1.
+   Direction « Album de BD ».
+   Le portfolio se lit comme une bande dessinée : planche d'accueil, chapitres,
+   couvertures d'album, bulles et récitatifs. Encrage épais, trame de points,
+   trois couleurs franches (jaune, rouge, bleu). Chaque clic produit une onomatopée.
+   Deux éditions : jour (papier journal) et nuit (encre crème sur bleu nuit).
    ───────────────────────────────────────────────────────────── */
 :root {
-  --background: #07090f;
-  --surface: #0e121b;
-  --surface-2: #141a26;
-  --foreground: #e8ecf4;
-  --muted: #9aa4b8;
-  --border: #1f2736;
-  --accent: #7c95ff;
-  --accent-foreground: #07090f;
-  --node-me: #e8ecf4;
-  --node-project: #7c95ff;
-  --node-skill: #c4f26b;
-  --node-journey: #f6c453;
-  --node-contact: #ff8fb1;
-  --danger: #ff8a80;
+  --page: #f6eedb;
+  --panel: #fffaf0;
+  --ink: #141210;
+  --ink-2: #4b453d;
+  --shadow: #141210;
+  --dot: rgb(20 18 16 / 0.16);
+  --yellow: #ffd23f;
+  --red: #c8282c; /* 5.3:1 sur le papier, 5.5:1 sous du texte blanc */
+  --blue: #2d5bd7;
+  --on-color: #141210;
+  --on-blue: #fff;
+  --on-red: #fff;
+  --line: rgb(20 18 16 / 0.18);
+  --danger: #c1121f;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  /* Formes : angles nets, comme les nœuds carrés du graphe. Un seul rayon, petit. */
-  --radius: 4px;
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --radius: 3px;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #10131d;
+  --panel: #1a1f2e;
+  --ink: #f3ead6;
+  --ink-2: #b9b0a0;
+  --shadow: #000;
+  --dot: rgb(243 234 214 / 0.09);
+  --yellow: #ffd23f;
+  --red: #ff5a5f;
+  --blue: #6f8fff;
+  --line: rgb(243 234 214 / 0.16);
+  --danger: #ff7a70;
+  --on-blue: #141210;
+  --on-red: #141210;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --page: #10131d;
+    --panel: #1a1f2e;
+    --ink: #f3ead6;
+    --ink-2: #b9b0a0;
+    --shadow: #000;
+    --dot: rgb(243 234 214 / 0.09);
+    --yellow: #ffd23f;
+    --red: #ff5a5f;
+    --blue: #6f8fff;
+    --line: rgb(243 234 214 / 0.16);
+    --danger: #ff7a70;
+  --on-blue: #141210;
+  --on-red: #141210;
+  }
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-surface: var(--surface);
-  --color-surface-2: var(--surface-2);
-  --color-foreground: var(--foreground);
-  --color-muted: var(--muted);
-  --color-border: var(--border);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-project: var(--node-project);
-  --color-skill: var(--node-skill);
-  --color-journey: var(--node-journey);
-  --color-contact: var(--node-contact);
+  /* Noms historiques gardés pour l'admin */
+  --color-background: var(--page);
+  --color-surface: var(--panel);
+  --color-surface-2: var(--page);
+  --color-foreground: var(--ink);
+  --color-muted: var(--ink-2);
+  --color-border: var(--line);
+  --color-accent: var(--blue);
+  --color-accent-foreground: #fff;
+  --color-project: var(--blue);
+  --color-skill: var(--blue);
+  --color-journey: var(--red);
+  --color-contact: var(--red);
   --color-danger: var(--danger);
+  --color-ink: var(--ink);
+  --color-panel: var(--panel);
+  --color-page: var(--page);
+  --color-yellow: var(--yellow);
+  --color-red: var(--red);
+  --color-blue: var(--blue);
   --font-sans: var(--font-body);
-  --font-mono: var(--font-code);
+  --font-mono: var(--font-body);
+  --font-display: var(--font-display);
 }
 
 @layer base {
-  html { scroll-behavior: smooth; color-scheme: dark; }
-  body { background: var(--background); color: var(--foreground); }
-  ::selection { background: var(--accent); color: var(--accent-foreground); }
-  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  html { scroll-behavior: smooth; overflow-x: clip; scroll-padding-top: 96px; /* l'en-tête collant ne masque jamais la cible ni le focus */ }
+  body {
+    background-color: var(--page);
+    /* Trame de points très légère sur tout le papier */
+    background-image: radial-gradient(var(--dot) 1px, transparent 1.3px);
+    background-size: 9px 9px;
+    color: var(--ink); font-size: 17px; line-height: 1.55; overflow-x: clip;
+  }
+  ::selection { background: var(--yellow); color: var(--on-color); }
+  :focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
   a, button, [role="button"], summary { cursor: pointer; }
 }
 
 @layer components {
   .container-site { width: 100%; max-width: 1240px; margin-inline: auto; padding-inline: clamp(1rem, 4vw, 2.5rem); }
 
-  .eyebrow { font-family: var(--font-code), monospace; font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  /* Titres et onomatopées : lettrage Bangers, contour d'encre et ombre portée */
+  .display { font-family: var(--font-display), sans-serif; font-weight: 400; letter-spacing: 0.02em; line-height: 0.95; }
+  .pop-title { font-family: var(--font-display), sans-serif; letter-spacing: 0.025em; line-height: 0.92; color: var(--yellow); -webkit-text-stroke: 2px var(--ink); paint-order: stroke fill; text-shadow: 4px 4px 0 var(--shadow); }
 
-  /* Fond « grille de points », discret, pour les pages de contenu */
-  .dot-grid { background-image: radial-gradient(rgb(232 236 244 / 0.07) 1px, transparent 1px); background-size: 28px 28px; }
+  /* Case de BD */
+  .panel { position: relative; background: var(--panel); border: 3px solid var(--ink); border-radius: var(--radius); box-shadow: 6px 6px 0 var(--shadow); }
+  .dots { background-image: radial-gradient(var(--dot) 1.4px, transparent 1.7px); background-size: 8px 8px; }
+  .dots-strong { background-image: radial-gradient(rgb(20 18 16 / 0.22) 1.8px, transparent 2.1px); background-size: 9px 9px; }
 
-  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+  /* Récitatif : l'encadré jaune en haut des cases */
+  .caption { display: inline-block; background: var(--yellow); color: var(--on-color); border: 2.5px solid var(--ink); padding: 4px 10px 3px; font-weight: 700; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; box-shadow: 3px 3px 0 var(--shadow); }
+  .eyebrow { font-weight: 700; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2); }
+  .tag { font-size: 13px; font-weight: 700; color: var(--ink-2); }
 
-  /* Boutons : une action principale, une secondaire */
-  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 2.75rem; padding: 0 1.125rem; border-radius: var(--radius); font-weight: 600; transition: background-color 0.18s, border-color 0.18s, color 0.18s; }
-  .btn-primary { background: var(--foreground); color: var(--background); }
-  .btn-primary:hover { background: var(--accent); }
-  .btn-secondary { border: 1px solid var(--border); color: var(--foreground); background: transparent; }
-  .btn-secondary:hover { border-color: var(--muted); }
-  .link-underline { background: linear-gradient(currentColor, currentColor) 0 100% / 0% 1.5px no-repeat; transition: background-size 0.3s var(--ease-out); }
-  .link-underline:hover { background-size: 100% 1.5px; }
+  /* Bulle de dialogue, avec sa queue (deux triangles : encre puis papier) */
+  .bubble { position: relative; background: var(--panel); color: var(--ink); border: 3px solid var(--ink); border-radius: 26px; padding: 16px 20px; }
+  .bubble::before, .bubble::after { content: ""; position: absolute; left: var(--tail, 42px); width: 0; height: 0; border-style: solid; }
+  .bubble::before { bottom: -22px; border-width: 22px 14px 0 0; border-color: var(--ink) transparent transparent transparent; }
+  .bubble::after { bottom: -15px; left: calc(var(--tail, 42px) + 3.5px); border-width: 15px 9px 0 0; border-color: var(--panel) transparent transparent transparent; }
 
-  .chip { display: inline-flex; align-items: center; gap: 0.5rem; border-radius: 2px; padding: 0.25rem 0.6rem; font-family: var(--font-code), monospace; font-size: 0.75rem; font-weight: 500; border: 1px solid var(--border); }
-  .tag { font-family: var(--font-code), monospace; font-size: 0.75rem; color: var(--muted); }
+  /* Étoile d'action (badges, statuts) */
+  .burst { display: inline-grid; place-items: center; text-align: center; background: var(--yellow); color: var(--on-color); clip-path: polygon(50% 0%, 61% 18%, 82% 7%, 79% 30%, 100% 33%, 85% 50%, 100% 67%, 79% 70%, 82% 93%, 61% 82%, 50% 100%, 39% 82%, 18% 93%, 21% 70%, 0% 67%, 15% 50%, 0% 33%, 21% 30%, 18% 7%, 39% 18%); }
 
-  /* Pastilles de type de nœud (même forme que dans le graphe) */
-  .glyph { display: inline-block; width: 0.7rem; height: 0.7rem; flex: none; }
-  .glyph-project { background: var(--node-project); border-radius: 2px; }
-  .glyph-skill { background: var(--node-skill); border-radius: 999px; }
-  .glyph-journey { background: var(--node-journey); transform: rotate(45deg) scale(0.85); }
-  .glyph-contact { border: 2px solid var(--node-contact); border-radius: 999px; }
+  /* Boutons : une case jaune qui s'enfonce */
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 3rem; padding: 0 20px; border: 3px solid var(--ink); border-radius: var(--radius); font-family: var(--font-display), sans-serif; font-size: 21px; letter-spacing: 0.05em; transition: transform 120ms var(--ease-out), box-shadow 120ms var(--ease-out); }
+  .btn-primary { background: var(--yellow); color: var(--on-color); box-shadow: 4px 4px 0 var(--shadow); }
+  .btn-secondary { background: var(--panel); color: var(--ink); box-shadow: 4px 4px 0 var(--shadow); }
+  .btn:hover { transform: translate(-2px, -2px) rotate(-1deg); box-shadow: 6px 6px 0 var(--shadow); }
+  .btn:active:not(:disabled) { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--shadow); }
+  .link-underline { text-decoration: underline; text-decoration-thickness: 3px; text-decoration-color: var(--yellow); text-underline-offset: 3px; transition: text-decoration-color 150ms; }
+  .link-underline:hover { text-decoration-color: var(--red); }
+
+  .chip { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 13px; font-weight: 700; padding: 2px 9px; border: 2px solid var(--ink); border-radius: 999px; background: var(--panel); }
 
   /* Champs de formulaire */
-  .field { display: grid; gap: 0.4rem; }
-  .field label { font-size: 0.875rem; font-weight: 600; }
-  .field input:not([type="checkbox"]), .field textarea, .field select { width: 100%; border: 1px solid var(--border); background: var(--background); color: var(--foreground); border-radius: var(--radius); padding: 0.75rem 0.9rem; font-size: 1rem; outline: none; transition: border-color 0.18s; }
-  .field input::placeholder, .field textarea::placeholder { color: #6f7a90; }
-  .field input:focus, .field textarea:focus, .field select:focus { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+  .field { display: grid; gap: 0.35rem; }
+  .field label { font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .field input:not([type="checkbox"]), .field textarea, .field select { width: 100%; border: 3px solid var(--ink); background: var(--page); color: var(--ink); border-radius: var(--radius); padding: 0.7rem 0.9rem; font-size: 1rem; outline: none; transition: box-shadow 0.12s; }
+  .field input::placeholder, .field textarea::placeholder { color: var(--ink-2); opacity: 0.85; }
+  .field input:focus, .field textarea:focus, .field select:focus { box-shadow: 4px 4px 0 var(--blue); }
   .field textarea { resize: vertical; line-height: 1.6; }
   .field [aria-invalid="true"] { border-color: var(--danger); }
-  .field .error { font-size: 0.8125rem; color: var(--danger); }
+  .field .error { font-size: 0.875rem; font-weight: 700; color: var(--danger); }
 
-  /* Entrées du héros en CSS pur : visibles dès le premier rendu, sans attendre JavaScript */
   .rise { animation: rise 0.6s var(--ease-out) both; }
 }
 
-@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 
 /* ─────────────────────────────────────────────────────────────
-   Mouvement : seulement là où il dit quelque chose.
-   - le graphe se met en réseau au chargement (du centre vers les feuilles) ;
-   - un panneau qui s'ouvre vient de son bord ; un menu se déplie ;
-   - un niveau se remplit, une frise se trace quand on les atteint ;
-   - d'une carte à sa page, la couverture et le titre voyagent.
-   Le reste ne bouge pas.
+   Mouvement
+   - les cases de la planche tombent l'une après l'autre, avec un léger rebond ;
+   - les mots d'une bulle apparaissent comme s'ils étaient prononcés ;
+   - chaque clic fait jaillir une onomatopée au point touché ;
+   - au défilement, les cases entrent en scène ; les jauges de pouvoir se remplissent ;
+   - au survol, une couverture d'album se soulève et sa trame grossit.
    ───────────────────────────────────────────────────────────── */
+.panel-drop { animation: panel-drop 0.65s var(--spring) both; }
+@keyframes panel-drop { from { opacity: 0; transform: translateY(-26px) rotate(var(--from-rot, -3deg)) scale(0.96); } }
+.word { display: inline-block; animation: word-in 0.32s var(--spring) both; }
+@keyframes word-in { from { opacity: 0; transform: translateY(6px) scale(0.7); } }
+.bubble-pop { animation: bubble-pop 0.5s var(--spring) both; transform-origin: 15% 100%; }
+@keyframes bubble-pop { from { opacity: 0; transform: scale(0.4); } }
 
-/* Graphe */
-.node-boot { animation: node-boot 0.55s var(--ease-out) both; }
-.label-boot { animation: fade-in 0.45s ease-out both; }
-.label-in { animation: fade-in 0.16s ease-out both; }
-.graph-links-boot { animation: fade-in 0.7s ease-out 0.35s both; }
-.node-halo { transform-box: fill-box; transform-origin: center; animation: halo-in 0.22s var(--ease-out) both; }
-@keyframes node-boot { from { opacity: 0; transform: scale(0.2); } to { opacity: 1; transform: none; } }
-@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
-@keyframes halo-in { from { opacity: 0; transform: scale(0.6); } }
+/* Onomatopée de clic (créée en JS) */
+.sfx { position: fixed; z-index: 90; pointer-events: none; font-family: var(--font-display), sans-serif; font-size: 34px; letter-spacing: 0.04em; color: var(--yellow); -webkit-text-stroke: 2px #141210; paint-order: stroke fill; text-shadow: 3px 3px 0 #141210; transform: translate(-50%, -50%); animation: sfx 0.7s var(--spring) forwards; }
+@keyframes sfx {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.3) rotate(var(--r, -8deg)); }
+  25% { opacity: 1; transform: translate(-50%, -90%) scale(1.15) rotate(var(--r, -8deg)); }
+  100% { opacity: 0; transform: translate(-50%, -140%) scale(1) rotate(var(--r, -8deg)); }
+}
 
-/* Panneau de détail : monte du bas sur mobile, glisse depuis la droite sur grand écran */
-.panel-in { animation: from-bottom 0.32s var(--ease-out) both; }
-@media (min-width: 640px) { .panel-in { animation-name: from-right; } }
-@keyframes from-bottom { from { opacity: 0; transform: translateY(20px); } }
-@keyframes from-right { from { opacity: 0; transform: translateX(20px); } }
+/* Entrée en scène des cases au défilement */
+.scene { transition: opacity 0.5s ease-out, transform 0.6s var(--spring); }
+[data-inview="false"] .scene { opacity: 0; transform: translateY(24px) rotate(-1.5deg) scale(0.96); }
 
-/* Menu mobile : les entrées se déplient l'une après l'autre */
+/* Jauges de pouvoir (compétences) */
+.power { transform-origin: left; transition: transform 0.6s var(--spring); }
+[data-inview="false"] .power { transform: scaleX(0); }
+
+/* Couverture d'album */
+.cover-card { transition: transform 0.35s var(--spring), box-shadow 0.35s var(--ease-out); }
+.cover-card:hover, .cover-card:focus-visible { transform: translate(-4px, -6px) rotate(-1.5deg) !important; box-shadow: 10px 12px 0 var(--shadow); }
+.cover-card .cover-dots { transition: background-size 0.4s var(--ease-out); }
+.cover-card:hover .cover-dots { background-size: 13px 13px; }
+
+/* Lignes de vitesse derrière l'illustration du héros */
+.speed line { stroke: var(--ink); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 60 400; animation: speed 1.6s linear infinite; opacity: 0.35; }
+@keyframes speed { from { stroke-dashoffset: 460; } to { stroke-dashoffset: 0; } }
+.spark { animation: spark 1.4s steps(2, jump-none) infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes spark { 50% { transform: scale(1.2) rotate(8deg); } }
+
+/* Menu mobile */
 .menu-in > * { animation: rise 0.3s var(--ease-out) both; }
 .menu-in > :nth-child(2) { animation-delay: 40ms; }
 .menu-in > :nth-child(3) { animation-delay: 80ms; }
 .menu-in > :nth-child(4) { animation-delay: 120ms; }
 .menu-in > :nth-child(5) { animation-delay: 160ms; }
 
-/* Niveaux de compétence : chaque segment se remplit (délai par segment, posé dans le HTML) */
-.level-fill { transform-origin: left; transition: transform 0.5s var(--ease-out); }
-[data-inview="false"] .level-fill { transform: scaleX(0); }
-
-/* Frise du parcours : la ligne se trace, puis chaque étape arrive */
-.timeline::before { content: ""; position: absolute; left: 0; top: 0.4rem; bottom: 0.4rem; width: 1px; background: var(--border); transform-origin: top; transition: transform 0.9s var(--ease-out); }
-.timeline-item { transition: opacity 0.45s ease-out, transform 0.45s var(--ease-out); }
-[data-inview="false"].timeline::before { transform: scaleY(0); }
-[data-inview="false"] .timeline-item { opacity: 0; transform: translateX(-8px); }
-
-/* Couverture générée : le mini-réseau s'éclaire au survol de la carte */
-.cover-link { stroke-opacity: 0.35; transition: stroke-opacity 0.3s ease-out; }
-.group:hover .cover-link, .group:focus-visible .cover-link { stroke-opacity: 0.8; }
-
-/* Boutons : un retour tactile discret à l'appui */
-.btn { transition-property: background-color, border-color, color, transform; }
-.btn:active:not(:disabled) { transform: translateY(1px); }
-
 /* Message envoyé : la coche se trace */
 .check-draw { stroke-dasharray: 24; stroke-dashoffset: 24; animation: draw 0.45s var(--ease-out) 0.2s forwards; }
 @keyframes draw { to { stroke-dashoffset: 0; } }
 
-/* Changements de page (View Transitions) : fondu court, en-tête immobile, morph carte → projet */
+/* Changements de page (View Transitions) */
 ::view-transition { pointer-events: none; }
 ::view-transition-old(root), ::view-transition-new(root) { animation-duration: 200ms; }
 ::view-transition-group(site-header) { animation: none; z-index: 100; }
@@ -161,5 +218,101 @@
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; transition-delay: 0s !important; scroll-behavior: auto !important; }
+  .sfx, .speed { display: none; }
   ::view-transition-old(*), ::view-transition-new(*), ::view-transition-group(*) { animation-duration: 0s !important; animation-delay: 0s !important; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Animations de défilement
+   ───────────────────────────────────────────────────────────── */
+
+/* Titre de chapitre qui s'abat : grossit, s'écrase, secoue ; l'onomatopée explose derrière */
+[data-inview="true"] .slam { animation: slam 0.55s var(--spring) both; }
+[data-inview="true"] .slam-caption { animation: rise 0.4s var(--ease-out) both; }
+[data-inview="true"] .slam-sub { animation: rise 0.5s var(--ease-out) 0.35s both; }
+[data-inview="true"] .slam-sfx { animation: sfx-burst 0.7s var(--spring) 0.15s both; }
+[data-inview="false"] :is(.slam, .slam-caption, .slam-sub, .slam-sfx) { opacity: 0; }
+@keyframes slam {
+  0% { opacity: 0; transform: scale(2.4) rotate(-4deg); }
+  55% { opacity: 1; transform: scale(0.94) rotate(1deg); }
+  70% { transform: translateX(-6px) rotate(-1deg); }
+  85% { transform: translateX(4px); }
+  100% { transform: none; }
+}
+@keyframes sfx-burst {
+  0% { opacity: 0; transform: scale(0.2) rotate(-25deg); }
+  60% { opacity: 0.95; transform: scale(1.12) rotate(-8deg); }
+  100% { opacity: 0.9; transform: scale(1) rotate(-10deg); }
+}
+.slam-sfx { transform: rotate(-10deg); }
+
+/* Effet de vitesse au défilement (valeur posée par ScrollFx) */
+.skewable { transform: skewY(var(--skew, 0deg)); transform-origin: center; }
+
+/* Défilement piloté par le navigateur (Chrome, Edge, Safari récent) ; sinon rien ne bouge */
+@supports (animation-timeline: view()) {
+  /* Couvertures d'album qui arrivent en volant, depuis la gauche ou la droite */
+  .fly-in { animation: fly-in linear both; animation-timeline: view(); animation-range: entry 0% cover 38%; }
+  .fly-in:nth-child(3n + 1) { --fx: -46vw; --fr: -28deg; }
+  .fly-in:nth-child(3n + 2) { --fx: 0; --fr: 14deg; --fy: 260px; }
+  .fly-in:nth-child(3n + 3) { --fx: 46vw; --fr: 30deg; }
+  @keyframes fly-in { from { opacity: 0; translate: var(--fx, 0) var(--fy, 120px); rotate: var(--fr, 0deg); scale: 0.6; } }
+
+  /* Planche d'accueil : en la quittant, chaque calque file à sa vitesse */
+  .par-slow, .par-fast, .par-tilt, .par-zoom { animation-timeline: view(); animation-range: exit 0% exit 100%; animation-fill-mode: both; animation-timing-function: linear; }
+  .par-slow { animation-name: par-slow; }
+  .par-fast { animation-name: par-fast; }
+  .par-tilt { animation-name: par-tilt; }
+  .par-zoom { animation-name: par-zoom; }
+  @keyframes par-slow { to { translate: 0 -60px; } }
+  @keyframes par-fast { to { translate: 0 -220px; rotate: -6deg; } }
+  @keyframes par-tilt { to { translate: 40px 120px; rotate: 18deg; scale: 1.2; } }
+  @keyframes par-zoom { to { scale: 0.86; rotate: -3deg; opacity: 0.4; } }
+
+  /* Cases (compétences, principes, certifications) qui basculent en place, comme une page qu'on tourne */
+  .flip-in { animation: flip-in linear both; animation-timeline: view(); animation-range: entry 5% cover 30%; transform-origin: left bottom; }
+  @keyframes flip-in { from { opacity: 0; rotate: y -70deg; translate: 0 40px; } }
+
+  /* Barre de lecture : un trait d'encre jaune qui avance sous l'en-tête */
+  .read-progress { animation: read-progress linear both; animation-timeline: scroll(root); transform-origin: left; }
+  @keyframes read-progress { from { scale: 0 1; } to { scale: 1 1; } }
+}
+@supports not (animation-timeline: view()) { .read-progress { display: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .fly-in, .par-slow, .par-fast, .par-tilt, .par-zoom, .flip-in, .read-progress { animation: none !important; }
+  .skewable { transform: none; }
+  [data-inview="false"] :is(.slam, .slam-caption, .slam-sub, .slam-sfx) { opacity: 1; }
+}
+
+/* Onomatopée de l'avion en papier : apparaît en fin de strip */
+.plane-sfx { opacity: 0; transform: scale(0.4) rotate(-12deg); transition: opacity 0.2s, transform 0.4s var(--spring); }
+[data-done="true"] .plane-sfx { opacity: 1; transform: rotate(-8deg); }
+
+/* ── Stack : cartes à collectionner ───────────────────── */
+/* Distribution : chaque carte part du paquet (en haut à gauche), tournoie, et se pose en éventail */
+.deal { animation: deal 0.6s var(--spring) both; }
+[data-inview="false"] .deal { animation-play-state: paused; }
+@keyframes deal {
+  from { opacity: 0; transform: translate(-40vw, -60px) rotate(-40deg) scale(0.5); }
+  70% { opacity: 1; transform: rotate(var(--fan, 0deg)) scale(1.04); }
+  to { transform: rotate(calc(var(--fan, 0deg) * 0.18)); }
+}
+/* Inclinaison vers le curseur */
+.trading-card { transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform 0.25s var(--ease-out), box-shadow 0.25s; will-change: transform; }
+.trading-card:hover { box-shadow: 9px 9px 0 var(--shadow); transition-duration: 0.08s; }
+/* Reflet holographique : bandes arc-en-ciel et éclat, qui suivent le curseur */
+.holo { opacity: 0; mix-blend-mode: multiply; transition: opacity 0.25s;
+  background:
+    radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgb(255 255 255 / 0.75), transparent 38%),
+    linear-gradient(115deg, transparent 20%, rgb(255 80 120 / 0.45) 35%, rgb(255 220 60 / 0.45) 45%, rgb(60 220 160 / 0.45) 55%, rgb(80 140 255 / 0.45) 65%, transparent 80%);
+  background-size: 100% 100%, 220% 220%;
+  background-position: 0 0, var(--mx, 50%) var(--my, 50%);
+}
+.trading-card:hover .holo { opacity: 0.6; }
+:root[data-theme="dark"] .holo { mix-blend-mode: screen; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .holo { mix-blend-mode: screen; } }
+@media (prefers-reduced-motion: reduce) {
+  .deal { animation: none; }
+  .trading-card { transform: none; }
 }

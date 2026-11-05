@@ -42,7 +42,8 @@
     "inProgress": "In progress",
     "done": "Shipped",
     "read": "Read the case study",
-    "empty": "No published project yet."
+    "empty": "No published project yet.",
+    "highlight": "Real"
   },
   "project": {
     "back": "All projects",
@@ -68,7 +69,8 @@
     "eyebrow": "Profile",
     "title": "From the network to the interface, one standard: it has to hold.",
     "strengths": "Strengths",
-    "languages": "Languages"
+    "languages": "Languages",
+    "highlight": "hold"
   },
   "skills": {
     "eyebrow": "Skills",
@@ -77,13 +79,15 @@
       "Beginner",
       "Intermediate",
       "Advanced"
-    ]
+    ],
+    "highlight": "toolbox"
   },
   "journey": {
     "eyebrow": "Journey",
     "title": "Two degrees in parallel, one direction.",
     "education": "Education",
-    "certifications": "Certifications"
+    "certifications": "Certifications",
+    "highlight": "direction"
   },
   "labs": {
     "eyebrow": "Labs",
@@ -92,7 +96,8 @@
     "empty": "The first labs are coming soon.",
     "back": "All labs",
     "tools": "Tools",
-    "platform": "Platform"
+    "platform": "Platform",
+    "highlight": "security"
   },
   "contact": {
     "eyebrow": "Contact",
@@ -119,7 +124,8 @@
       "unavailable": "Sending is temporarily unavailable. Please email me directly.",
       "summary": "The form has errors:"
     },
-    "direct": "Or directly"
+    "direct": "Or directly",
+    "highlight": "question"
   },
   "footer": {
     "rights": "All rights reserved.",
@@ -130,25 +136,57 @@
     "text": "This page doesn't exist, or it has moved.",
     "back": "Back to home"
   },
-  "graph": {
-    "hub": "Hub",
-    "usedIn": "Used in",
-    "seeList": "See details",
-    "credential": "View credential",
-    "writeMe": "Write to me",
-    "open": "Open",
-    "hint": "Drag nodes · hover · click",
-    "legend": "Show",
-    "listView": "See everything as a list",
-    "close": "Close",
-    "label": "Interactive graph of my journey: projects, skills, education and contact",
-    "me": "Me",
-    "groups": {
-      "project": "Projects",
-      "skill": "Skills",
-      "journey": "Journey",
-      "contact": "Contact"
+  "theme": {
+    "label": "Theme",
+    "toLight": "Switch to light theme",
+    "toDark": "Switch to dark theme"
+  },
+  "comic": {
+    "issue": "Episode 1",
+    "place": "Abidjan, present day…",
+    "meanwhile": "Meanwhile, between Abidjan and Bouaké…",
+    "next": "To be continued",
+    "contents": "In this issue",
+    "chapter": "Chapter",
+    "end": "End of episode",
+    "publisher": "Ted Yvan Comics",
+    "sfx": [
+      "CLICK!",
+      "TAP!",
+      "ZIP!",
+      "POP!",
+      "WHAM!"
+    ],
+    "night": "Night edition",
+    "day": "Day edition",
+    "issueShort": "No.",
+    "with": "Starring",
+    "soon": "Coming soon to a newsstand near you…",
+    "oops": "OOPS!",
+    "cta": "Write to him",
+    "bzzt": "BZZT!",
+    "lab": "The lab",
+    "hello": "Hi! I’m",
+    "chapterSfx": {
+      "projects": "BAM!",
+      "skills": "POW!",
+      "journey": "VROOM!",
+      "about": "HEY!",
+      "contact": "RING!",
+      "fly": "ZOOOM!",
+      "scroll": "Scroll, the story moves on →"
     },
-    "keyboard": "Keyboard tip: Tab through the nodes, Enter to open."
+    "deck": {
+      "all": "All",
+      "hint": "Pick a family and the cards get dealt. Hover them to make them shine.",
+      "cards": "cards",
+      "rarity": [
+        "Common",
+        "Rare",
+        "Legendary"
+      ],
+      "families": "Skill families",
+      "swipe": "Swipe to see all {n} cards"
+    }
   }
 }
