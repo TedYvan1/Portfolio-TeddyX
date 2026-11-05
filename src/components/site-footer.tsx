@@ -37,14 +37,14 @@ export async function SiteFooter({ locale, dict, profile }: { locale: Locale; di
         <ul className="flex flex-wrap gap-2">
           {links.map(link => (
             <li key={link.label}>
-              <a href={link.href} data-sfx className="chip shadow-[2px_2px_0_var(--shadow)]" {...(link.href.startsWith("http") ? { target: "_blank", rel: "noreferrer" } : {})}>
+              <a href={link.href} data-sfx className="chip min-h-11 px-3.5 text-sm shadow-[2px_2px_0_var(--shadow)]" {...(link.href.startsWith("http") ? { target: "_blank", rel: "noreferrer" } : {})}>
                 {link.label}
               </a>
             </li>
           ))}
         </ul>
         <div className="flex flex-col gap-1 text-sm text-muted md:items-end">
-          <a href="#top" className="link-underline font-bold text-foreground">↑ {dict.footer.top}</a>
+          <a href="#top" className="link-underline inline-flex min-h-11 items-center font-bold text-foreground">↑ {dict.footer.top}</a>
           <p>© {year} {dict.comic.publisher}. {dict.footer.rights}</p>
           <Link href={`/${locale}`} className="sr-only">{profile.display_name}</Link>
         </div>

@@ -45,14 +45,14 @@ export function SiteHeader({ locale, nav, theme, comic }: Props) {
 
         <nav aria-label={locale === "fr" ? "Navigation principale" : "Main navigation"} className="hidden items-center gap-6 text-[15px] font-bold md:flex">
           {links.map(link => (
-            <Link key={link.href} href={link.href} className="link-underline" aria-current={pathname === link.href ? "page" : undefined}>
+            <Link key={link.href} href={link.href} className="link-underline inline-flex min-h-11 items-center" aria-current={pathname === link.href ? "page" : undefined}>
               {link.label}
             </Link>
           ))}
         </nav>
 
         <div className="flex items-center gap-2">
-          <Link href={switchHref} hrefLang={other} lang={other} className="px-1.5 py-2 text-sm font-bold whitespace-nowrap text-muted hover:text-foreground" aria-label={`${nav.language} : ${nav.switchTo}`}>
+          <Link href={switchHref} hrefLang={other} lang={other} className="inline-flex h-11 items-center px-2 text-sm font-bold whitespace-nowrap text-muted hover:text-foreground" aria-label={`${nav.language} : ${nav.switchTo}`}>
             <span className="text-foreground">{locale.toUpperCase()}</span>/{other.toUpperCase()}
           </Link>
           <ThemeToggle t={theme} day={comic.day} night={comic.night} />

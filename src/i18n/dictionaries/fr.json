@@ -185,7 +185,8 @@
         "Rare",
         "Légendaire"
       ],
-      "families": "Familles de compétences"
+      "families": "Familles de compétences",
+      "swipe": "Fais glisser pour voir les {n} cartes"
     }
   }
 }

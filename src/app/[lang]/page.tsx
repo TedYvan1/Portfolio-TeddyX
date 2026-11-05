@@ -129,7 +129,7 @@ export default async function Home() {
         <section id="projects" className="container-site scroll-mt-24 pt-24 md:pt-32" aria-labelledby="projects-title">
           <div className="flex flex-wrap items-end justify-between gap-6">
             <SectionHeading id="projects-title" chapter={`${c.chapter} 1`} eyebrow={dict.projects.eyebrow} title={dict.projects.title} subtitle={dict.projects.subtitle} sfx={c.chapterSfx.projects} />
-            <Link href={`/${locale}/projects`} className="link-underline font-bold">{dict.projects.all} →</Link>
+            <Link href={`/${locale}/projects`} className="link-underline inline-flex min-h-11 items-center font-bold">{dict.projects.all} →</Link>
           </div>
           <div className="skewable mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
             {(featured.length ? featured : projects).slice(0, 3).map((project, index) => (
@@ -230,7 +230,7 @@ export default async function Home() {
           <InView as="ol" className="skewable mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {principles.map((principle, index) => (
               <li key={pick(principle.title, "fr")} className="flip-in panel p-5">
-                <span className="display text-5xl" style={{ color: TINTS[index % 3], WebkitTextStroke: "1.5px var(--ink)" }}>{index + 1}</span>
+                <span aria-hidden="true" className="display text-5xl" style={{ color: TINTS[index % 3], WebkitTextStroke: "1.5px var(--ink)" }}>{index + 1}</span>
                 <h3 className="display mt-1 text-2xl">{pick(principle.title, locale)}</h3>
                 <p className="mt-1 text-[15px] text-muted">{pick(principle.body, locale)}</p>
               </li>
@@ -246,8 +246,8 @@ export default async function Home() {
             <SectionHeading id="contact-title" chapter={`${c.chapter} 6`} eyebrow={dict.contact.eyebrow} title={dict.contact.title} subtitle={dict.contact.subtitle} sfx={c.chapterSfx.contact} />
             <dl className="mt-8 grid gap-1">
               <dt className="eyebrow">{dict.contact.direct}</dt>
-              <dd><a href={`mailto:${profile.email}`} data-sfx className="link-underline text-xl font-bold break-all">{profile.email}</a></dd>
-              {profile.phone && <dd><a href={`tel:${profile.phone.replace(/\s+/g, "")}`} className="link-underline text-muted">{profile.phone}</a></dd>}
+              <dd><a href={`mailto:${profile.email}`} data-sfx className="link-underline inline-flex min-h-11 items-center text-xl font-bold break-all">{profile.email}</a></dd>
+              {profile.phone && <dd><a href={`tel:${profile.phone.replace(/\s+/g, "")}`} className="link-underline inline-flex min-h-11 items-center text-muted">{profile.phone}</a></dd>}
             </dl>
           </div>
           <div className="lg:col-span-7">

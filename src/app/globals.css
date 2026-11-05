@@ -15,7 +15,7 @@
   --shadow: #141210;
   --dot: rgb(20 18 16 / 0.16);
   --yellow: #ffd23f;
-  --red: #e5383b;
+  --red: #c8282c; /* 5.3:1 sur le papier, 5.5:1 sous du texte blanc */
   --blue: #2d5bd7;
   --on-color: #141210;
   --on-blue: #fff;
@@ -89,7 +89,7 @@
 }
 
 @layer base {
-  html { scroll-behavior: smooth; overflow-x: clip; }
+  html { scroll-behavior: smooth; overflow-x: clip; scroll-padding-top: 96px; /* l'en-tête collant ne masque jamais la cible ni le focus */ }
   body {
     background-color: var(--page);
     /* Trame de points très légère sur tout le papier */

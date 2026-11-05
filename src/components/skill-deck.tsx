@@ -6,7 +6,7 @@ import type { CustomIcon, TechIcon } from "@/lib/tech-icons";
 
 type Skill = { name: string; level: 1 | 2 | 3; icons: TechIcon[] };
 type Card = Skill & { family: string; tint: number };
-type Labels = { all: string; hint: string; cards: string; rarity: string[]; families: string };
+type Labels = { all: string; hint: string; cards: string; rarity: string[]; families: string; swipe: string };
 
 const TINTS = ["var(--blue)", "var(--red)", "var(--yellow)"];
 const ON_TINTS = ["var(--on-blue)", "var(--on-red)", "#141210"];
@@ -21,6 +21,16 @@ export function SkillDeck({ families, levels, labels }: { families: { name: stri
   const all: Card[] = families.flatMap((family, tint) => family.skills.map(skill => ({ ...skill, family: family.name, tint })));
   const shown = active === -1 ? all : all.filter(card => card.tint === active);
   const tabs = [{ label: labels.all, index: -1, count: all.length }, ...families.map((family, index) => ({ label: family.name, index, count: family.skills.length }))];
+
+  // Onglets accessibles : flèches gauche/droite, Début et Fin déplacent le choix et le focus (motif WAI-ARIA).
+  const onTabKey = (event: React.KeyboardEvent<HTMLButtonElement>, position: number) => {
+    const last = tabs.length - 1;
+    const target = { ArrowRight: position === last ? 0 : position + 1, ArrowLeft: position === 0 ? last : position - 1, Home: 0, End: last }[event.key];
+    if (target === undefined) return;
+    event.preventDefault();
+    setActive(tabs[target].index);
+    (event.currentTarget.parentElement?.children[target] as HTMLElement | undefined)?.focus();
+  };
 
   // Inclinaison 3D et position du reflet suivent le curseur
   const onMove = (event: React.PointerEvent<HTMLElement>) => {
@@ -41,7 +51,7 @@ export function SkillDeck({ families, levels, labels }: { families: { name: stri
     <div className="mt-10">
       <p className="text-muted">{labels.hint}</p>
       <div role="tablist" aria-label={labels.families} className="mt-5 flex flex-wrap gap-2.5">
-        {tabs.map(tab => {
+        {tabs.map((tab, position) => {
           const selected = tab.index === active;
           return (
             <button
@@ -50,9 +60,11 @@ export function SkillDeck({ families, levels, labels }: { families: { name: stri
               role="tab"
               aria-selected={selected}
               aria-controls="skill-cards"
+              tabIndex={selected ? 0 : -1}
               data-sfx
               onClick={() => setActive(tab.index)}
-              className={`deck-tab flex items-baseline gap-2 border-[3px] border-ink px-3.5 py-1.5 font-bold shadow-[3px_3px_0_var(--shadow)] transition-transform ${selected ? "-translate-y-1 -rotate-2" : "bg-panel hover:-translate-y-0.5"}`}
+              onKeyDown={event => onTabKey(event, position)}
+              className={`deck-tab flex min-h-11 items-center gap-2 border-[3px] border-ink px-3.5 py-1.5 font-bold shadow-[3px_3px_0_var(--shadow)] transition-transform ${selected ? "-translate-y-1 -rotate-2" : "bg-panel hover:-translate-y-0.5"}`}
               style={selected ? { background: tab.index === -1 ? "var(--ink)" : TINTS[tab.index % 3], color: tab.index === -1 ? "var(--page)" : ON_TINTS[tab.index % 3] } : undefined}
             >
               {tab.label}
@@ -62,7 +74,12 @@ export function SkillDeck({ families, levels, labels }: { families: { name: stri
         })}
       </div>
 
-      <InView className="deck-stage mt-10">
+      {/* Sur téléphone, les cartes forment une rangée : on l'annonce, avec le nombre de cartes */}
+      <p aria-hidden="true" className="mt-6 flex items-center gap-2 text-sm font-bold text-muted sm:hidden">
+        <span className="display text-lg text-red">←→</span> {labels.swipe.replace("{n}", String(shown.length))}
+      </p>
+
+      <InView className="deck-stage mt-4 sm:mt-10">
         {/* La clé change à chaque onglet : la grille est recréée et la distribution rejoue */}
         <ul key={active} id="skill-cards" role="tabpanel" aria-label={`${shown.length} ${labels.cards}`} className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pt-2 pb-6 [perspective:1100px] sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0 lg:grid-cols-5">
           {shown.map((card, index) => {
@@ -72,7 +89,7 @@ export function SkillDeck({ families, levels, labels }: { families: { name: stri
               <li key={`${card.family}-${card.name}`} className="deal w-[46vw] flex-none snap-start sm:w-auto" style={{ animationDelay: `${index * 55}ms`, ["--fan" as string]: `${fan}deg` }}>
                 <article onPointerMove={onMove} onPointerLeave={onLeave} className="trading-card relative flex aspect-[4/5] flex-col overflow-hidden rounded-[10px] border-[3px] border-ink bg-panel shadow-[5px_5px_0_var(--shadow)]">
                   {/* Bandeau de famille */}
-                  <header className="flex items-center justify-between border-b-[3px] border-ink px-2.5 py-1 text-[11px] font-bold uppercase" style={{ background: TINTS[card.tint % 3], color: ON_TINTS[card.tint % 3] }}>
+                  <header className="flex items-center justify-between border-b-[3px] border-ink px-2.5 py-1 text-[12px] font-bold uppercase" style={{ background: TINTS[card.tint % 3], color: ON_TINTS[card.tint % 3] }}>
                     <span className="truncate">{card.family}</span>
                     <span>#{String(number).padStart(2, "0")}/{all.length}</span>
                   </header>
@@ -88,8 +105,8 @@ export function SkillDeck({ families, levels, labels }: { families: { name: stri
                   </div>
                   <div className="border-t-[3px] border-ink px-2.5 pt-2 pb-2.5">
                     <h3 className="display text-[clamp(1.05rem,1.6vw,1.35rem)] leading-tight [overflow-wrap:anywhere]">{card.name}</h3>
-                    <p className="mt-1 flex items-center justify-between gap-2 text-[11px] font-bold uppercase">
-                      <span aria-label={levels[card.level - 1]} className="text-lg leading-none tracking-tight text-red">{"★".repeat(card.level)}<span className="text-muted/50">{"★".repeat(3 - card.level)}</span></span>
+                    <p className="mt-1 flex items-center justify-between gap-2 text-[12px] font-bold uppercase">
+                      <span aria-label={levels[card.level - 1]} className="text-lg leading-none tracking-tight text-red">{"★".repeat(card.level)}<span className="text-muted">{"☆".repeat(3 - card.level)}</span></span>
                       <span className="text-muted">{labels.rarity[card.level - 1]}</span>
                     </p>
                   </div>

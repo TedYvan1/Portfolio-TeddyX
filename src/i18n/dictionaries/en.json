@@ -185,7 +185,8 @@
         "Rare",
         "Legendary"
       ],
-      "families": "Skill families"
+      "families": "Skill families",
+      "swipe": "Swipe to see all {n} cards"
     }
   }
 }
