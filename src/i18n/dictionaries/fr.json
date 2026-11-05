@@ -36,7 +36,7 @@
   },
   "projects": {
     "eyebrow": "Projets",
-    "title": "Des projets réels, expliqués de bout en bout.",
+    "title": "Des projets réels, expliqués de bout en bout",
     "subtitle": "Contexte, choix techniques, résultats : chaque projet est raconté comme une étude de cas.",
     "all": "Tous les projets",
     "inProgress": "En cours",
@@ -63,18 +63,18 @@
   },
   "seeking": {
     "eyebrow": "Ce que je cherche",
-    "title": "Un stage où apprendre vite et livrer du concret."
+    "title": "Un stage où apprendre vite et livrer du concret"
   },
   "about": {
     "eyebrow": "Profil",
-    "title": "Du réseau à l'interface, une seule exigence : que ça tienne.",
+    "title": "Du réseau à l'interface, une seule exigence : que ça tienne",
     "strengths": "Atouts",
     "languages": "Langues",
     "highlight": "tienne"
   },
   "skills": {
     "eyebrow": "Compétences",
-    "title": "La boîte à outils.",
+    "title": "La boîte à outils",
     "levels": [
       "Débutant",
       "Intermédiaire",
@@ -84,7 +84,7 @@
   },
   "journey": {
     "eyebrow": "Parcours",
-    "title": "Deux licences en parallèle, une même direction.",
+    "title": "Deux licences en parallèle, une même direction",
     "education": "Formation",
     "certifications": "Certifications",
     "highlight": "direction"
@@ -166,7 +166,6 @@
     "cta": "Lui écrire",
     "bzzt": "BZZT !",
     "lab": "Le labo",
-    "hello": "Salut ! Moi c’est",
     "chapterSfx": {
       "projects": "BAM !",
       "skills": "POW !",
@@ -178,7 +177,7 @@
     },
     "deck": {
       "all": "Toutes",
-      "hint": "Choisis une famille : les cartes se distribuent. Survole-les pour les faire briller.",
+      "hint": "Choisis une famille, les cartes se distribuent",
       "cards": "cartes",
       "rarity": [
         "Commune",

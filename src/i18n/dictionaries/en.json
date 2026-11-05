@@ -36,7 +36,7 @@
   },
   "projects": {
     "eyebrow": "Projects",
-    "title": "Real projects, explained end to end.",
+    "title": "Real projects, explained end to end",
     "subtitle": "Context, technical choices, results: each project is told as a case study.",
     "all": "All projects",
     "inProgress": "In progress",
@@ -63,18 +63,18 @@
   },
   "seeking": {
     "eyebrow": "What I'm looking for",
-    "title": "An internship where I learn fast and ship real work."
+    "title": "An internship where I learn fast and ship real work"
   },
   "about": {
     "eyebrow": "Profile",
-    "title": "From the network to the interface, one standard: it has to hold.",
+    "title": "From the network to the interface, one standard: it has to hold",
     "strengths": "Strengths",
     "languages": "Languages",
     "highlight": "hold"
   },
   "skills": {
     "eyebrow": "Skills",
-    "title": "The toolbox.",
+    "title": "The toolbox",
     "levels": [
       "Beginner",
       "Intermediate",
@@ -84,7 +84,7 @@
   },
   "journey": {
     "eyebrow": "Journey",
-    "title": "Two degrees in parallel, one direction.",
+    "title": "Two degrees in parallel, one direction",
     "education": "Education",
     "certifications": "Certifications",
     "highlight": "direction"
@@ -166,7 +166,6 @@
     "cta": "Write to him",
     "bzzt": "BZZT!",
     "lab": "The lab",
-    "hello": "Hi! I’m",
     "chapterSfx": {
       "projects": "BAM!",
       "skills": "POW!",
@@ -178,7 +177,7 @@
     },
     "deck": {
       "all": "All",
-      "hint": "Pick a family and the cards get dealt. Hover them to make them shine.",
+      "hint": "Pick a family and the cards get dealt",
       "cards": "cards",
       "rarity": [
         "Common",

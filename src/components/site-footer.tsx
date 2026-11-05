@@ -30,14 +30,14 @@ export async function SiteFooter({ locale, dict, profile }: { locale: Locale; di
         <div className="flex items-center gap-4">
           <LogoMark size={56} />
           <div>
-            <p className="display text-3xl">{dict.comic.end}.</p>
-            <p className="text-[15px] text-muted">{pick(profile.role, locale)} · {profile.location}</p>
+            <p className="display text-3xl">{dict.comic.end}</p>
+            <p className="text-base text-muted">{pick(profile.role, locale)} · {profile.location}</p>
           </div>
         </div>
         <ul className="flex flex-wrap gap-2">
           {links.map(link => (
             <li key={link.label}>
-              <a href={link.href} data-sfx className="chip min-h-11 px-3.5 text-sm shadow-[2px_2px_0_var(--shadow)]" {...(link.href.startsWith("http") ? { target: "_blank", rel: "noreferrer" } : {})}>
+              <a href={link.href} className="chip min-h-11 px-3.5 text-sm shadow-[2px_2px_0_var(--shadow)]" {...(link.href.startsWith("http") ? { target: "_blank", rel: "noreferrer" } : {})}>
                 {link.label}
               </a>
             </li>

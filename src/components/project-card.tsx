@@ -24,9 +24,9 @@ function GeneratedCover({ project, title, issue, index }: { project: Project; ti
         })}
       </svg>
       <div aria-hidden="true" className="cover-dots dots-strong absolute inset-0" />
-      <span aria-hidden="true" className="absolute top-3 left-3 border-[2.5px] border-[#141210] bg-[#fffaf0] px-2 py-0.5 text-[12px] font-bold text-[#141210] uppercase">{issue} {index + 1} · {project.year ?? ""}</span>
+      <span aria-hidden="true" className="absolute top-3 left-3 border-2 border-[#141210] bg-[#fffaf0] px-2 py-0.5 text-xs font-bold text-[#141210] tabular-nums">{issue} {index + 1} · {project.year ?? ""}</span>
       <span aria-hidden="true" className="pop-title absolute inset-x-4 top-1/2 -translate-y-1/2 -rotate-3 text-center text-[clamp(2.4rem,5vw,3.6rem)] [overflow-wrap:anywhere]" style={{ color: color === "var(--yellow)" ? "#fffaf0" : "var(--yellow)" }}>{title}</span>
-      <span aria-hidden="true" className="absolute right-3 bottom-3 rounded-full border-[2.5px] border-[#141210] bg-[#fffaf0] px-2.5 py-0.5 text-[11px] font-bold text-[#141210]">{project.tech.slice(0, 3).join(" · ")}</span>
+      <span aria-hidden="true" className="absolute right-3 bottom-3 rounded-[3px] border-2 border-[#141210] bg-[#fffaf0] px-2 py-0.5 text-xs font-bold text-[#141210]">{project.tech.slice(0, 3).join(" · ")}</span>
     </div>
   );
 }
@@ -42,8 +42,8 @@ export function ProjectCover({ project, locale, sizes, issue, index = 0, priorit
 export function StatusBurst({ project, dict, size = 84 }: { project: Project; dict: Dictionary; size?: number }) {
   const inProgress = project.status === "in_progress";
   return (
-    <span className="burst display rotate-6 px-3 text-[15px] leading-tight" style={{ width: size, height: size, background: inProgress ? "var(--red)" : "var(--yellow)", color: inProgress ? "var(--on-red)" : "#141210" }}>
-      {inProgress ? `${dict.projects.inProgress}…` : `${dict.projects.done} !`}
+    <span className="burst display rotate-6 px-3 text-base leading-tight" style={{ width: size, height: size, background: inProgress ? "var(--red)" : "var(--yellow)", color: inProgress ? "var(--on-red)" : "#141210" }}>
+      {inProgress ? `${dict.projects.inProgress}…` : dict.projects.done}
     </span>
   );
 }
@@ -52,7 +52,7 @@ export function StatusBurst({ project, dict, size = 84 }: { project: Project; di
 export function ProjectCard({ project, locale, dict, index = 0 }: { project: Project; locale: Locale; dict: Dictionary; index?: number }) {
   const tilt = [-1, 1.2, -0.6][index % 3];
   return (
-    <Link href={`/${locale}/projects/${project.slug}`} data-sfx className="fly-in cover-card panel group flex h-full flex-col overflow-visible" style={{ transform: `rotate(${tilt}deg)` }}>
+    <Link href={`/${locale}/projects/${project.slug}`} className="cover-card panel group flex h-full flex-col overflow-visible" style={{ transform: `rotate(${tilt}deg)` }}>
       {/* Même nom que sur la page du projet : la couverture et le titre « voyagent » d'une page à l'autre. */}
       <ViewTransition name={`project-cover-${project.slug}`} share="morph" default="none">
         <div className="relative aspect-[4/3] overflow-hidden border-b-[3px] border-ink">
@@ -65,7 +65,7 @@ export function ProjectCard({ project, locale, dict, index = 0 }: { project: Pro
         <ViewTransition name={`project-title-${project.slug}`} share="morph" default="none">
           <h3 className="display mt-1 w-fit text-[2.1rem]">{pick(project.title, locale)}</h3>
         </ViewTransition>
-        <p className="mt-1 flex-1 text-[15px] text-muted">{pick(project.summary, locale)}</p>
+        <p className="mt-1 flex-1 text-base text-muted">{pick(project.summary, locale)}</p>
         <span className="mt-4 flex items-center justify-between font-bold">
           <span className="link-underline">{dict.projects.read}</span>
           <span aria-hidden="true" className="display text-2xl text-red transition-transform group-hover:translate-x-1">→</span>

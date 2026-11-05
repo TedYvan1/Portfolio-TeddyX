@@ -23,7 +23,6 @@
   --line: rgb(20 18 16 / 0.18);
   --danger: #c1121f;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --radius: 3px;
 }
 
@@ -95,7 +94,7 @@
     /* Trame de points très légère sur tout le papier */
     background-image: radial-gradient(var(--dot) 1px, transparent 1.3px);
     background-size: 9px 9px;
-    color: var(--ink); font-size: 17px; line-height: 1.55; overflow-x: clip;
+    color: var(--ink); font-size: 16px; line-height: 1.6; overflow-x: clip;
   }
   ::selection { background: var(--yellow); color: var(--on-color); }
   :focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
@@ -105,107 +104,92 @@
 @layer components {
   .container-site { width: 100%; max-width: 1240px; margin-inline: auto; padding-inline: clamp(1rem, 4vw, 2.5rem); }
 
-  /* Titres et onomatopées : lettrage Bangers, contour d'encre et ombre portée */
+  /* Lettrage Bangers : réservé au nom, aux titres de chapitre, aux couvertures et aux chiffres */
   .display { font-family: var(--font-display), sans-serif; font-weight: 400; letter-spacing: 0.02em; line-height: 0.95; }
   .pop-title { font-family: var(--font-display), sans-serif; letter-spacing: 0.025em; line-height: 0.92; color: var(--yellow); -webkit-text-stroke: 2px var(--ink); paint-order: stroke fill; text-shadow: 4px 4px 0 var(--shadow); }
 
-  /* Case de BD */
-  .panel { position: relative; background: var(--panel); border: 3px solid var(--ink); border-radius: var(--radius); box-shadow: 6px 6px 0 var(--shadow); }
+  /* Case de BD : trait d'encre, ombre portée franche, une seule épaisseur partout */
+  .panel { position: relative; background: var(--panel); border: 3px solid var(--ink); border-radius: var(--radius); box-shadow: 4px 4px 0 var(--shadow); }
   .dots { background-image: radial-gradient(var(--dot) 1.4px, transparent 1.7px); background-size: 8px 8px; }
-  .dots-strong { background-image: radial-gradient(rgb(20 18 16 / 0.22) 1.8px, transparent 2.1px); background-size: 9px 9px; }
+  .dots-strong { background-image: radial-gradient(rgb(20 18 16 / 0.22) 1.8px, transparent 2.1px); background-size: 8px 8px; }
 
-  /* Récitatif : l'encadré jaune en haut des cases */
-  .caption { display: inline-block; background: var(--yellow); color: var(--on-color); border: 2.5px solid var(--ink); padding: 4px 10px 3px; font-weight: 700; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; box-shadow: 3px 3px 0 var(--shadow); }
-  .eyebrow { font-weight: 700; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2); }
-  .tag { font-size: 13px; font-weight: 700; color: var(--ink-2); }
+  /* Récitatif : l'encadré jaune en haut des cases, en casse normale */
+  .caption { display: inline-block; background: var(--yellow); color: var(--on-color); border: 2px solid var(--ink); padding: 4px 12px; font-weight: 700; font-size: 14px; line-height: 1.4; }
+  .eyebrow { font-size: 14px; color: var(--ink-2); }
+  .tag { font-size: 14px; color: var(--ink-2); }
 
   /* Bulle de dialogue, avec sa queue (deux triangles : encre puis papier) */
-  .bubble { position: relative; background: var(--panel); color: var(--ink); border: 3px solid var(--ink); border-radius: 26px; padding: 16px 20px; }
-  .bubble::before, .bubble::after { content: ""; position: absolute; left: var(--tail, 42px); width: 0; height: 0; border-style: solid; }
-  .bubble::before { bottom: -22px; border-width: 22px 14px 0 0; border-color: var(--ink) transparent transparent transparent; }
-  .bubble::after { bottom: -15px; left: calc(var(--tail, 42px) + 3.5px); border-width: 15px 9px 0 0; border-color: var(--panel) transparent transparent transparent; }
+  .bubble { position: relative; background: var(--panel); color: var(--ink); border: 3px solid var(--ink); border-radius: 24px; padding: 16px 20px; }
+  .bubble::before, .bubble::after { content: ""; position: absolute; left: var(--tail, 40px); width: 0; height: 0; border-style: solid; }
+  .bubble::before { bottom: -20px; border-width: 20px 14px 0 0; border-color: var(--ink) transparent transparent transparent; }
+  .bubble::after { bottom: -14px; left: calc(var(--tail, 40px) + 3.5px); border-width: 14px 9px 0 0; border-color: var(--panel) transparent transparent transparent; }
 
-  /* Étoile d'action (badges, statuts) */
+  /* Étoile d'action (chiffres de la planche, statuts) */
   .burst { display: inline-grid; place-items: center; text-align: center; background: var(--yellow); color: var(--on-color); clip-path: polygon(50% 0%, 61% 18%, 82% 7%, 79% 30%, 100% 33%, 85% 50%, 100% 67%, 79% 70%, 82% 93%, 61% 82%, 50% 100%, 39% 82%, 18% 93%, 21% 70%, 0% 67%, 15% 50%, 0% 33%, 21% 30%, 18% 7%, 39% 18%); }
 
-  /* Boutons : une case jaune qui s'enfonce */
-  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 3rem; padding: 0 20px; border: 3px solid var(--ink); border-radius: var(--radius); font-family: var(--font-display), sans-serif; font-size: 21px; letter-spacing: 0.05em; transition: transform 120ms var(--ease-out), box-shadow 120ms var(--ease-out); }
+  /* Boutons : une case qui s'enfonce quand on appuie. Le jaune est réservé à l'action principale */
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 20px; border: 3px solid var(--ink); border-radius: var(--radius); font-family: var(--font-display), sans-serif; font-size: 20px; letter-spacing: 0.04em; transition: transform 140ms var(--ease-out), box-shadow 140ms var(--ease-out), background-color 140ms var(--ease-out); }
   .btn-primary { background: var(--yellow); color: var(--on-color); box-shadow: 4px 4px 0 var(--shadow); }
   .btn-secondary { background: var(--panel); color: var(--ink); box-shadow: 4px 4px 0 var(--shadow); }
-  .btn:hover { transform: translate(-2px, -2px) rotate(-1deg); box-shadow: 6px 6px 0 var(--shadow); }
+  .btn:hover { transform: translate(-1px, -1px); box-shadow: 5px 5px 0 var(--shadow); }
   .btn:active:not(:disabled) { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--shadow); }
-  .link-underline { text-decoration: underline; text-decoration-thickness: 3px; text-decoration-color: var(--yellow); text-underline-offset: 3px; transition: text-decoration-color 150ms; }
-  .link-underline:hover { text-decoration-color: var(--red); }
+  .link-underline { text-decoration: underline; text-decoration-thickness: 2px; text-decoration-color: var(--yellow); text-underline-offset: 4px; transition: text-decoration-color 140ms var(--ease-out); }
+  .link-underline:hover { text-decoration-color: var(--ink); }
 
-  .chip { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 13px; font-weight: 700; padding: 2px 9px; border: 2px solid var(--ink); border-radius: 999px; background: var(--panel); }
+  .chip { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; padding: 4px 12px; border: 2px solid var(--ink); border-radius: var(--radius); background: var(--panel); }
 
   /* Champs de formulaire */
-  .field { display: grid; gap: 0.35rem; }
-  .field label { font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; }
-  .field input:not([type="checkbox"]), .field textarea, .field select { width: 100%; border: 3px solid var(--ink); background: var(--page); color: var(--ink); border-radius: var(--radius); padding: 0.7rem 0.9rem; font-size: 1rem; outline: none; transition: box-shadow 0.12s; }
+  .field { display: grid; gap: 8px; }
+  .field label { font-weight: 700; font-size: 14px; }
+  .field input:not([type="checkbox"]), .field textarea, .field select { width: 100%; border: 3px solid var(--ink); background: var(--page); color: var(--ink); border-radius: var(--radius); padding: 12px 16px; font-size: 1rem; outline: none; transition: box-shadow 140ms var(--ease-out); }
   .field input::placeholder, .field textarea::placeholder { color: var(--ink-2); opacity: 0.85; }
   .field input:focus, .field textarea:focus, .field select:focus { box-shadow: 4px 4px 0 var(--blue); }
   .field textarea { resize: vertical; line-height: 1.6; }
   .field [aria-invalid="true"] { border-color: var(--danger); }
   .field .error { font-size: 0.875rem; font-weight: 700; color: var(--danger); }
 
-  .rise { animation: rise 0.6s var(--ease-out) both; }
+  /* Une seule entrée : un fondu court qui monte de 8 px */
+  .rise { animation: rise 400ms var(--ease-out) both; }
 }
 
-@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 
 /* ─────────────────────────────────────────────────────────────
    Mouvement
-   - les cases de la planche tombent l'une après l'autre, avec un léger rebond ;
-   - les mots d'une bulle apparaissent comme s'ils étaient prononcés ;
-   - chaque clic fait jaillir une onomatopée au point touché ;
-   - au défilement, les cases entrent en scène ; les jauges de pouvoir se remplissent ;
-   - au survol, une couverture d'album se soulève et sa trame grossit.
+   Une seule courbe (--ease-out), trois durées : 140 ms (survol, appui),
+   400 ms (entrées), 600 ms (distribution des cartes). Rien ne tourne en boucle.
+   Deux moments seulement bougent avec le défilement ou un choix : le strip du
+   parcours et la distribution des cartes de la stack.
    ───────────────────────────────────────────────────────────── */
-.panel-drop { animation: panel-drop 0.65s var(--spring) both; }
-@keyframes panel-drop { from { opacity: 0; transform: translateY(-26px) rotate(var(--from-rot, -3deg)) scale(0.96); } }
-.word { display: inline-block; animation: word-in 0.32s var(--spring) both; }
-@keyframes word-in { from { opacity: 0; transform: translateY(6px) scale(0.7); } }
-.bubble-pop { animation: bubble-pop 0.5s var(--spring) both; transform-origin: 15% 100%; }
-@keyframes bubble-pop { from { opacity: 0; transform: scale(0.4); } }
 
-/* Onomatopée de clic (créée en JS) */
-.sfx { position: fixed; z-index: 90; pointer-events: none; font-family: var(--font-display), sans-serif; font-size: 34px; letter-spacing: 0.04em; color: var(--yellow); -webkit-text-stroke: 2px #141210; paint-order: stroke fill; text-shadow: 3px 3px 0 #141210; transform: translate(-50%, -50%); animation: sfx 0.7s var(--spring) forwards; }
+/* Entrée d'une section quand elle arrive à l'écran */
+.scene { transition: opacity 400ms var(--ease-out), transform 400ms var(--ease-out); }
+[data-inview="false"] .scene { opacity: 0; transform: translateY(8px); }
+
+/* Signature : l'onomatopée qui jaillit d'un bouton d'action (créée en JS) */
+.sfx { position: fixed; z-index: 90; pointer-events: none; font-family: var(--font-display), sans-serif; font-size: 32px; letter-spacing: 0.04em; color: var(--yellow); -webkit-text-stroke: 2px #141210; paint-order: stroke fill; text-shadow: 3px 3px 0 #141210; transform: translate(-50%, -50%); animation: sfx 600ms var(--ease-out) forwards; }
 @keyframes sfx {
-  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.3) rotate(var(--r, -8deg)); }
-  25% { opacity: 1; transform: translate(-50%, -90%) scale(1.15) rotate(var(--r, -8deg)); }
-  100% { opacity: 0; transform: translate(-50%, -140%) scale(1) rotate(var(--r, -8deg)); }
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.6) rotate(var(--r, -8deg)); }
+  30% { opacity: 1; transform: translate(-50%, -90%) scale(1) rotate(var(--r, -8deg)); }
+  100% { opacity: 0; transform: translate(-50%, -130%) scale(1) rotate(var(--r, -8deg)); }
 }
 
-/* Entrée en scène des cases au défilement */
-.scene { transition: opacity 0.5s ease-out, transform 0.6s var(--spring); }
-[data-inview="false"] .scene { opacity: 0; transform: translateY(24px) rotate(-1.5deg) scale(0.96); }
+/* Couverture d'album : elle se soulève à peine au survol */
+.cover-card { transition: transform 140ms var(--ease-out), box-shadow 140ms var(--ease-out); }
+.cover-card:hover, .cover-card:focus-visible { transform: translate(-2px, -2px) !important; box-shadow: 6px 6px 0 var(--shadow); }
 
-/* Jauges de pouvoir (compétences) */
-.power { transform-origin: left; transition: transform 0.6s var(--spring); }
-[data-inview="false"] .power { transform: scaleX(0); }
-
-/* Couverture d'album */
-.cover-card { transition: transform 0.35s var(--spring), box-shadow 0.35s var(--ease-out); }
-.cover-card:hover, .cover-card:focus-visible { transform: translate(-4px, -6px) rotate(-1.5deg) !important; box-shadow: 10px 12px 0 var(--shadow); }
-.cover-card .cover-dots { transition: background-size 0.4s var(--ease-out); }
-.cover-card:hover .cover-dots { background-size: 13px 13px; }
-
-/* Lignes de vitesse derrière l'illustration du héros */
-.speed line { stroke: var(--ink); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 60 400; animation: speed 1.6s linear infinite; opacity: 0.35; }
-@keyframes speed { from { stroke-dashoffset: 460; } to { stroke-dashoffset: 0; } }
-.spark { animation: spark 1.4s steps(2, jump-none) infinite; transform-box: fill-box; transform-origin: center; }
-@keyframes spark { 50% { transform: scale(1.2) rotate(8deg); } }
+/* Lignes de vitesse de l'illustration : fixes */
+.speed line { stroke: var(--ink); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 60 400; opacity: 0.35; }
 
 /* Menu mobile */
-.menu-in > * { animation: rise 0.3s var(--ease-out) both; }
+.menu-in > * { animation: rise 220ms var(--ease-out) both; }
 .menu-in > :nth-child(2) { animation-delay: 40ms; }
 .menu-in > :nth-child(3) { animation-delay: 80ms; }
 .menu-in > :nth-child(4) { animation-delay: 120ms; }
 .menu-in > :nth-child(5) { animation-delay: 160ms; }
 
 /* Message envoyé : la coche se trace */
-.check-draw { stroke-dasharray: 24; stroke-dashoffset: 24; animation: draw 0.45s var(--ease-out) 0.2s forwards; }
+.check-draw { stroke-dasharray: 24; stroke-dashoffset: 24; animation: draw 400ms var(--ease-out) 200ms forwards; }
 @keyframes draw { to { stroke-dashoffset: 0; } }
 
 /* Changements de page (View Transitions) */
@@ -214,105 +198,30 @@
 ::view-transition-group(site-header) { animation: none; z-index: 100; }
 ::view-transition-old(site-header) { display: none; }
 ::view-transition-new(site-header) { animation: none; }
-::view-transition-group(.morph) { animation-duration: 380ms; animation-timing-function: var(--ease-out); }
+::view-transition-group(.morph) { animation-duration: 400ms; animation-timing-function: var(--ease-out); }
 
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 0.01ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; transition-delay: 0s !important; scroll-behavior: auto !important; }
-  .sfx, .speed { display: none; }
-  ::view-transition-old(*), ::view-transition-new(*), ::view-transition-group(*) { animation-duration: 0s !important; animation-delay: 0s !important; }
-}
-
-/* ─────────────────────────────────────────────────────────────
-   Animations de défilement
-   ───────────────────────────────────────────────────────────── */
-
-/* Titre de chapitre qui s'abat : grossit, s'écrase, secoue ; l'onomatopée explose derrière */
-[data-inview="true"] .slam { animation: slam 0.55s var(--spring) both; }
-[data-inview="true"] .slam-caption { animation: rise 0.4s var(--ease-out) both; }
-[data-inview="true"] .slam-sub { animation: rise 0.5s var(--ease-out) 0.35s both; }
-[data-inview="true"] .slam-sfx { animation: sfx-burst 0.7s var(--spring) 0.15s both; }
-[data-inview="false"] :is(.slam, .slam-caption, .slam-sub, .slam-sfx) { opacity: 0; }
-@keyframes slam {
-  0% { opacity: 0; transform: scale(2.4) rotate(-4deg); }
-  55% { opacity: 1; transform: scale(0.94) rotate(1deg); }
-  70% { transform: translateX(-6px) rotate(-1deg); }
-  85% { transform: translateX(4px); }
-  100% { transform: none; }
-}
-@keyframes sfx-burst {
-  0% { opacity: 0; transform: scale(0.2) rotate(-25deg); }
-  60% { opacity: 0.95; transform: scale(1.12) rotate(-8deg); }
-  100% { opacity: 0.9; transform: scale(1) rotate(-10deg); }
-}
-.slam-sfx { transform: rotate(-10deg); }
-
-/* Effet de vitesse au défilement (valeur posée par ScrollFx) */
-.skewable { transform: skewY(var(--skew, 0deg)); transform-origin: center; }
-
-/* Défilement piloté par le navigateur (Chrome, Edge, Safari récent) ; sinon rien ne bouge */
-@supports (animation-timeline: view()) {
-  /* Couvertures d'album qui arrivent en volant, depuis la gauche ou la droite */
-  .fly-in { animation: fly-in linear both; animation-timeline: view(); animation-range: entry 0% cover 38%; }
-  .fly-in:nth-child(3n + 1) { --fx: -46vw; --fr: -28deg; }
-  .fly-in:nth-child(3n + 2) { --fx: 0; --fr: 14deg; --fy: 260px; }
-  .fly-in:nth-child(3n + 3) { --fx: 46vw; --fr: 30deg; }
-  @keyframes fly-in { from { opacity: 0; translate: var(--fx, 0) var(--fy, 120px); rotate: var(--fr, 0deg); scale: 0.6; } }
-
-  /* Planche d'accueil : en la quittant, chaque calque file à sa vitesse */
-  .par-slow, .par-fast, .par-tilt, .par-zoom { animation-timeline: view(); animation-range: exit 0% exit 100%; animation-fill-mode: both; animation-timing-function: linear; }
-  .par-slow { animation-name: par-slow; }
-  .par-fast { animation-name: par-fast; }
-  .par-tilt { animation-name: par-tilt; }
-  .par-zoom { animation-name: par-zoom; }
-  @keyframes par-slow { to { translate: 0 -60px; } }
-  @keyframes par-fast { to { translate: 0 -220px; rotate: -6deg; } }
-  @keyframes par-tilt { to { translate: 40px 120px; rotate: 18deg; scale: 1.2; } }
-  @keyframes par-zoom { to { scale: 0.86; rotate: -3deg; opacity: 0.4; } }
-
-  /* Cases (compétences, principes, certifications) qui basculent en place, comme une page qu'on tourne */
-  .flip-in { animation: flip-in linear both; animation-timeline: view(); animation-range: entry 5% cover 30%; transform-origin: left bottom; }
-  @keyframes flip-in { from { opacity: 0; rotate: y -70deg; translate: 0 40px; } }
-
-  /* Barre de lecture : un trait d'encre jaune qui avance sous l'en-tête */
+/* Barre de lecture : un trait jaune qui avance sous l'en-tête (navigateurs récents) */
+@supports (animation-timeline: scroll()) {
   .read-progress { animation: read-progress linear both; animation-timeline: scroll(root); transform-origin: left; }
   @keyframes read-progress { from { scale: 0 1; } to { scale: 1 1; } }
 }
-@supports not (animation-timeline: view()) { .read-progress { display: none; } }
-
-@media (prefers-reduced-motion: reduce) {
-  .fly-in, .par-slow, .par-fast, .par-tilt, .par-zoom, .flip-in, .read-progress { animation: none !important; }
-  .skewable { transform: none; }
-  [data-inview="false"] :is(.slam, .slam-caption, .slam-sub, .slam-sfx) { opacity: 1; }
-}
+@supports not (animation-timeline: scroll()) { .read-progress { display: none; } }
 
 /* Onomatopée de l'avion en papier : apparaît en fin de strip */
-.plane-sfx { opacity: 0; transform: scale(0.4) rotate(-12deg); transition: opacity 0.2s, transform 0.4s var(--spring); }
+.plane-sfx { opacity: 0; transform: rotate(-8deg) translateY(8px); transition: opacity 220ms var(--ease-out), transform 220ms var(--ease-out); }
 [data-done="true"] .plane-sfx { opacity: 1; transform: rotate(-8deg); }
 
 /* ── Stack : cartes à collectionner ───────────────────── */
-/* Distribution : chaque carte part du paquet (en haut à gauche), tournoie, et se pose en éventail */
-.deal { animation: deal 0.6s var(--spring) both; }
+/* Distribution : chaque carte part du paquet et se pose à plat */
+.deal { animation: deal 600ms var(--ease-out) both; }
 [data-inview="false"] .deal { animation-play-state: paused; }
-@keyframes deal {
-  from { opacity: 0; transform: translate(-40vw, -60px) rotate(-40deg) scale(0.5); }
-  70% { opacity: 1; transform: rotate(var(--fan, 0deg)) scale(1.04); }
-  to { transform: rotate(calc(var(--fan, 0deg) * 0.18)); }
-}
-/* Inclinaison vers le curseur */
-.trading-card { transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform 0.25s var(--ease-out), box-shadow 0.25s; will-change: transform; }
-.trading-card:hover { box-shadow: 9px 9px 0 var(--shadow); transition-duration: 0.08s; }
-/* Reflet holographique : bandes arc-en-ciel et éclat, qui suivent le curseur */
-.holo { opacity: 0; mix-blend-mode: multiply; transition: opacity 0.25s;
-  background:
-    radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgb(255 255 255 / 0.75), transparent 38%),
-    linear-gradient(115deg, transparent 20%, rgb(255 80 120 / 0.45) 35%, rgb(255 220 60 / 0.45) 45%, rgb(60 220 160 / 0.45) 55%, rgb(80 140 255 / 0.45) 65%, transparent 80%);
-  background-size: 100% 100%, 220% 220%;
-  background-position: 0 0, var(--mx, 50%) var(--my, 50%);
-}
-.trading-card:hover .holo { opacity: 0.6; }
-:root[data-theme="dark"] .holo { mix-blend-mode: screen; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .holo { mix-blend-mode: screen; } }
+@keyframes deal { from { opacity: 0; transform: translate(-32vw, -40px) rotate(-24deg) scale(0.7); } }
+.trading-card { transition: transform 140ms var(--ease-out), box-shadow 140ms var(--ease-out); }
+.trading-card:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--shadow); }
+
 @media (prefers-reduced-motion: reduce) {
-  .deal { animation: none; }
-  .trading-card { transform: none; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; transition-delay: 0s !important; scroll-behavior: auto !important; }
+  .sfx { display: none; }
+  .read-progress { animation: none !important; }
+  ::view-transition-old(*), ::view-transition-new(*), ::view-transition-group(*) { animation-duration: 0s !important; animation-delay: 0s !important; }
 }

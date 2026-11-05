@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 
 /**
- * Onomatopées de clic : chaque bouton ou lien d'action fait jaillir un « CLIC ! » (ou un autre bruit)
+ * Onomatopées de clic : seuls les boutons d'action principaux (et ceux marqués data-sfx) font jaillir un « CLIC ! » (ou un autre bruit)
  * à l'endroit touché. Purement décoratif : rien n'est lu par les lecteurs d'écran.
  */
 export function ComicSfx({ words }: { words: string[] }) {
@@ -11,7 +11,7 @@ export function ComicSfx({ words }: { words: string[] }) {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     let last = -1;
     const onClick = (event: MouseEvent) => {
-      const target = (event.target as Element | null)?.closest(".btn, [data-sfx]");
+      const target = (event.target as Element | null)?.closest(".btn-primary, [data-sfx]");
       if (!target || event.clientX === 0) return;
       // Jamais deux fois le même bruit d'affilée
       let index = Math.floor(Math.random() * words.length);

@@ -9,12 +9,12 @@ type Card = Skill & { family: string; tint: number };
 type Labels = { all: string; hint: string; cards: string; rarity: string[]; families: string; swipe: string };
 
 const TINTS = ["var(--blue)", "var(--red)", "var(--yellow)"];
-const ON_TINTS = ["var(--on-blue)", "var(--on-red)", "#141210"];
 
 /**
  * La stack en cartes à collectionner. Des onglets par famille ; à chaque choix, les cartes
  * sont distribuées depuis le paquet, en éventail. Au survol, la carte s'incline vers le curseur
- * et un reflet holographique la parcourt. La distribution attend que la section soit à l'écran.
+ * La distribution attend que la section soit à l'écran. Les cartes restent sobres (papier et encre) :
+ * la couleur de la famille n'apparaît que sur une pastille.
  */
 export function SkillDeck({ families, levels, labels }: { families: { name: string; skills: Skill[] }[]; levels: string[]; labels: Labels }) {
   const [active, setActive] = useState(-1);
@@ -32,21 +32,6 @@ export function SkillDeck({ families, levels, labels }: { families: { name: stri
     (event.currentTarget.parentElement?.children[target] as HTMLElement | undefined)?.focus();
   };
 
-  // Inclinaison 3D et position du reflet suivent le curseur
-  const onMove = (event: React.PointerEvent<HTMLElement>) => {
-    const card = event.currentTarget;
-    const box = card.getBoundingClientRect();
-    const x = (event.clientX - box.left) / box.width;
-    const y = (event.clientY - box.top) / box.height;
-    card.style.setProperty("--mx", `${x * 100}%`);
-    card.style.setProperty("--my", `${y * 100}%`);
-    card.style.setProperty("--rx", `${(0.5 - y) * 16}deg`);
-    card.style.setProperty("--ry", `${(x - 0.5) * 18}deg`);
-  };
-  const onLeave = (event: React.PointerEvent<HTMLElement>) => {
-    for (const property of ["--rx", "--ry"]) event.currentTarget.style.setProperty(property, "0deg");
-  };
-
   return (
     <div className="mt-10">
       <p className="text-muted">{labels.hint}</p>
@@ -61,11 +46,9 @@ export function SkillDeck({ families, levels, labels }: { families: { name: stri
               aria-selected={selected}
               aria-controls="skill-cards"
               tabIndex={selected ? 0 : -1}
-              data-sfx
               onClick={() => setActive(tab.index)}
               onKeyDown={event => onTabKey(event, position)}
-              className={`deck-tab flex min-h-11 items-center gap-2 border-[3px] border-ink px-3.5 py-1.5 font-bold shadow-[3px_3px_0_var(--shadow)] transition-transform ${selected ? "-translate-y-1 -rotate-2" : "bg-panel hover:-translate-y-0.5"}`}
-              style={selected ? { background: tab.index === -1 ? "var(--ink)" : TINTS[tab.index % 3], color: tab.index === -1 ? "var(--page)" : ON_TINTS[tab.index % 3] } : undefined}
+              className={`deck-tab flex min-h-11 items-center gap-2 border-[3px] border-ink px-3.5 py-1.5 font-bold shadow-[2px_2px_0_var(--shadow)] transition-colors duration-150 ${selected ? "bg-ink text-page" : "bg-panel hover:bg-yellow hover:text-[#141210]"}`}
             >
               {tab.label}
               <span className="display text-sm opacity-70">{tab.count}</span>
@@ -86,16 +69,16 @@ export function SkillDeck({ families, levels, labels }: { families: { name: stri
             const number = all.indexOf(card) + 1;
             const fan = ((index % 5) - 2) * 7;
             return (
-              <li key={`${card.family}-${card.name}`} className="deal w-[46vw] flex-none snap-start sm:w-auto" style={{ animationDelay: `${index * 55}ms`, ["--fan" as string]: `${fan}deg` }}>
-                <article onPointerMove={onMove} onPointerLeave={onLeave} className="trading-card relative flex aspect-[4/5] flex-col overflow-hidden rounded-[10px] border-[3px] border-ink bg-panel shadow-[5px_5px_0_var(--shadow)]">
+              <li key={`${card.family}-${card.name}`} className="deal w-[46vw] flex-none snap-start sm:w-auto" style={{ animationDelay: `${Math.min(index, 10) * 40}ms`, ["--fan" as string]: `${fan}deg` }}>
+                <article className="trading-card relative flex aspect-[4/5] flex-col overflow-hidden rounded-[8px] border-[3px] border-ink bg-panel shadow-[4px_4px_0_var(--shadow)]">
                   {/* Bandeau de famille */}
-                  <header className="flex items-center justify-between border-b-[3px] border-ink px-2.5 py-1 text-[12px] font-bold uppercase" style={{ background: TINTS[card.tint % 3], color: ON_TINTS[card.tint % 3] }}>
-                    <span className="truncate">{card.family}</span>
+                  <header className="flex items-center justify-between gap-2 border-b-2 border-ink px-3 py-1 text-xs text-muted">
+                    <span className="flex min-w-0 items-center gap-1.5"><span aria-hidden="true" className="size-2 flex-none rounded-full" style={{ background: TINTS[card.tint % 3] }} /><span className="truncate">{card.family}</span></span>
                     <span>#{String(number).padStart(2, "0")}/{all.length}</span>
                   </header>
-                  {/* Illustration : étoile d'action tramée, initiales de la techno */}
+                  {/* Le logo de la techno, à l'encre, sur la trame */}
                   <div className="dots relative grid flex-1 place-items-center">
-                    <span className="burst display text-[clamp(1.4rem,3vw,2rem)]" style={{ width: "62%", aspectRatio: "1", background: TINTS[card.tint % 3], color: ON_TINTS[card.tint % 3], rotate: `${(number % 3) * 7 - 7}deg` }}>
+                    <span className="display grid place-items-center text-[clamp(1.4rem,3vw,2rem)] text-ink" style={{ width: "62%", aspectRatio: "1" }}>
                       {card.icons.length ? (
                         <span className={`flex items-center justify-center ${card.icons.length > 1 ? "gap-1" : ""}`}>
                           {card.icons.map(icon => <Icon key={icon.title} icon={icon} size={card.icons.length > 1 ? "32%" : "44%"} />)}
@@ -105,13 +88,11 @@ export function SkillDeck({ families, levels, labels }: { families: { name: stri
                   </div>
                   <div className="border-t-[3px] border-ink px-2.5 pt-2 pb-2.5">
                     <h3 className="display text-[clamp(1.05rem,1.6vw,1.35rem)] leading-tight [overflow-wrap:anywhere]">{card.name}</h3>
-                    <p className="mt-1 flex items-center justify-between gap-2 text-[12px] font-bold uppercase">
-                      <span aria-label={levels[card.level - 1]} className="text-lg leading-none tracking-tight text-red">{"★".repeat(card.level)}<span className="text-muted">{"☆".repeat(3 - card.level)}</span></span>
+                    <p className="mt-1 flex items-center justify-between gap-2 text-xs">
+                      <span aria-label={levels[card.level - 1]} className="text-lg leading-none text-ink">{"★".repeat(card.level)}<span className="text-muted">{"☆".repeat(3 - card.level)}</span></span>
                       <span className="text-muted">{labels.rarity[card.level - 1]}</span>
                     </p>
                   </div>
-                  {/* Reflet holographique */}
-                  <span aria-hidden="true" className="holo pointer-events-none absolute inset-0" />
                 </article>
               </li>
             );

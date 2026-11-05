@@ -79,7 +79,7 @@ export default async function ProjectPage({ params }: PageProps<"/[lang]/project
       {/* L'histoire, case par case */}
       <div className="mt-10 grid gap-5 md:grid-cols-2">
         {story.map((part, partIndex) => (
-          <div key={part.title} className={`panel p-6 ${partIndex === 0 && story.length % 2 ? "md:col-span-2" : ""}`} style={{ rotate: `${partIndex % 2 ? 0.5 : -0.5}deg` }}>
+          <div key={part.title} className={`panel p-6 ${partIndex === 0 && story.length % 2 ? "md:col-span-2" : ""}`}>
             <p className="caption">{partIndex + 1} · {part.title}</p>
             <p className="mt-4 text-lg whitespace-pre-line">{part.body}</p>
           </div>
@@ -93,7 +93,7 @@ export default async function ProjectPage({ params }: PageProps<"/[lang]/project
             {project.gallery.map((path, imageIndex) => {
               const src = mediaUrl(path);
               return src ? (
-                <div key={path} className="panel relative aspect-[16/10] overflow-hidden" style={{ rotate: `${imageIndex % 2 ? 1 : -1}deg` }}>
+                <div key={path} className="panel relative aspect-[16/10] overflow-hidden">
                   <Image src={src} alt={`${pick(project.title, locale)} — ${imageIndex + 1}`} fill sizes="(min-width: 640px) 50vw, 95vw" className="object-cover" />
                 </div>
               ) : null;
@@ -103,9 +103,9 @@ export default async function ProjectPage({ params }: PageProps<"/[lang]/project
       )}
 
       {next && (
-        <Link href={`/${locale}/projects/${next.slug}`} data-sfx className="cover-card panel group mt-20 flex items-center justify-between gap-6 bg-yellow p-6 text-[#141210]">
+        <Link href={`/${locale}/projects/${next.slug}`} className="cover-card panel group mt-20 flex items-center justify-between gap-6 bg-yellow p-6 text-[#141210]">
           <span>
-            <span className="text-[13px] font-bold tracking-wider uppercase">{dict.comic.next}… · {t.next}</span>
+            <span className="text-sm font-bold">{dict.comic.next}… · {t.next}</span>
             <span className="display mt-1 block text-4xl">{pick(next.title, locale)}</span>
           </span>
           <span aria-hidden="true" className="display text-5xl transition-transform group-hover:translate-x-2">→</span>

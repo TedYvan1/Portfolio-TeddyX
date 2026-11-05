@@ -38,12 +38,12 @@ export function SiteHeader({ locale, nav, theme, comic }: Props) {
       {/* Barre de lecture : avance avec le défilement de la page */}
       <span aria-hidden="true" className="read-progress pointer-events-none absolute inset-x-0 -bottom-[5px] h-[5px] border-b-2 border-ink bg-yellow" />
       <div className="container-site flex h-[72px] items-center justify-between gap-3">
-        <Link href={`/${locale}`} className="flex items-center gap-2" data-sfx>
+        <Link href={`/${locale}`} className="flex items-center gap-2">
           <LogoMark />
-          <span className="display text-[26px] leading-none">Ted Yvan <span className="text-red">!</span></span>
+          <span className="display text-[28px] leading-none">Ted Yvan</span>
         </Link>
 
-        <nav aria-label={locale === "fr" ? "Navigation principale" : "Main navigation"} className="hidden items-center gap-6 text-[15px] font-bold md:flex">
+        <nav aria-label={locale === "fr" ? "Navigation principale" : "Main navigation"} className="hidden items-center gap-6 text-base font-bold md:flex">
           {links.map(link => (
             <Link key={link.href} href={link.href} className="link-underline inline-flex min-h-11 items-center" aria-current={pathname === link.href ? "page" : undefined}>
               {link.label}
@@ -74,13 +74,13 @@ export function SiteHeader({ locale, nav, theme, comic }: Props) {
       {open && (
         <nav id="mobile-menu" aria-label={locale === "fr" ? "Navigation mobile" : "Mobile navigation"} className="menu-in container-site grid gap-2 pb-6 md:hidden">
           {links.map((link, index) => (
-            <Link key={link.href} href={link.href} onClick={() => setOpen(false)} className="panel flex items-baseline gap-3 px-4 py-3" style={{ transform: `rotate(${index % 2 ? 0.6 : -0.6}deg)` }}>
-              <span className="display text-red">{comic.chapter} {index + 1}</span>
+            <Link key={link.href} href={link.href} onClick={() => setOpen(false)} className="panel flex items-baseline gap-3 px-4 py-3">
+              <span className="display text-muted tabular-nums">{comic.chapter} {index + 1}</span>
               <span className="text-lg font-bold">{link.label}</span>
             </Link>
           ))}
           <Link href={`/${locale}#contact`} onClick={() => setOpen(false)} className="btn btn-primary mt-2">
-            {nav.cta} !
+            {nav.cta}
           </Link>
         </nav>
       )}
